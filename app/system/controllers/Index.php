@@ -1,14 +1,13 @@
 <?php
+
+namespace captain\system;
+defined('CAPTAIN') OR exit('No direct script access allowed');
 /**
  * Created by PhpStorm.
  * User: gx1727
  * Date: 2018-02-07
  * Time: 下午 6:54
  */
-
-namespace captain\system;
-
-
 use \captain\core\Controller;
 
 
@@ -20,5 +19,33 @@ class Index extends Controller
         echo 'hello world';
         $v = "123";
         include(BASEPATH . 'app/system/views/index.php');
+    }
+
+    public function cms()
+    {
+        echo 'cms';
+    }
+
+    public function hello()
+    {
+        echo 'hello';
+    }
+
+    public function def()
+    {
+        echo 'def';
+    }
+
+    public function hello_art()
+    {
+        global $router;
+
+        $router->redirection();
+        echo 'hello_art';
+    }
+
+    public function hello_tag()
+    {
+        echo 'hello_tag';
     }
 }

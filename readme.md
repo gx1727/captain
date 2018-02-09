@@ -21,3 +21,13 @@ app
     |-config.php 配制文件
     |-routes.php 路由文件
 ```
+
+
+## url设计
+1. http://域名:端口/c/m?k1=v1&k2=m2  
+2. http://域名:端口/二级目录/index.php?c=c&m=m&k1=v1&k2=m2
+
+在网站根目录即为项目根目录时， 可以使用重写的方式去掉 index.php ,其它情况下，都使用第二种方式的完整url
+
+
+基本上搞定了路由了

@@ -1,4 +1,6 @@
-<?php defined('CAPTAIN') OR exit('No direct script access allowed');
+<?php
+namespace captain\core;
+defined('CAPTAIN') OR exit('No direct script access allowed');
 /**
  * Created by PhpStorm.
  * User: gx1727
@@ -6,7 +8,7 @@
  * Time: 下午 10:32
  */
 
-namespace captain\core;
+
 
 
 class Ret

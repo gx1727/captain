@@ -5,7 +5,7 @@
  * Date: 2018-02-06
  * Time: 下午 10:11
  */
-declare(strict_types=1);
+//declare(strict_types=1);
 
 //框架版本
 define('CAPTAIN', 'CAPTAIN v3.0');
