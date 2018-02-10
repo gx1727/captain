@@ -26,6 +26,7 @@ include_once BASEPATH . 'core/helpers/common.php';
  */
 include_once BASEPATH . 'core/libraries/Ret.php';
 include_once BASEPATH . 'core/libraries/Route.php';
+include_once BASEPATH . 'core/libraries/Input.php';
 include_once BASEPATH . 'core/libraries/Controller.php';
 
 //require_once BASEPATH . 'app/system/controllers/Index.php';
@@ -37,14 +38,18 @@ include_once BASEPATH . 'core/libraries/Controller.php';
 /**
  * 当前用户的角色
  */
-$role = 'admin';
+$role = 'guest';
 //通过session获到当前用户的角色
 
 /**
  * 初始化路由
  */
-$router = new Route($role);
+$captain_router = new Route();
+if (!$captain_router->_class) { // 在needless_context中没有匹配命中
+    $captain_router->resolver($role); //解析匹配
+}
 
-$router->direction(); //指向最终处理函数
+$captain_input = new Input($captain_router->_uri);
+$captain_router->direction(); //指向最终处理函数
 //$controller = new (ucfirst($router->_controller))();
 //print_r($controller);

@@ -11,8 +11,6 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 class Route
 {
-    var $_role;
-
     var $_request_method; // get  post ..
     var $_http_host; //域名 带端口的
     var $_server_port;
@@ -31,15 +29,16 @@ class Route
     var $_routes;
 
 
-    function __construct($role)
+    function __construct()
     {
         $this->_http_host = $_SERVER['HTTP_HOST'];
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];
 
         $this->_url_model = get_config('url_model');
-        $this->_role = $role;
+
         $this->_routes = array(
+            'needless_contex' => array(), //不需要读求session的
             'strict' => array(), //严格模式
             'matching' => array() //匹配模式
         );
@@ -60,8 +59,6 @@ class Route
             }
         }
         $this->sub_directory();//处理二级目录
-
-        $this->init_route(); //初始化路由数据
         $this->resolver(); //解析匹配
     }
 
@@ -72,10 +69,13 @@ class Route
     {
         if (file_exists(BASEPATH . 'app' . DIRECTORY_SEPARATOR . $this->_module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->_class . '.php')) {
             require_once BASEPATH . 'app' . DIRECTORY_SEPARATOR . $this->_module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->_class . '.php';
+            $controller = new  $this->_controller();
+            call_user_func_array(array(&$controller, $this->_function), array($this));
+        } else {
+            show_404();
         }
 
-        $controller = new  $this->_controller();
-        call_user_func_array(array(&$controller, $this->_function), array($this));
+
     }
 
     /**
@@ -87,19 +87,78 @@ class Route
     }
 
     /**
+     * 解析匹配
+     * /hello.html
+     * /hello/world.html
+     * /hello/1.html
+     */
+    public function resolver($role_name = false)
+    {
+        $this->init_route($role_name); //初始化路由数据
+
+        $route_cmd = false;
+        //匹配 严格模式
+        foreach ($this->_routes['strict'] as $key => $route) {
+            if ($key == $this->_uri) {
+                //命中
+                $route_cmd = $route;
+                $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
+                break;
+            }
+        }
+        if (!$route_cmd) {
+            // 匹配模式
+            foreach ($this->_routes['matching'] as $key => $route) {
+                if (strpos($this->_uri, $key) === 0) {
+                    $route_cmd = $route;
+                    $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
+                    break;
+                }
+            }
+        }
+        if ($role_name && !$route_cmd) {
+            //默认
+            $route_cmd = get_config('default_controller');
+            if($this->_uri[0] == '/') {
+                $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
+            }
+        }
+        if ($route_cmd) {
+            $p = strpos($route_cmd, ':');
+            $this->_module = substr($route_cmd, 0, $p);
+            $route_cmd = substr($route_cmd, $p + 1);
+
+            $p = strpos($route_cmd, '@');
+            $this->_controller = substr($route_cmd, 0, $p);
+            $this->_function = substr($route_cmd, $p + 1);
+
+            $p = strrpos($route_cmd, '\\');
+            $this->_class = substr($this->_controller, $p + 1);
+        }
+    }
+
+    /**
      * 初始化路由数据
      */
-    protected function init_route()
+    protected function init_route($role_name)
     {
         $routes = array();
 
         //从配制文件中读取路由配制
-        global $route_role;
-        foreach ($route_role as $role) {
-            foreach ($role as $route) {
-                global $$route;
-                $routes = array_merge($routes, $$route);
+        if ($role_name) { //需要读取session值
+
+            global $route_role;
+            foreach ($route_role as $role_key => $role) {
+                if ($role_name == $role_key) {
+                    foreach ($role as $route) {
+                        global $$route;
+                        $routes = array_merge($routes, $$route);
+                    }
+                }
             }
+        } else {
+            global $needless_context;
+            $routes = $needless_context;
         }
 
         //分析中 两种路由模式
@@ -125,43 +184,6 @@ class Route
         }
     }
 
-    /**
-     * 解析匹配
-     * /hello.html
-     * /hello/world.html
-     * /hello/1.html
-     */
-    protected function resolver()
-    {
-        $route_cmd = false;
-        foreach ($this->_routes['strict'] as $key => $route) {
-            if ($key == $this->_uri) {
-                //命中
-                $route_cmd = $route;
-                $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
-                break;
-            }
-        }
-        if (!$route_cmd) {
-            foreach ($this->_routes['matching'] as $key => $route) {
-                if (strpos($this->_uri, $key) === 0) {
-                    $route_cmd = $route;
-                    $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
-                    break;
-                }
-            }
-        }
-        $p = strpos($route_cmd, ':');
-        $this->_module = substr($route_cmd, 0, $p);
-        $route_cmd = substr($route_cmd, $p + 1);
-
-        $p = strpos($route_cmd, '@');
-        $this->_controller = substr($route_cmd, 0, $p);
-        $this->_function = substr($route_cmd, $p + 1);
-
-        $p = strrpos($route_cmd, '\\');
-        $this->_class = substr($this->_controller, $p + 1);
-    }
 
     /**
      * 分析二级目录

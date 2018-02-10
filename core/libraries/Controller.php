@@ -1,4 +1,5 @@
 <?php
+
 namespace captain\core;
 defined('CAPTAIN') OR exit('No direct script access allowed');
 /**
@@ -14,9 +15,13 @@ namespace captain\core;
 class Controller
 {
     var $router;
+    var $input;
+
     function __construct()
     {
-        global $router;
-        $this->router = &$router;
+        global $captain_router,
+               $captain_input;
+        $this->router = &$captain_router;
+        $this->input =  &$captain_input;
     }
 }

@@ -33,7 +33,9 @@ class Index extends Controller
 
     public function def()
     {
-        echo 'def';
+        $v = $this->input->get('hello', 'abc', true);
+        var_dump($v);
+
     }
 
     public function hello_art()
@@ -47,5 +49,10 @@ class Index extends Controller
     public function hello_tag()
     {
         echo 'hello_tag';
+    }
+
+    public function api()
+    {
+        echo 'api';
     }
 }

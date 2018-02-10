@@ -47,3 +47,8 @@ $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 
 $admin['/admin/home'] = 'system:admin@home';
+
+/**
+ * api组中的url不调session
+ */
+$needless_context['/api'] = 'system:captain\system\Index@api';

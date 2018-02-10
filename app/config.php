@@ -31,7 +31,7 @@ $configs['url_model'] = 's';
 /**
  * 默认处理器
  */
-$configs['default_controller'] = 'system:index@def';
-
+$configs['default_controller'] = 'system:captain\system\Index@def';
+//$configs['default_controller'] = '';
 
 $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
