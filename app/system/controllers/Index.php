@@ -10,15 +10,22 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 use \captain\core\Controller;
 
+require_once(BASEPATH . 'app' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'UserModel.php');
+require_once(BASEPATH . 'app' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'AccountModel.php');
 
 class Index extends Controller
 {
     public function index()
     {
-        global $test;
-        echo 'hello world';
-        $v = "123";
-        include(BASEPATH . 'app/system/views/index.php');
+        global $captain_db;
+        var_dump($captain_db);
+        $userMod = new UserModel();
+        $userMod->test();
+
+        $accountMod = new AccountModel();
+        $accountMod->test();
+
+        // include(BASEPATH . 'app/system/views/index.php');
     }
 
     public function cms()

@@ -13,6 +13,4 @@ define('CAPTAIN', 'CAPTAIN v3.0');
 //项目的根目录
 define('BASEPATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-$test = 'why';
-
 require_once BASEPATH . 'core/Captain.php';

@@ -2,11 +2,13 @@
 
 /**
  * 域名 （带端口）
+ * 如： www.helloworld.com:21
  */
 $configs['domain'] = '';
 
 /**
  * 二级目录
+ * 以 / 开始 ，结尾不带  / 如： /hello/world
  */
 $configs['sub_directory'] = '';
 
@@ -34,4 +36,14 @@ $configs['url_model'] = 's';
 $configs['default_controller'] = 'system:captain\system\Index@def';
 //$configs['default_controller'] = '';
 
+
+/**
+ * 数据库
+ */
+$configs['db'] = array(
+    'mysql_host' => '127.0.0.1',
+    'mysql_username' => 'rootq',
+    'mysql_pwd' => '123456',
+    'mysql_database' => 'captain',
+);
 $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';

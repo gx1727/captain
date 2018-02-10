@@ -27,13 +27,21 @@ include_once BASEPATH . 'core/helpers/common.php';
 include_once BASEPATH . 'core/libraries/Ret.php';
 include_once BASEPATH . 'core/libraries/Route.php';
 include_once BASEPATH . 'core/libraries/Input.php';
+include_once BASEPATH . 'core/libraries/Log.php';
 include_once BASEPATH . 'core/libraries/Controller.php';
+include_once BASEPATH . 'core/libraries/Model.php';
 
-//require_once BASEPATH . 'app/system/controllers/Index.php';
 /**
- * 测试
- * 模块方法
+ * 日志
  */
+$captain_log = new Log(BASEPATH);
+
+/**
+ * 数据库连接
+ * 当使用时，判断数据库是否连接
+ * 一次接求只连接一次
+ */
+$captain_db = false;
 
 /**
  * 当前用户的角色
@@ -51,5 +59,7 @@ if (!$captain_router->_class) { // 在needless_context中没有匹配命中
 
 $captain_input = new Input($captain_router->_uri);
 $captain_router->direction(); //指向最终处理函数
-//$controller = new (ucfirst($router->_controller))();
-//print_r($controller);
+
+if ($captain_db) {
+    $captain_db->disconnect();
+}

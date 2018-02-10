@@ -43,11 +43,25 @@ if (!function_exists('error_exit')) {
 /**
  * 获到配制文件
  */
-if (!function_exists('get_config')) {
-    function get_config($key)
+if (!function_exists('sys_config')) {
+    function sys_config($key)
     {
         global $configs;
         return (isset($configs[$key]) ? $configs[$key] : false);
+    }
+}
+
+
+/**
+ * 写日志
+ */
+if (!function_exists('log_message')) {
+    function log_message()
+    {
+        global $captain_log;
+        $args = func_get_args();
+
+        call_user_func_array(array(&$captain_log, 'log'), $args);
     }
 }
 
@@ -68,8 +82,7 @@ if (!function_exists('show_404')) {
 /**
  * 判断是否为命令行
  */
-if ( ! function_exists('is_cli'))
-{
+if (!function_exists('is_cli')) {
     function is_cli()
     {
         return (PHP_SAPI === 'cli' OR defined('STDIN'));

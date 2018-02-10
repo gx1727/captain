@@ -14,14 +14,26 @@ namespace captain\core;
 
 class Controller
 {
+    var $log;
     var $router;
     var $input;
 
     function __construct()
     {
-        global $captain_router,
+        global $captain_log,
+               $captain_router,
                $captain_input;
+        $this->log = &$captain_log;
         $this->router = &$captain_router;
         $this->input =  &$captain_input;
+    }
+
+    /**
+     * 写日志
+     */
+    public function log()
+    {
+        $args = func_get_args();
+        call_user_func_array(array(&$this->log, 'log'), $args);
     }
 }

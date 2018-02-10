@@ -35,7 +35,7 @@ class Route
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];
 
-        $this->_url_model = get_config('url_model');
+        $this->_url_model = sys_config('url_model');
 
         $this->_routes = array(
             'needless_contex' => array(), //不需要读求session的
@@ -53,9 +53,9 @@ class Route
 
         if ($this->_uri != '/') {
             if ($this->_url_model == 'a') { //全url模式 必须有index.html
-                $this->_uri = str_replace(get_config('index_page'), '', $this->_uri); //去掉 index.php
+                $this->_uri = str_replace(sys_config('index_page'), '', $this->_uri); //去掉 index.php
             } else if ($this->_url_model == 's') { //短url模式
-                $this->_uri = str_replace(get_config('url_suffix'), '', $this->_uri); //去掉 .html
+                $this->_uri = str_replace(sys_config('url_suffix'), '', $this->_uri); //去掉 .html
             }
         }
         $this->sub_directory();//处理二级目录
@@ -118,7 +118,7 @@ class Route
         }
         if ($role_name && !$route_cmd) {
             //默认
-            $route_cmd = get_config('default_controller');
+            $route_cmd = sys_config('default_controller');
             if($this->_uri[0] == '/') {
                 $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
             }
@@ -190,7 +190,7 @@ class Route
      */
     protected function sub_directory()
     {
-        $this->_sub_directory = get_config('sub_directory'); //从配制文件是读取 二级目录 配制
+        $this->_sub_directory = sys_config('sub_directory'); //从配制文件是读取 二级目录 配制
         if (!$this->_sub_directory) { //没有相关配制，直接计算获到
             $sub_directory = str_replace('\\', '/', BASEPATH);
             $sub_directory = rtrim($sub_directory, '/');
