@@ -113,6 +113,15 @@ class Input
     }
 
     /**
+     * 获到uri中的数据值
+     * @return mixed
+     */
+    public function get_uri()
+    {
+        return explode('/', $this->_uri);
+    }
+
+    /**
      * Fetch from array
      *
      * Internal method used to retrieve values from global arrays.

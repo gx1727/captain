@@ -16,18 +16,22 @@ class Index extends Controller
 {
     function __construct()
     {
-        parent::__construct();
-        $this->modular = 'system';
+        parent::__construct('system', __NAMESPACE__);
     }
 
     public function index()
     {
         global $captain_db;
-        var_dump($captain_db);
-        echo '<p/>' . __NAMESPACE__ . '<p/>';
-        $this->model('UserModel', 'userMod', 'system');
-        $this->userMod->test();
+        $this->model('\captain\system\UserModel', 'userMod', 'system');
+        $user_list = $this->userMod->get_user_list(2, 10, false, false);
+        print_r($this);
+//        $user = $this->userMod->get_all(3);
+//        for ($i = 1; $i < 20; $i++) {
+//            $this->userMod->add(array('user_code' => '000' . $i));
+//        }
 
+//        var_dump($this->userMod->edit('eeee', array('user_name' => 'gx1727'), CAPTAIN_USER, 'user_code'));
+//        var_dump($this->userMod->del('U0000000005', CAPTAIN_USER, 'user_code'));
 //        $accountMod = new AccountModel();
 //        $accountMod->test();
 
@@ -46,9 +50,8 @@ class Index extends Controller
 
     public function def()
     {
-        $v = $this->input->get('hello', 'abc', true);
-        var_dump($v);
-
+        $v = $this->input->get_uri();
+        print_r($v);
     }
 
     public function hello_art()
@@ -62,6 +65,8 @@ class Index extends Controller
     public function hello_tag()
     {
         echo 'hello_tag';
+        $v = $this->input->get_uri();
+        print_r($v);
     }
 
     public function api()

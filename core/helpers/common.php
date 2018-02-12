@@ -74,7 +74,6 @@ if (!function_exists('load_class')) {
         }
         require_once($class_path);
 
-$class = 'captain\system\UserModel';
         $captain_obj[$class] = isset($param)
             ? new $class($param)
             : new $class();
