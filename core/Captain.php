@@ -44,6 +44,10 @@ $captain_log = new Log(BASEPATH);
 $captain_db = false;
 
 /**
+ * 全局对象池
+ */
+$captain_obj = array();
+/**
  * 当前用户的角色
  */
 $role = 'guest';

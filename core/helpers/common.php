@@ -65,6 +65,23 @@ if (!function_exists('log_message')) {
     }
 }
 
+if (!function_exists('load_class')) {
+    function &load_class($class_path, $class, $param = null)
+    {
+        global $captain_obj;
+        if (isset($captain_obj[$class])) {
+            return $captain_obj[$class];
+        }
+        require_once($class_path);
+
+$class = 'captain\system\UserModel';
+        $captain_obj[$class] = isset($param)
+            ? new $class($param)
+            : new $class();
+        return $captain_obj[$class];
+    }
+}
+
 
 if (!function_exists('show_404')) {
     function show_404($page = '', $log_error = TRUE)

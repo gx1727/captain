@@ -10,20 +10,26 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 use \captain\core\Controller;
 
-require_once(BASEPATH . 'app' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'UserModel.php');
 require_once(BASEPATH . 'app' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'AccountModel.php');
 
 class Index extends Controller
 {
+    function __construct()
+    {
+        parent::__construct();
+        $this->modular = 'system';
+    }
+
     public function index()
     {
         global $captain_db;
         var_dump($captain_db);
-        $userMod = new UserModel();
-        $userMod->test();
+        echo '<p/>' . __NAMESPACE__ . '<p/>';
+        $this->model('UserModel', 'userMod', 'system');
+        $this->userMod->test();
 
-        $accountMod = new AccountModel();
-        $accountMod->test();
+//        $accountMod = new AccountModel();
+//        $accountMod->test();
 
         // include(BASEPATH . 'app/system/views/index.php');
     }

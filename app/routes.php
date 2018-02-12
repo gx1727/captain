@@ -46,7 +46,7 @@ $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 
-$admin['/admin/home'] = 'system:admin@home';
+$admin['/admin/home'] = 'system:captain\system\Admin@home';
 
 /**
  * api组中的url不调session
