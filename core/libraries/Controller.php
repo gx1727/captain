@@ -18,6 +18,8 @@ class Controller
     var $modular; //模块
     var $namespace; //当前命名空间
 
+    var $view_data; //传给view的数据
+
     function __construct($modular, $namespace)
     {
         global $captain_log,
@@ -29,6 +31,8 @@ class Controller
 
         $this->modular = $modular;
         $this->namespace = $namespace;
+
+        $this->view_data = array();
     }
 
     /**
@@ -37,14 +41,14 @@ class Controller
      * @param null $alias 别名
      * @param null $modular 模块
      */
-    public function model($model_name, $alias = null, $modular = null)
+    protected function model($model_name, $alias = null, $modular = null)
     {
         $class_name = $model_name; //类名 文件名
         if (strpos($model_name, '\\') === false) {
             //不带命名空空间
             $model_name = '\\' . $this->namespace . '\\' . $model_name;
         } else {
-            //带命名空空间
+            //带命名空间
             $class_name = substr($model_name, strrpos($model_name, '\\') + 1);
         }
 
@@ -61,21 +65,106 @@ class Controller
         }
     }
 
-    public function &library($library_name, $alias = null, $modular = null)
+    /**
+     * 加载类库
+     * @param $library_name 模型
+     * @param null $alias 别名
+     * @param null $modular 模块
+     */
+    protected function library($library_name, $alias = null, $modular = null)
     {
+        $class_name = $library_name; //类名 文件名
+        if (strpos($library_name, '\\') === false) {
+            //不带命名空空间
+            $library_name = '\\' . $this->namespace . '\\' . $library_name;
+        } else {
+            //带命名空间
+            $class_name = substr($library_name, strrpos($library_name, '\\') + 1);
+        }
 
+        if (!$alias) {
+            $alias = $class_name;
+        }
+        if (!$modular) {
+            $modular = $this->modular;
+        }
+        $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $class_name . '.php';
+
+        if (file_exists($file_path)) {
+            $this->$alias = load_class($file_path, $library_name);
+        } else {
+            //模块不存在类库文件
+            $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $class_name . '.php';
+            if (file_exists($file_path)) {
+                $this->$alias = load_class($file_path, $library_name);
+            }
+        }
     }
 
-    public function &help($help_name, $modular = null)
+    /**
+     * 加载help
+     * @param $help_name 模型
+     * @param null $modular 模块
+     */
+    protected function help($help_name, $modular = null)
     {
+        if (!$modular) {
+            $modular = $this->modular;
+        }
 
+        $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $help_name . '.php';
+
+        if (file_exists($file_path)) {
+            require_once($file_path);
+        } else {
+            //模块不存在类库文件
+            $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $help_name . '.php';
+            if (file_exists($file_path)) {
+                require_once($file_path);
+            }
+        }
     }
 
+    /**
+     * 向页面传递参数
+     * @param $k
+     * @param $v
+     */
+    protected function assign($k, $v)
+    {
+        $this->view_data[$k] = $v;
+    }
+
+    /**
+     * 返回json串
+     * @param $data
+     * @param bool $oflag 如果为真,则$data为数据,需要encode
+     */
+    protected function json($data, $oflag = true)
+    {
+        if ($oflag) {
+            $data = json_encode($data);
+        }
+        header('Content-Type: application/json');
+        echo $data;
+        exit;
+    }
+
+    /**
+     * 调用模板，显示到浏览器
+     * @param $view
+     */
+    protected function view($view)
+    {
+        extract($this->view_data);
+        include(BASEPATH . 'app/' . $this->modular . '/views/' . $view . '.php');
+        exit;
+    }
 
     /**
      * 写日志
      */
-    public function log()
+    protected function log()
     {
         $args = func_get_args();
         call_user_func_array(array(&$this->log, 'log'), $args);

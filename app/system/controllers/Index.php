@@ -24,7 +24,11 @@ class Index extends Controller
         global $captain_db;
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $user_list = $this->userMod->get_user_list(2, 10, false, false);
-        print_r($this);
+        $this->assign('hello', 'world');
+        $this->assign('user_list', $user_list);
+
+        $this->help('view_helper');
+        $this->view('index');
 //        $user = $this->userMod->get_all(3);
 //        for ($i = 1; $i < 20; $i++) {
 //            $this->userMod->add(array('user_code' => '000' . $i));
@@ -66,7 +70,7 @@ class Index extends Controller
     {
         echo 'hello_tag';
         $v = $this->input->get_uri();
-        print_r($v);
+        $this->json($v);
     }
 
     public function api()

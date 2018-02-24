@@ -12,19 +12,19 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
 class Route
 {
     var $_request_method; // get  post ..
-    var $_http_host; //域名 带端口的
+    var $_http_host; // 域名 带端口的
     var $_server_port;
-    var $_sub_directory; //二级目录
+    var $_sub_directory; // 二级目录
 
 
-    var $_url_model;
+    var $_url_model; // url 模式
 
 
     var $_uri;
-    var $_module; //模块
-    var $_controller; //控制器 带namespace
-    var $_class; //类名 文件名
-    var $_function; //处理的方法
+    var $_module; // 模块
+    var $_controller; // 控制器 带namespace
+    var $_class; // 类名 文件名
+    var $_function; // 处理的方法
 
     var $_routes;
 
@@ -35,10 +35,11 @@ class Route
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];
 
+        /**  url 模式  */
         $this->_url_model = sys_config('url_model');
 
         $this->_routes = array(
-            'needless_contex' => array(), //不需要读求session的
+            'needless_context' => array(), //不需要读求session的
             'strict' => array(), //严格模式
             'matching' => array() //匹配模式
         );
@@ -119,7 +120,7 @@ class Route
         if ($role_name && !$route_cmd) {
             //默认
             $route_cmd = sys_config('default_controller');
-            if($this->_uri[0] == '/') {
+            if ($this->_uri[0] == '/') {
                 $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
             }
         }
@@ -186,7 +187,7 @@ class Route
 
 
     /**
-     * 分析二级目录
+     * 分析、获取二级目录
      */
     protected function sub_directory()
     {
