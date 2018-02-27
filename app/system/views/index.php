@@ -5,3 +5,4 @@
 //echo $hello;
 
 echo yes_no(1);
+print_r($user_list);

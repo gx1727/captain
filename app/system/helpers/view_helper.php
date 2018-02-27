@@ -8,6 +8,7 @@
  */
 
 /**
+ * 继承系统view_helper
  * 模块helper中，如果文件名与系统自带helper文件名重名
  * 如需要使用系统中的function
  * 必须手动引入系统helper文件
@@ -16,3 +17,4 @@ $core_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEP
 if (file_exists($core_path)) {
     require_once($core_path);
 }
+

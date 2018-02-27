@@ -11,6 +11,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 class Model
 {
+    var $log;
     var $db;//数据库
     var $modular;
 
@@ -32,8 +33,10 @@ class Model
 
     function __construct()
     {
-        global $captain_db;
+        global $captain_db,
+               $captain_log;
         $this->db = &$captain_db;
+        $this->log = &$captain_log;
 
         /**
          * 对模块的返回值进行扩展
@@ -376,5 +379,31 @@ class Model
 
         $start = ($page_page - 1) * $page_pagesize;
         return $this->get_page_list($this, $sql, $param_array, $start, (int)$page_pagesize, $page_order, $page_type);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// 处理日志
+    /**
+     * 写日志
+     * 只有一个参数时，常规日志
+     * 多个参数时，常规format
+     */
+    protected function log()
+    {
+        $args = func_get_args();
+        if (sizeof($args) > 1) { // 当多个参数时，自动插入常规日志前缀 ''
+            array_unshift($args, '');
+        }
+        call_user_func_array(array(&$this->log, 'log'), $args);
+    }
+
+    /**
+     * 指定日志文件名写日志
+     * 第一个参数为日志文件前缀
+     */
+    protected function log_file()
+    {
+        $args = func_get_args();
+        call_user_func_array(array(&$this->log, 'log'), $args);
     }
 }

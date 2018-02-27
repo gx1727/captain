@@ -17,18 +17,22 @@ class Index extends Controller
     function __construct()
     {
         parent::__construct('system', __NAMESPACE__);
+
+        $this->return_status[10] = '不服来战';
     }
 
     public function index()
     {
-        global $captain_db;
         $this->model('\captain\system\UserModel', 'userMod', 'system');
-        $user_list = $this->userMod->get_user_list(2, 10, false, false);
+        $user_list = $this->userMod->get_user_list(1, 10, false, false);
         $this->assign('hello', 'world');
-        $this->assign('user_list', $user_list);
+        $this->assign('user_list', $user_list->get_data(2));
+        $this->json($this->get_result(false,10));
 
-        $this->help('view_helper');
+        $this->help('view_helper'); // 引入 view_helper
+
         $this->view('index');
+
 //        $user = $this->userMod->get_all(3);
 //        for ($i = 1; $i < 20; $i++) {
 //            $this->userMod->add(array('user_code' => '000' . $i));
