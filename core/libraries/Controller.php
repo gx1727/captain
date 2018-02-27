@@ -150,7 +150,6 @@ class Controller
         }
         header('Content-Type: application/json');
         echo $data;
-        exit;
     }
 
     /**
@@ -161,7 +160,6 @@ class Controller
     {
         extract($this->view_data);
         include(BASEPATH . 'app/' . $this->modular . '/views/' . $view . '.php');
-        exit;
     }
 
     /**

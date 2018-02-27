@@ -32,6 +32,11 @@ include_once BASEPATH . 'core/libraries/Controller.php';
 include_once BASEPATH . 'core/libraries/Model.php';
 
 /**
+ * 设置时区
+ */
+date_default_timezone_set(sys_config('timezone'));
+
+/**
  * 日志
  */
 $captain_log = new Log(BASEPATH);

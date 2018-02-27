@@ -54,12 +54,17 @@ class Route
 
         if ($this->_uri != '/') {
             if ($this->_url_model == 'a') { //全url模式 必须有index.html
-                $this->_uri = str_replace(sys_config('index_page'), '', $this->_uri); //去掉 index.php
+                $this->sub_directory();//处理二级目录
+                $this->_uri = str_replace(sys_config('index_page'), '', $this->_uri); //去掉 .html
+                if (isset($_GET['r'])) {
+                    $this->_uri = $_GET['r'];
+                }
             } else if ($this->_url_model == 's') { //短url模式
+                $this->_uri = str_replace(sys_config('index_page'), '', $this->_uri); //去掉 .html
                 $this->_uri = str_replace(sys_config('url_suffix'), '', $this->_uri); //去掉 .html
+                $this->sub_directory();//处理二级目录
             }
         }
-        $this->sub_directory();//处理二级目录
         $this->resolver(); //解析匹配
     }
 
@@ -71,7 +76,7 @@ class Route
         if (file_exists(BASEPATH . 'app' . DIRECTORY_SEPARATOR . $this->_module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->_class . '.php')) {
             require_once BASEPATH . 'app' . DIRECTORY_SEPARATOR . $this->_module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->_class . '.php';
             $controller = new  $this->_controller();
-            call_user_func_array(array(&$controller, $this->_function), array($this));
+            call_user_func_array(array(&$controller, $this->_function), array());
         } else {
             show_404();
         }
@@ -85,6 +90,11 @@ class Route
     public function redirection()
     {
         echo "dd";
+    }
+
+    public function redirect_url($url)
+    {
+        header("Location: " . $url);
     }
 
     /**
@@ -184,7 +194,6 @@ class Route
             }
         }
     }
-
 
     /**
      * 分析、获取二级目录

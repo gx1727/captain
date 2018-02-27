@@ -105,6 +105,47 @@ if (!function_exists('is_cli')) {
     }
 }
 
+/**
+ * 拼接url
+ */
+if (!function_exists('web_url')) {
+    function web_url($route_key = '', $param = array())
+    {
+        global $captain_router;
+
+        $uri = '';
+        if (is_array($param)) {
+            $i = 0;
+            foreach ($param as $key => $val) {
+                $prefix = ($i == 0) ? '' : '&';
+                $uri .= $prefix . $key . '=' . $val;
+                $i++;
+            }
+        }
+        $url = 'http://' . $captain_router->_http_host . $captain_router->_sub_directory;
+
+        if (sys_config('url_model') == 's') {
+            if ($route_key) {
+                $url .= $route_key;
+                $url .= sys_config('url_suffix');
+                if ($uri) {
+                    $url .= '?' . $uri;
+                }
+            }
+        } else {
+            $url .= '/' . sys_config('index_page');
+            if ($route_key) {
+                $url .= '?r=' . $route_key;
+                if ($uri) {
+                    $url .= '&' . $uri;
+                }
+            }
+        }
+
+        return $url;
+    }
+}
+
 
 if (!function_exists('set_status_header')) {
     /**

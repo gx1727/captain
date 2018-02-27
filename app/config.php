@@ -30,6 +30,12 @@ $configs['index_page'] = 'index.php';
  */
 $configs['url_model'] = 's';
 
+
+/**
+ * 设置默认时区
+ */
+$configs['timezone'] = 'Asia/Shanghai';
+
 /**
  * 默认处理器
  */

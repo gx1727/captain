@@ -28,9 +28,6 @@ class UserModel extends Model
 
     public function get_user_list($page_page, $page_pagesize, $page_order = false, $page_type = false, $keyword = false)
     {
-        $this->log('get_user_list');
-        $this->log('get_user_list %s', 'hello world');
-        $this->log_file('get_user_list', 'hello %s', 'world');
         $param_array = array();
         $sql = "from " . CAPTAIN_USER . " where user_status = 0";
         if ($keyword !== false) {

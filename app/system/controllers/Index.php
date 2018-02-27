@@ -23,11 +23,12 @@ class Index extends Controller
 
     public function index()
     {
+        echo "index";
+        echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $user_list = $this->userMod->get_user_list(1, 10, false, false);
         $this->assign('hello', 'world');
         $this->assign('user_list', $user_list->get_data(2));
-        $this->json($this->get_result(false,10));
 
         $this->help('view_helper'); // 引入 view_helper
 
@@ -58,21 +59,22 @@ class Index extends Controller
 
     public function def()
     {
+        echo 'def';
         $v = $this->input->get_uri();
         print_r($v);
     }
 
     public function hello_art()
     {
-        global $router;
+        echo "hello_art";
+        exit;
+        global $captain_router;
 
-        $router->redirection();
-        echo 'hello_art';
+        $captain_router->redirection();
     }
 
     public function hello_tag()
     {
-        echo 'hello_tag';
         $v = $this->input->get_uri();
         $this->json($v);
     }

@@ -1,4 +1,0 @@
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond $1 !^(index\.php|img|js|css|static|uploads|fonts|robots\.txt)
-RewriteRule ^(.*)$ /index.php/$1 [L]

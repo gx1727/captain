@@ -38,6 +38,7 @@ $route_role = array(
 );
 
 $guest['/'] = 'system:captain\system\Index@index';
+$guest['/hello/a'] = 'system:captain\system\Index@index';
 
 $guest['/hello/world'] = 'system:captain\system\Index@hello';
 $guest['/a*'] = 'system:captain\system\Index@hello_tag';
