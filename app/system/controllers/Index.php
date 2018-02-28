@@ -24,7 +24,10 @@ class Index extends Controller
     public function index()
     {
         echo "index";
-
+        $this->library('\captain\core\Code', 'codeLib');
+//        $this->codeLib->refresh_code('URLCODE');
+        echo $this->codeLib->get_code('URLCODE', array("a", "d  "));
+        exit;
         echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $user_list = $this->userMod->get_user_list(1, 10, false, false);
