@@ -28,8 +28,14 @@ include_once BASEPATH . 'core/libraries/Ret.php';
 include_once BASEPATH . 'core/libraries/Route.php';
 include_once BASEPATH . 'core/libraries/Input.php';
 include_once BASEPATH . 'core/libraries/Log.php';
+include_once BASEPATH . 'core/libraries/Session.php';
 include_once BASEPATH . 'core/libraries/Controller.php';
 include_once BASEPATH . 'core/libraries/Model.php';
+
+/**
+ * 工具类
+ */
+include_once BASEPATH . 'core/libraries/Rand.php';
 
 /**
  * 设置时区
@@ -57,13 +63,17 @@ $captain_obj = array();
  */
 $role = 'guest';
 //通过session获到当前用户的角色
+$captain_session = false;
 
 /**
  * 初始化路由
  */
 $captain_router = new Route();
 if (!$captain_router->_class) { // 在needless_context中没有匹配命中
+    $captain_session = new Session(sys_config('session'));
     $captain_router->resolver($role); //解析匹配
+    echo $captain_session->get('hello');
+    exit;//////////
 }
 
 $captain_input = new Input($captain_router->_uri);

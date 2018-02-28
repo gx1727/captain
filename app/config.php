@@ -52,8 +52,19 @@ $configs['db'] = array(
     'mysql_pwd' => '123456',
     'mysql_database' => 'captain',
 );
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 
+/**
+ * session
+ */
+$configs['session'] = array(
+    'sess_driver' => 'mysql',
+    'sess_save_path' => 'xx_sessions',
+    'sess_cookie_name' => 'PHPSESSID',
+    'sess_expiration' => 600,
+    'cookie_domain' => '',
+    'cookie_path' => '/'
+);
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 
 /*************************************************************
  * constants

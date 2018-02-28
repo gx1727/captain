@@ -22,6 +22,7 @@ $_SERVER['HTTP_HOST'] = '';
 $_SERVER['SERVER_PORT'] = '';
 $_SERVER['REQUEST_METHOD'] = 'CLI';
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
+$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
 $_SERVER['REQUEST_URI'] = '/'; // 默认一个/
 if (sizeof($argv) > 1) { // 有路由key参数
