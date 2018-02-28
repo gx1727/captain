@@ -54,6 +54,8 @@ $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
 
 /**
- * api组中的url不调session
+ * 无需上下文
+ * 该组中的url不调session
+ * $needless_context
  */
 $needless_context['/api'] = 'system:captain\system\Index@api';

@@ -50,7 +50,8 @@ class Index extends Controller
 
     public function cms()
     {
-        echo 'cms';
+        $v = $this->input->get_uri();
+        print_r($v);
     }
 
     public function hello()
@@ -77,7 +78,7 @@ class Index extends Controller
     public function hello_tag()
     {
         $v = $this->input->get_uri();
-        $this->json($v);
+        print_r($v);
     }
 
     public function api()

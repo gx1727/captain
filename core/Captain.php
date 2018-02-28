@@ -22,9 +22,14 @@ require_once BASEPATH . 'app/routes.php';
 include_once BASEPATH . 'core/helpers/common.php';
 
 /**
- * 全局类
+ * 工具类
  */
 include_once BASEPATH . 'core/libraries/Ret.php';
+include_once BASEPATH . 'core/libraries/Rand.php';
+
+/**
+ * 全局类
+ */
 include_once BASEPATH . 'core/libraries/Base.php';
 include_once BASEPATH . 'core/libraries/Model.php';
 include_once BASEPATH . 'core/libraries/Route.php';
@@ -33,11 +38,6 @@ include_once BASEPATH . 'core/libraries/Log.php';
 include_once BASEPATH . 'core/libraries/Session.php';
 include_once BASEPATH . 'core/libraries/Controller.php';
 
-
-/**
- * 工具类
- */
-include_once BASEPATH . 'core/libraries/Rand.php';
 
 /**
  * 设置时区

@@ -111,36 +111,37 @@ class Route
      */
     public function resolver($role_name = false)
     {
-        $this->init_route($role_name); //初始化路由数据
-
-        $route_cmd = false;
-        //匹配 严格模式
-        foreach ($this->_routes['strict'] as $key => $route) {
-            if ($key == $this->_uri) {
-                //命中
-                $route_cmd = $route;
-                $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
-                break;
-            }
-        }
-        if (!$route_cmd) {
-            // 匹配模式
-            foreach ($this->_routes['matching'] as $key => $route) {
-                if (strpos($this->_uri, $key) === 0) {
+        //初始化路由数据
+        if ($this->init_route($role_name)) {
+            $route_cmd = false;
+            //匹配 严格模式
+            foreach ($this->_routes['strict'] as $key => $route) {
+                if ($key == $this->_uri) {
+                    //命中
                     $route_cmd = $route;
                     $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
                     break;
                 }
             }
-        }
-        if ($role_name && !$route_cmd) { // 当有角色名 但 没有匹配到路由里， 使用默认路由处理
-            $route_cmd = sys_config('default_controller');// 从配制中获取默认值
-            if ($this->_uri[0] == '/') {
-                $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
+            if (!$route_cmd) {
+                // 匹配模式
+                foreach ($this->_routes['matching'] as $key => $route) {
+                    if (strpos($this->_uri, $key) === 0) {
+                        $route_cmd = $route;
+                        $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
+                        break;
+                    }
+                }
             }
-        }
+            if ($role_name && !$route_cmd) { // 当有角色名 但 没有匹配到路由里， 使用默认路由处理
+                $route_cmd = sys_config('default_controller');// 从配制中获取默认值
+                if ($this->_uri[0] == '/') {
+                    $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
+                }
+            }
 
-        $this->analysis($route_cmd);
+            $this->analysis($route_cmd);
+        }
     }
 
     /**
@@ -191,6 +192,8 @@ class Route
      *      一组带*号，  匹配路由模式 存入 $this->_routes['matching']
      *
      * @param $role_name 角色名
+     *
+     * @return boolean
      */
     protected function init_route($role_name)
     {
@@ -223,6 +226,8 @@ class Route
                     $matching[$uri_key] = $route;
                 }
             }
+        } else {
+            return false; //没有对应的路由配制，返回false
         }
         if ($matching) {
             //对匹配模式接从长到短排序
@@ -236,6 +241,8 @@ class Route
                 $this->_routes['matching'][substr($key, 0, strlen($key) - 1)] = $matching[$key];
             }
         }
+
+        return true;
     }
 
     /**
