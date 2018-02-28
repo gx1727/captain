@@ -19,15 +19,16 @@ class Route
 
     var $_url_model; // url 模式
 
-
     var $_uri;
     var $_module; // 模块
     var $_controller; // 控制器 带namespace
     var $_class; // 类名 文件名
     var $_function; // 处理的方法
 
-    var $_routes;
+    var $_routes; // 路由配制数据
 
+    var $route_cmd_history = array(); // 路由解析历史，防止在重定向时，出现死循环
+    var $max_route_redirection_count = 3; //同一个路由项最多出现次数，大于该次数，视为死循环
 
     function __construct()
     {
@@ -65,7 +66,7 @@ class Route
                 $this->sub_directory();//处理二级目录
             }
         }
-        $this->resolver(); //解析匹配
+        $this->resolver(); //解析匹配 参数为空，只解析无需上下文的路由
     }
 
     /**
@@ -87,11 +88,16 @@ class Route
     /**
      * 重定向
      */
-    public function redirection()
+    public function redirection($route_cmd)
     {
-        echo "dd";
+        $this->analysis($route_cmd);
+        $this->direction();
     }
 
+    /**
+     * 跳转
+     * @param $url
+     */
     public function redirect_url($url)
     {
         header("Location: " . $url);
@@ -127,58 +133,95 @@ class Route
                 }
             }
         }
-        if ($role_name && !$route_cmd) {
-            //默认
-            $route_cmd = sys_config('default_controller');
+        if ($role_name && !$route_cmd) { // 当有角色名 但 没有匹配到路由里， 使用默认路由处理
+            $route_cmd = sys_config('default_controller');// 从配制中获取默认值
             if ($this->_uri[0] == '/') {
                 $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
             }
         }
+
+        $this->analysis($route_cmd);
+    }
+
+    /**
+     * 判断 是否解析成功
+     * @return bool
+     */
+    public function success()
+    {
+        return $this->_module && $this->_controller && $this->_function;
+    }
+
+    /**
+     * 解析路由指令
+     * 模块名:类名(带命名空间)@方法名
+     * @param $route_cmd
+     */
+    protected function analysis($route_cmd)
+    {
         if ($route_cmd) {
+            $count = 0;
+            foreach ($this->route_cmd_history as $route_cmd_old) {
+                if ($route_cmd == $route_cmd_old) {
+                    $count++;;
+                }
+            }
+            if ($count >= $this->max_route_redirection_count) {
+                error_exit('死循环');
+            }
+            $this->route_cmd_history[] = $route_cmd;
+
             $p = strpos($route_cmd, ':');
-            $this->_module = substr($route_cmd, 0, $p);
+            $this->_module = substr($route_cmd, 0, $p); // 解析出模块名
             $route_cmd = substr($route_cmd, $p + 1);
 
             $p = strpos($route_cmd, '@');
-            $this->_controller = substr($route_cmd, 0, $p);
-            $this->_function = substr($route_cmd, $p + 1);
+            $this->_controller = substr($route_cmd, 0, $p); // 解析出类名(带命名空间)
+            $this->_function = substr($route_cmd, $p + 1); // 解析出方法名
 
             $p = strrpos($route_cmd, '\\');
-            $this->_class = substr($this->_controller, $p + 1);
+            $this->_class = substr($this->_controller, $p + 1); // 解析出类名(不带命名空间)
         }
     }
 
     /**
      * 初始化路由数据
+     * 从routes.php中获取路由配制数据，根据路中，key值是否带有*号，分为两组
+     *      一组不带*号，严格路由模式 存入 $this->_routes['strict']
+     *      一组带*号，  匹配路由模式 存入 $this->_routes['matching']
+     *
+     * @param $role_name 角色名
      */
     protected function init_route($role_name)
     {
         $routes = array();
 
-        //从配制文件中读取路由配制
-        if ($role_name) { //需要读取session值
+        // 从配制文件中读取路由配制
+        if ($role_name) { // 需要读取session值
 
-            global $route_role;
+            global $route_role; // 在 routes.php中配制
             foreach ($route_role as $role_key => $role) {
                 if ($role_name == $role_key) {
                     foreach ($role as $route) {
-                        global $$route;
+                        global $$route; // 在 routes.php中配制
                         $routes = array_merge($routes, $$route);
                     }
                 }
             }
-        } else {
-            global $needless_context;
+        } else { // 无需读取session值
+            global $needless_context; // 在 routes.php中配制
             $routes = $needless_context;
         }
 
         //分析中 两种路由模式
         $matching = array();//
-        foreach ($routes as $uri_key => $route) {
-            if ($uri_key[strlen($uri_key) - 1] != '*') {
-                $this->_routes['strict'][$uri_key] = $route;
-            } else {
-                $matching[$uri_key] = $route;
+        if (is_array($routes)) {
+            foreach ($routes as $uri_key => $route) {
+                if ($uri_key[strlen($uri_key) - 1] != '*') { //只匹配末尾的*号
+                    $this->_routes['strict'][$uri_key] = $route;
+                } else {
+                    $matching[$uri_key] = $route;
+                }
             }
         }
         if ($matching) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace captain\system;
 defined('CAPTAIN') OR exit('No direct script access allowed');
 /**
@@ -15,7 +16,7 @@ class AccountModel extends Model
 {
     function __construct()
     {
-        parent::__construct();
+        parent::__construct(__NAMESPACE__, 'system');
     }
 
     public function test()

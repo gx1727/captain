@@ -9,12 +9,8 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * Date: 2018-02-10
  * Time: 上午 9:54
  */
-class Model
+class Model extends Base
 {
-    var $log;
-    var $db;//数据库
-    var $modular;
-
     /**
      * 模块的返回值
      * @var
@@ -31,12 +27,9 @@ class Model
     public $table_name_extend = CAPTAIN_EXTEND;
 
 
-    function __construct()
+    function __construct($namespace, $modular)
     {
-        global $captain_db,
-               $captain_log;
-        $this->db = &$captain_db;
-        $this->log = &$captain_log;
+        parent::__construct($namespace, $modular);
 
         /**
          * 对模块的返回值进行扩展
@@ -45,156 +38,7 @@ class Model
         $this->return_status[0] = "成功";
         $this->return_status[999] = "无效的返回状态";
     }
-
-    /**
-     * 加载模型
-     */
-    public function &model($model_name, $modular = null)
-    {
-
-    }
-
-    public function &library($library_name, $modular = null)
-    {
-
-    }
-
-    public function &help($help_name, $modular = null)
-    {
-
-    }
-
-    /**
-     * 数据库连接
-     */
-    public function database()
-    {
-        if (!$this->db) {
-            //建立连接
-            require_once(BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'third_party' . DIRECTORY_SEPARATOR . 'MysqliDb.php');
-            $db_config = sys_config('db');
-            $this->db = new \MysqliDb ($db_config['mysql_host'], $db_config['mysql_username'], $db_config['mysql_pwd'], $db_config['mysql_database']);
-        }
-    }
-
-    /**
-     * 普过ID获取值，要求所获取的表都有一个ID字段
-     * @param $key
-     * @param string $table
-     * @param string $key_field
-     * @return bool
-     */
-    public function get($key, $table = '', $key_field = '')
-    {
-        $ret = false;
-        if (!$table) {
-            $table = $this->table_name;
-        }
-        if (!$key_field) {
-            $key_field = $this->key_id;
-        }
-
-        if ($key && $table && $key) {
-            $this->database(); //初始化数据库连接
-            $sql = "select * from  $table where $key = ?";
-            $ret = $this->db->rawQueryOne($sql, array($key));
-        }
-        return $ret;
-    }
-
-    /**
-     * 获取所有
-     * @param $key
-     * @param string $table
-     * @param string $key_field
-     * @return bool
-     */
-    public function get_all($key, $table = '', $key_field = '')
-    {
-        $ret = false;
-        if (!$table) {
-            $table = $this->table_name;
-        }
-        if (!$key_field) {
-            $key_field = $this->key_id;
-        }
-
-        if ($key && $table && $key) {
-            $this->database(); //初始化数据库连接
-            if ($key_field == "where") {
-                $sql = "select * from  $table where $key";
-                $ret = $this->db->rawQuery($sql);
-            } else {
-                $sql = "select * from  $table where $key_field = ?";
-                $ret = $this->db->rawQuery($sql, array($key));
-            }
-        }
-        return $ret;
-    }
-
-    /**
-     * 插入新数据
-     * @param $data
-     * @param string $table
-     * @return mixed
-     */
-    public function add($data, $table = '')
-    {
-        if (!$table) {
-            $table = $this->table_name;
-        }
-        return $this->db->insert($table, $data);
-    }
-
-    /**
-     * 修改数据库
-     * @param $key
-     * @param $data
-     * @param string $table
-     * @param string $key_field
-     * @return mixed
-     */
-    public function edit($key, $data, $table = '', $key_field = '')
-    {
-        $this->database(); //初始化数据库连接
-
-        if (!$table) {
-            $table = $this->table_name;
-        }
-        if (!$key_field) {
-            $key_field = $this->key_id;
-        }
-
-        if ($key_field == "where") {
-            $this->db->where($key);
-        } else {
-            $this->db->where($key_field, $key);
-        }
-        return $this->db->update($table, $data);
-    }
-
-    /**
-     * 删除数据
-     * @param $key
-     * @param string $table
-     * @param string $key_field
-     * @return mixed
-     */
-    public function del($key, $table = '', $key_field = '')
-    {
-        $this->database(); //初始化数据库连接
-        if (!$table) {
-            $table = $this->table_name;
-        }
-        if (!$key_field) {
-            $key_field = $this->key_id;
-        }
-
-        $this->db->where($key_field, $key);
-        return $this->db->delete($table);
-    }
-
-
+    
     /**
      * 获取列表
      * @param $return_status
@@ -381,29 +225,4 @@ class Model
         return $this->get_page_list($this, $sql, $param_array, $start, (int)$page_pagesize, $page_order, $page_type);
     }
 
-    ///////////////////////////////////////////////////////////////////////////////
-    /// 处理日志
-    /**
-     * 写日志
-     * 只有一个参数时，常规日志
-     * 多个参数时，常规format
-     */
-    protected function log()
-    {
-        $args = func_get_args();
-        if (sizeof($args) > 1) { // 当多个参数时，自动插入常规日志前缀 ''
-            array_unshift($args, '');
-        }
-        call_user_func_array(array(&$this->log, 'log'), $args);
-    }
-
-    /**
-     * 指定日志文件名写日志
-     * 第一个参数为日志文件前缀
-     */
-    protected function log_file()
-    {
-        $args = func_get_args();
-        call_user_func_array(array(&$this->log, 'log'), $args);
-    }
 }

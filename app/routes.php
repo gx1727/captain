@@ -37,6 +37,10 @@ $route_role = array(
     'user' => array('guest', 'user')
 );
 
+/**
+ * 路由指令
+ * 模块名:类名(带命名空间)@方法名
+ */
 $guest['/'] = 'system:captain\system\Index@index';
 $guest['/hello/a'] = 'system:captain\system\Index@index';
 

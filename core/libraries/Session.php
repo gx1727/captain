@@ -8,9 +8,9 @@
  */
 
 namespace captain\core;
+defined('CAPTAIN') OR exit('No direct script access allowed');
 
-
-class Session
+class Session extends Base
 {
     var $_config;
     var $_session_id = null;
@@ -19,19 +19,17 @@ class Session
     var $_last_activity = 0;
     var $_user_data = array();
 
-    var $db;
-
     function __construct($config)
     {
-        global $captain_db;
-        $this->db = &$captain_db;
-
+        parent::__construct(__NAMESPACE__, 'system');
         $this->_config = $config;
         $this->_ip_address = $_SERVER['REMOTE_ADDR'];
 
+        $this->table_name = $config['sess_save_path'];
+        $this->key_id = 'session_id';
+
         $this->database(); // 初始化数据库连接
         $this->start(); // 初始化session数据
-        echo $this->_session_id;
 
     }
 
@@ -39,8 +37,7 @@ class Session
     {
         if (isset($_COOKIE[$this->_config['sess_cookie_name']])) {
             $this->_session_id = $_COOKIE[$this->_config['sess_cookie_name']];
-            $sql = 'select * from  ' . $this->_config['sess_save_path'] . ' where session_id = ?';
-            $ret = $this->db->rawQueryOne($sql, array($this->_session_id));
+            $ret = $this->get($this->_session_id);
             if ($ret) { // session已存在
                 $this->_ip_address = $ret['ip_address'];
                 $this->_create_time = $ret['create_time'];
@@ -66,7 +63,7 @@ class Session
                 'last_activity' => $this->_last_activity,
                 'user_data' => json_encode($this->_user_data)
             );
-            $this->db->insert($this->_config['sess_save_path'], $session_data);
+            $this->add($session_data);
 
             setcookie(
                 $this->_config['sess_cookie_name'],
@@ -88,8 +85,7 @@ class Session
             'last_activity' => $this->_last_activity,
             'user_data' => json_encode($this->_user_data)
         );
-        $this->db->where('session_id', $this->_session_id);
-        $this->db->update($this->_config['sess_save_path'], $session_data);
+        $this->edit($this->_session_id, $session_data);
     }
 
     /**
@@ -97,18 +93,18 @@ class Session
      * @param $k
      * @return mixed|null
      */
-    public function get($k)
+    public function get_sess($k)
     {
         return (isset($this->_user_data[$k])) ? $this->_user_data[$k] : null;
     }
 
-    public function set($k, $v)
+    public function set_sess($k, $v)
     {
         $this->_user_data[$k] = $v;
         $this->update();
     }
 
-    public function del($k)
+    public function del_sess($k)
     {
         if (isset($this->_user_data[$k])) {
             unset($this->_user_data[$k]);
@@ -118,27 +114,12 @@ class Session
 
     public function destroy()
     {
-        $this->db->where('session_id', $this->_session_id);
-        $this->db->delete($this->_config['sess_save_path']);
+        $this->del($this->_session_id);
     }
 
     public function gc()
     {
         $sql = 'delete from ' . $this->_config['sess_save_path'] . ' where last_activity < ' . (time() - $this->_config['sess_expiration']);
         $this->db->query($sql);
-    }
-
-    /**
-     * 数据库连接
-     */
-    private
-    function database()
-    {
-        if (!$this->db) {
-            //建立连接
-            require_once(BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'third_party' . DIRECTORY_SEPARATOR . 'MysqliDb.php');
-            $db_config = sys_config('db');
-            $this->db = new \MysqliDb ($db_config['mysql_host'], $db_config['mysql_username'], $db_config['mysql_pwd'], $db_config['mysql_database']);
-        }
     }
 }

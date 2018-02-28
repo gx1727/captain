@@ -16,7 +16,7 @@ class UserModel extends Model
 {
     function __construct()
     {
-        parent::__construct();
+        parent::__construct(__NAMESPACE__, 'system');
         $this->table_name = CAPTAIN_USER;
         $this->key_id = 'user_id';
     }

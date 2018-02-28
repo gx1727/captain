@@ -9,11 +9,11 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * Date: 2018-02-07
  * Time: 下午 6:56
  */
-class Controller
+class Controller extends Base
 {
-    var $log;
     var $router;
     var $input;
+    var $session;
 
     var $modular; //模块
     var $namespace; //当前命名空间
@@ -21,14 +21,16 @@ class Controller
     var $view_data; //传给view的数据
     var $return_status; //返回的信息
 
-    function __construct($modular, $namespace)
+    function __construct($namespace, $modular)
     {
-        global $captain_log,
-               $captain_router,
-               $captain_input;
-        $this->log = &$captain_log;
+        parent::__construct($namespace, $modular);
+
+        global $captain_router,
+               $captain_input,
+               $captain_session;
         $this->router = &$captain_router;
         $this->input =  &$captain_input;
+        $this->session =  &$captain_session;
 
         $this->modular = $modular;
         $this->namespace = $namespace;
@@ -40,93 +42,6 @@ class Controller
         $this->return_status[999] = "无效的返回状态";
     }
 
-    /**
-     * 加载模型
-     * @param $model_name 模型
-     * @param null $alias 别名
-     * @param null $modular 模块
-     */
-    protected function model($model_name, $alias = null, $modular = null)
-    {
-        $class_name = $model_name; //类名 文件名
-        if (strpos($model_name, '\\') === false) {  //不带命名空间 自动补齐默认的 命名空间
-            $model_name = '\\' . $this->namespace . '\\' . $model_name;
-        } else { //带命名空间
-            $class_name = substr($model_name, strrpos($model_name, '\\') + 1); //获到类名
-        }
-
-        if (!$alias) {
-            $alias = $class_name;
-        }
-        if (!$modular) {
-            $modular = $this->modular;
-        }
-        $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $class_name . '.php';
-
-        if (file_exists($file_path)) {
-            $this->$alias = load_class($file_path, $model_name);
-        }
-    }
-
-    /**
-     * 加载类库
-     * @param $library_name 模型
-     * @param null $alias 别名
-     * @param null $modular 模块
-     */
-    protected function library($library_name, $alias = null, $modular = null)
-    {
-        $class_name = $library_name; //类名 文件名
-        if (strpos($library_name, '\\') === false) {
-            //不带命名空空间
-            $library_name = '\\' . $this->namespace . '\\' . $library_name;
-        } else {
-            //带命名空间
-            $class_name = substr($library_name, strrpos($library_name, '\\') + 1);
-        }
-
-        if (!$alias) {
-            $alias = $class_name;
-        }
-        if (!$modular) {
-            $modular = $this->modular;
-        }
-        $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $class_name . '.php';
-
-        if (file_exists($file_path)) {
-            $this->$alias = load_class($file_path, $library_name);
-        } else {
-            //模块不存在类库文件
-            $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $class_name . '.php';
-            if (file_exists($file_path)) {
-                $this->$alias = load_class($file_path, $library_name);
-            }
-        }
-    }
-
-    /**
-     * 加载help
-     * @param $help_name 模型
-     * @param null $modular 模块
-     */
-    protected function help($help_name, $modular = null)
-    {
-        if (!$modular) {
-            $modular = $this->modular;
-        }
-
-        $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $help_name . '.php';
-
-        if (file_exists($file_path)) {
-            require_once($file_path);
-        } else {
-            //模块不存在类库文件
-            $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $help_name . '.php';
-            if (file_exists($file_path)) {
-                require_once($file_path);
-            }
-        }
-    }
 
     /**
      * 向页面传递参数
@@ -212,29 +127,5 @@ class Controller
         }
 
         return $ret_array;
-    }
-
-    /**
-     * 写日志
-     * 只有一个参数时，常规日志
-     * 多个参数时，常规format
-     */
-    protected function log()
-    {
-        $args = func_get_args();
-        if (sizeof($args) > 1) { // 当多个参数时，自动插入常规日志前缀 ''
-            array_unshift($args, '');
-        }
-        call_user_func_array(array(&$this->log, 'log'), $args);
-    }
-
-    /**
-     * 指定日志文件名写日志
-     * 第一个参数为日志文件前缀
-     */
-    protected function log_file()
-    {
-        $args = func_get_args();
-        call_user_func_array(array(&$this->log, 'log'), $args);
     }
 }

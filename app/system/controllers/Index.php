@@ -16,7 +16,7 @@ class Index extends Controller
 {
     function __construct()
     {
-        parent::__construct('system', __NAMESPACE__);
+        parent::__construct(__NAMESPACE__, 'system');
 
         $this->return_status[10] = '不服来战';
     }
@@ -24,6 +24,7 @@ class Index extends Controller
     public function index()
     {
         echo "index";
+
         echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $user_list = $this->userMod->get_user_list(1, 10, false, false);
@@ -82,5 +83,7 @@ class Index extends Controller
     public function api()
     {
         echo 'api';
+        print_r($this->session);
+        exit;
     }
 }
