@@ -1,5 +1,6 @@
 <?php
 /**
+ * 编码类
  * Created by PhpStorm.
  * User: gx1727
  * Date: 2018/2/28
