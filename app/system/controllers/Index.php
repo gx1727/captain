@@ -23,10 +23,10 @@ class Index extends Controller
 
     public function index()
     {
-        echo "index";
-        $this->library('\captain\core\Code', 'codeLib');
+//        echo "index";
+        $this->library('\captain\core\Pinyin', 'pyLib');
 //        $this->codeLib->refresh_code('URLCODE');
-        echo $this->codeLib->get_code('URLCODE', array("a", "d  "));
+        echo $this->pyLib->py_initial('你好，中国');
         exit;
         echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');
