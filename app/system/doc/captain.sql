@@ -26,7 +26,7 @@ CREATE TABLE `xx_user` (
 --
 
 INSERT INTO `xx_user` (`user_id`, `user_code`, `user_name`, `user_true_name`, `user_phone`, `user_email`, `user_qq`, `user_wxopenid`, `user_photo`, `user_pwd`, `user_level`, `user_atime`, `user_status`) VALUES
-(1, 'U0000000004', 'admin', NULL, '', '', NULL, 'admin', '', '10adba0615c1187091b2f0d505ae60ee', 1, 1445417117, 0);
+(1, 'U0000000001', 'admin', NULL, '', '', NULL, 'admin', '', '10adba0615c1187091b2f0d505ae60ee', 1, 1445417117, 0);
 
 --
 -- Indexes for dumped tables

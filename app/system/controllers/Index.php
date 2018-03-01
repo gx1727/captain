@@ -24,10 +24,12 @@ class Index extends Controller
     public function index()
     {
 //        echo "index";
-        $this->library('\captain\core\Pinyin', 'pyLib');
+        $this->library('\captain\core\Secret', 'secretLib');
+
 //        $this->codeLib->refresh_code('URLCODE');
-        echo $this->pyLib->py_initial('你好，中国');
-        exit;
+        print_r( $this->secretLib->decoding('0753caaf934ad4758cee7ec8bf021001bd51346161eb65eaf222b2ade187471f8d7956197d0330331d5df209f8efca2f0960f509c7abe561ee899b5cda2e94f3bda318151eef502da29ace9748d4d80be183d2daf06ccb1a854c96a6683205728273be0a3fe55e2c9ddf1fa2136c18a68ba7ab1a1120f7089c4ed9589f366b1c'))    ;
+//        exit;
+        echo "<hr/>";
         echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $user_list = $this->userMod->get_user_list(1, 10, false, false);

@@ -5,6 +5,8 @@
  * User: gx1727
  * Date: 2018/3/1
  * Time: 9:43
+ * $this->library('\captain\core\Pinyin', 'pyLib');
+ * $this->pyLib->py('你好');
  */
 
 namespace captain\core;
