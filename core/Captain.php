@@ -19,24 +19,25 @@ require_once BASEPATH . 'app/routes.php';
 /**
  * 全局方法
  */
-include_once BASEPATH . 'core/helpers/common.php';
+include_once BASEPATH . 'core/helper/common.php';
 
 /**
  * 工具类
  */
-include_once BASEPATH . 'core/libraries/Ret.php';
-include_once BASEPATH . 'core/libraries/Rand.php';
+include_once BASEPATH . 'core/library/Ret.php';
+include_once BASEPATH . 'core/library/Rand.php';
+include_once BASEPATH . 'core/library/Base.php';
 
 /**
  * 全局类
  */
-include_once BASEPATH . 'core/libraries/Base.php';
-include_once BASEPATH . 'core/libraries/Model.php';
-include_once BASEPATH . 'core/libraries/Route.php';
-include_once BASEPATH . 'core/libraries/Input.php';
-include_once BASEPATH . 'core/libraries/Log.php';
-include_once BASEPATH . 'core/libraries/Session.php';
-include_once BASEPATH . 'core/libraries/Controller.php';
+
+include_once BASEPATH . 'core/Model.php';
+include_once BASEPATH . 'core/Route.php';
+include_once BASEPATH . 'core/Input.php';
+include_once BASEPATH . 'core/Log.php';
+include_once BASEPATH . 'core/Session.php';
+include_once BASEPATH . 'core/Controller.php';
 
 
 /**
