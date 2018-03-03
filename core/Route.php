@@ -88,7 +88,7 @@ class Route
     /**
      * 重定向
      */
-    public function redirection($route_cmd)
+    public function forward($route_cmd)
     {
         $this->analysis($route_cmd);
         $this->direction();
@@ -98,7 +98,7 @@ class Route
      * 跳转
      * @param $url
      */
-    public function redirect_url($url)
+    public function redirect($url)
     {
         header("Location: " . $url);
     }

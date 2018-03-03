@@ -76,8 +76,8 @@ class Index extends Controller
         echo "hello_art";
         exit;
         global $captain_router;
-
-        $captain_router->redirection();
+//
+//        $captain_router->forward();
     }
 
     public function hello_tag()
