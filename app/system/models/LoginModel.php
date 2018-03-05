@@ -32,9 +32,23 @@ class LoginModel extends Model
         $user = false;
         if ($login) {
             $sql = 'SELECT * FROM ' . $this->table_name . ' u WHERE (user_name = ? or user_phone = ? or user_email = ? or user_wxopenid = ?) AND user_status = 0 limit 1';
-            $user = $this->db->query($sql, array($login, $login, $login, $login));
+            $user = $this->db->rawQueryOne($sql, array($login, $login, $login, $login));
         }
 
         return $user;
+    }
+
+    /**
+     * @param $user_code
+     * @param $pwd md5(用户输入明文) 后 再倒序
+     * @return string
+     */
+    public function get_userpwd($user_code, $pwd)
+    {
+        if ($pwd) {
+            return md5($user_code . $pwd);
+        } else {
+            return '';
+        }
     }
 }

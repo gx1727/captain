@@ -9,6 +9,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * Date: 2018-02-10
  * Time: 上午 9:54
  */
+
 class Model extends Base
 {
     /**
@@ -38,7 +39,7 @@ class Model extends Base
         $this->return_status[0] = "成功";
         $this->return_status[999] = "无效的返回状态";
     }
-    
+
     /**
      * 获取列表
      * @param $return_status

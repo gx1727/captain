@@ -11,6 +11,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 
 use \captain\core\Model;
+use \captain\core\Ret;
 
 class UserModel extends Model
 {
@@ -45,40 +46,63 @@ class UserModel extends Model
         return $user;
     }
 
-    private function add_user($user_name, $user_true_name, $user_phone, $user_email, $user_qq, $ub_photo, $user_pwd, $user_wxopenid = '')
+    /**
+     * @param $user_name
+     * @param $user_phone
+     * @param $user_email
+     * @param $user_wxopenid
+     * @param $user_pwd
+     * @return mixed
+     */
+    private function add_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd)
     {
-        $this->load->library('XXCode');
-        $user_code = $this->xxcode->get_code("USERCODE", NULL);
+        $this->library('\captain\core\code', 'codeLib');
+        $user_code = $this->codeLib->get_code('USERCODE');
         $userData = array(
             'user_code' => $user_code,
             'user_name' => $user_name,
-            'user_true_name' => $user_true_name,
             'user_phone' => $user_phone,
             'user_email' => $user_email,
-            'user_qq' => $user_qq,
             'user_wxopenid' => $user_wxopenid,
-            'user_photo' => $ub_photo,
-            'user_pwd' => md5($user_code . $user_pwd),
+            'user_pwd' => $this->loginMod->get_userpwd($user_code, $user_pwd),
             'user_atime' => time(),
             'user_status' => 0
         );
-        $this->add($userData, XS_USER);
+        $this->add($userData, $this->table_name);
         return $user_code;
     }
 
-    public function register_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_photo, $user_role, $user_pwd = false)
+    private function add_userrole($user_code, $ur_role_code = DEFINE_ROLE)
+    {
+        $userroleData = array(
+            'user_code' => $user_code,
+            'ur_failure_time' => 0,
+            'ur_role_code' => $ur_role_code,
+            'ur_bench_role' => DEFINE_ROLE,
+            'ur_atime' => time()
+        );
+
+        $this->add($userroleData, CAPTAIN_USERROLE);
+    }
+
+    /**
+     * @param $user_name
+     * @param $user_phone
+     * @param $user_email
+     * @param $user_wxopenid
+     * @param bool $user_pwd
+     * @param string $user_role 默认 ROLE00004
+     * @return Ret
+     */
+    public function register_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd = false, $user_role = 'ROLE00004')
     {
         $ret = new Ret($this->return_status);
         if ($this->loginMod->get_user($user_name)) { //用户已存在
             $ret->set_code(2);
         } else {
-            if ($user_pwd) {
-//                $user_code = $this->add_user($user_name, $user_true_name, $user_phone, $user_email, $user_qq, $ub_photo, $user_pwd);
-//                $this->_add_userrole($user_code, $ur_role_code);
-//                $ret->set_data($user_code);
-            } else {
-                $ret->set_code(8);
-            }
+            $user_code = $this->add_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd);
+            $this->add_userrole($user_code, $user_role);
+            $ret->set_data($user_code);
         }
         return $ret;
     }
