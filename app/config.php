@@ -86,7 +86,11 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
  */
 define('CAPTAIN_EXTEND', 'xx_extend'); //model扩展表
 
+define('CAPTAIN_ROLE', 'xx_role'); //角色表
+
 define('CAPTAIN_USER', 'xx_user'); //用户表
+define('CAPTAIN_USERROLE', 'xx_user_role'); //用户角色表
+define('CAPTAIN_USERWEIXIN', 'xx_user_weixin'); //用户微信表
 
 define('CAPTAIN_CODE_INFO', 'xx_code_info'); //编码值表
 define('CAPTAIN_CODE_DEFINITION', 'xx_code_definition'); //编码定义表
