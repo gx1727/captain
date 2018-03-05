@@ -72,13 +72,13 @@ class UserModel extends Model
         if ($this->loginMod->get_user($user_name)) { //用户已存在
             $ret->set_code(2);
         } else {
-//            if ($user_pwd) {
+            if ($user_pwd) {
 //                $user_code = $this->add_user($user_name, $user_true_name, $user_phone, $user_email, $user_qq, $ub_photo, $user_pwd);
 //                $this->_add_userrole($user_code, $ur_role_code);
 //                $ret->set_data($user_code);
-//            } else {
-//                $ret->set_code(8);
-//            }
+            } else {
+                $ret->set_code(8);
+            }
         }
         return $ret;
     }
