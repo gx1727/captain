@@ -1,10 +1,26 @@
 <?php
 /**
  * token 、密码
+ * token需要sesson支持
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2018/3/1
  * Time: 10:34
+ *
+ * token 的使用
+ * $this->library('\captain\core\Secret', 'secretLib');
+ * $this->secretLib->get_token();
+ * $this->secretLib->check_token($input_token);
+ *
+ * 如果同时需要多个token,要设置token名
+ *
+ * 密码 的使用
+ * 使用 captain_scret.js加密的密文可以通过：
+ * $this->secretLib->decoding($cipher_text);
+ * secret
+ * 获到到明文，这里两点注：
+ * 1. 默认获取到的明文是倒序的
+ * 2. 默认获取是，是带有一个名为：secret 的token处理。如果设置了 名为：secret 的token，会验证 token是否有效
  */
 
 namespace captain\core;
@@ -49,7 +65,7 @@ qqdkiUOLeWQ5TVWRMxaVGY79EikWn14ve0eCHGMLsyXfLw==
      * @param int $token_length tonken 长度
      * @param string $token_name tonken 名称
      * @param int $token_lifecycle tonken 有效周期  默认为1次
-     * @param bool $strPol tonken 字符库
+     * @param bool $strPol tonken 字符库 默认 0-9数字
      * @return null|string
      */
     public function get_token($token_length = 16, $token_name = '', $token_lifecycle = 1, $strPol = false)
@@ -111,7 +127,7 @@ qqdkiUOLeWQ5TVWRMxaVGY79EikWn14ve0eCHGMLsyXfLw==
      * @param string $token_name
      * @return string
      */
-    public function decoding($cipher_text, $token_name = '')
+    public function decoding($cipher_text, $token_name = 'secret')
     {
         $plain_text = '';
         $cipher_text = base64_encode(pack("H*", $cipher_text));
@@ -124,7 +140,7 @@ qqdkiUOLeWQ5TVWRMxaVGY79EikWn14ve0eCHGMLsyXfLw==
             if ($token_local) {
                 $token_input = substr($decrypted, 0, strlen($token_local));
 
-                if ($this->check_token(strrev($token_input))) {
+                if ($this->check_token(strrev($token_input))) { //因为html上传上来的明文是倒序的，故这里要再倒序后再能验证token
                     $plain_text = substr($decrypted, strlen($token_local));
                 }
             } else {

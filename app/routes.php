@@ -41,6 +41,8 @@ $route_role = array(
  * 路由指令
  * 模块名:类名(带命名空间)@方法名
  */
+
+//游客组
 $guest['/'] = 'system:captain\system\Index@index';
 $guest['/hello/a'] = 'system:captain\system\Index@index';
 
@@ -51,7 +53,14 @@ $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 
+//admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
+
+//manager管理员组
+$manager['/manager/home'] = 'system:captain\system\Admin@home';
+
+//一般用户组
+$user['/user/home'] = 'system:captain\system\Admin@home';
 
 /**
  * 无需上下文

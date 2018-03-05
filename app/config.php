@@ -23,6 +23,13 @@ $configs['url_suffix'] = '.html';
  */
 $configs['index_page'] = 'index.php';
 
+
+/**
+ * 静态文件域名地址
+ * 如： static.helloworld.com
+ */
+$configs['static_domain'] = '';
+
 /**
  * url 模式
  *      a: 全url模式:   http://域名:端口/二级目录/index.php?r=route&k1=v1&k2=m2

@@ -122,7 +122,7 @@ if (!function_exists('web_url')) {
                 $i++;
             }
         }
-        $url = 'http://' . $captain_router->_http_host . $captain_router->_sub_directory;
+        $url = $captain_router->_request_scheme . '://' . $captain_router->_http_host . $captain_router->_sub_directory;
 
         if (sys_config('url_model') == 's') {
             if ($route_key) {
@@ -146,7 +146,21 @@ if (!function_exists('web_url')) {
     }
 }
 
+if (!function_exists('web_root')) {
+    function static_domain($domain_name = false)
+    {
+        if($domain_name) {
+            global $configs;
+            if(isset($configs[$domain_name])) {
+                return $configs[$domain_name];
+            }
+        }
 
+        global $captain_router;
+        return $captain_router->_request_scheme . '://' . $captain_router->_http_host . $captain_router->_sub_directory;
+
+    }
+}
 if (!function_exists('set_status_header')) {
     /**
      * Set HTTP Status Header

@@ -12,10 +12,10 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
 class Route
 {
     var $_request_method; // get  post ..
+    var $_request_scheme; // http https
     var $_http_host; // 域名 带端口的
     var $_server_port;
     var $_sub_directory; // 二级目录
-
 
     var $_url_model; // url 模式
 
@@ -32,6 +32,7 @@ class Route
 
     function __construct()
     {
+        $this->_request_scheme = $_SERVER['REQUEST_SCHEME'];
         $this->_http_host = $_SERVER['HTTP_HOST'];
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];
