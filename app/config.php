@@ -96,8 +96,9 @@ define('CAPTAIN_CODE_INFO', 'xx_code_info'); //编码值表
 define('CAPTAIN_CODE_DEFINITION', 'xx_code_definition'); //编码定义表
 define('CAPTAIN_MATERIAL', 'xx_code_e'); //物资编码表 这只是前缀，后面要加上编码名
 
-define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
+// 资金相关
+define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
 /**
  * --------------------------------------------------------------------------

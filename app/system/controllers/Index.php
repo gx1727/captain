@@ -25,6 +25,7 @@ class Index extends Controller
 
     public function index()
     {
+
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $ret = $this->userMod->register_user('gx1727', '', '', '');
         print_r($ret);

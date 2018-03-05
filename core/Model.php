@@ -9,7 +9,6 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * Date: 2018-02-10
  * Time: 上午 9:54
  */
-
 class Model extends Base
 {
     /**
@@ -38,6 +37,16 @@ class Model extends Base
         $this->return_status = array();
         $this->return_status[0] = "成功";
         $this->return_status[999] = "无效的返回状态";
+    }
+
+    public function query($sql, $param = null, $one = true)
+    {
+        $this->database(); //初始化数据库连接
+        if ($one) {
+            return $this->db->rawQueryOne($sql, $param);
+        } else {
+            return $this->db->rawQuery($sql, $param);
+        }
     }
 
     /**

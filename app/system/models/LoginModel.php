@@ -32,7 +32,7 @@ class LoginModel extends Model
         $user = false;
         if ($login) {
             $sql = 'SELECT * FROM ' . $this->table_name . ' u WHERE (user_name = ? or user_phone = ? or user_email = ? or user_wxopenid = ?) AND user_status = 0 limit 1';
-            $user = $this->db->rawQueryOne($sql, array($login, $login, $login, $login));
+            $user = $this->query($sql, array($login, $login, $login, $login));
         }
 
         return $user;

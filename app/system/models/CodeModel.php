@@ -38,7 +38,7 @@ class CodeModel extends Model
     function get_code_info($cd_name, $ci_usercode)
     {
         $sql = "SELECT * FROM " . CAPTAIN_CODE_INFO . " WHERE cd_name = ? AND ci_usercode = ?";
-        return $this->db->rawQueryOne($sql, array($cd_name, $ci_usercode));
+        return $this->query($sql, array($cd_name, $ci_usercode));
     }
 
     /**
@@ -72,7 +72,7 @@ class CodeModel extends Model
 
         $tableName = CAPTAIN_MATERIAL . '_' . strtolower($codeName);
         $sql = "SELECT * FROM " . $tableName . " WHERE " . $where;
-        $row = $this->db->rawQueryOne($sql, $param);
+        $row = $this->query($sql, $param);
         if ($row) {
             $ret->set_code(0);
             $ret->set_data($row);
@@ -95,13 +95,13 @@ class CodeModel extends Model
 
         $tableName = strtolower(CAPTAIN_MATERIAL . '_' . $codeName . '_' . $nodeName);
         $sql = "SELECT * FROM $tableName WHERE synonym LIKE '%{[" . $val . "]}%'";
-        $row = $this->db->rawQueryOne($sql);
+        $row = $this->query($sql);
         if ($row) {
             $ret->set_code(0);
             $ret->set_data($row);
         } else {
             $sql = "SELECT * FROM $tableName WHERE status = 0 ORDER BY node_id";
-            $row = $this->db->rawQueryOne($sql);
+            $row = $this->query($sql);
             if ($row) {
                 $synonym = '{[' . $val . ']}';
                 $sql = "UPDATE $tableName SET value = '$val', synonym = '$synonym', status = 1 WHERE node_id = " . $row['node_id'];
@@ -180,7 +180,7 @@ class CodeModel extends Model
         $tableName = strtolower(CAPTAIN_MATERIAL . '_' . $codeName);
 
         $sql = "SELECT * FROM " . $tableName . " WHERE code = ?";
-        $query = $this->db->rawQueryOne($sql, array($data['code']));
+        $query = $this->query($sql, array($data['code']));
         if (!$query) {
             $this->add($data, $tableName);
         }
