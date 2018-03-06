@@ -176,7 +176,6 @@ function format_time(format, timestamp) {
     return ret_str;
 }
 
-
 /**
  * //Y-m-d H:i:s
  * 格式化时间
