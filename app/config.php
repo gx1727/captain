@@ -86,14 +86,19 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
  */
 define('CAPTAIN_EXTEND', 'xx_extend'); //model扩展表
 
+define('CAPTAIN_ROLE', 'xx_role'); //角色表
+
 define('CAPTAIN_USER', 'xx_user'); //用户表
+define('CAPTAIN_USERROLE', 'xx_user_role'); //用户角色表
+define('CAPTAIN_USERWEIXIN', 'xx_user_weixin'); //用户微信表
 
 define('CAPTAIN_CODE_INFO', 'xx_code_info'); //编码值表
 define('CAPTAIN_CODE_DEFINITION', 'xx_code_definition'); //编码定义表
 define('CAPTAIN_MATERIAL', 'xx_code_e'); //物资编码表 这只是前缀，后面要加上编码名
 
-define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
+// 资金相关
+define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
 /**
  * --------------------------------------------------------------------------
@@ -105,6 +110,12 @@ define("CD_TYPE_1", "1"); // 1:流水编码
 define("CD_TYPE_2", "2"); //2:检索编码
 define("CODE_START", "1"); //编码的起始值
 
+/**
+ * ------------------------------------------------------------------------
+ * 默认角色
+ * ------------------------------------------------------------------------
+ */
+define("DEFINE_ROLE", "ROLE00002"); //游客角色
 
 /**
  * --------------------------------------------------------------------------

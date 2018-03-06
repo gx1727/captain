@@ -45,6 +45,9 @@ CREATE TABLE `xx_code_definition` (
   KEY `cd_name` (`cd_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='编码定义表' AUTO_INCREMENT=1 ;
 
+INSERT INTO `xx_code_definition` (`cd_name`, `cd_title`, `cd_type`, `cd_level`, `cd_template`, `cd_attributeset`, `cd_remark`, `cd_status`, `cd_auto_create_flag`) VALUES
+( 'USERCODE', '用户编码', 1, 0, 'U0000000001', '[{\"index\":\"1\",\"type\":\"PREFIX\",\"value\":\"U\"},{\"index\":\"2\",\"type\":\"SERIALNUMBER\",\"loop\":\"NONE\",\"length\":\"10\"}]', '系统中用户的唯一编码', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -59,5 +62,5 @@ CREATE TABLE `xx_code_info` (
   `ci_serial_flag` varchar(1024) DEFAULT NULL COMMENT '流水回归标识 json数组',
   `ci_serial_value` varchar(1024) DEFAULT NULL COMMENT '流水当前值 json数组',
   PRIMARY KEY (`ci_id`),
-  KEY `cd_name` (`cd_name`,`ci_usercode`);
+  KEY `cd_name` (`cd_name`,`ci_usercode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='编码值表' AUTO_INCREMENT=1 ;

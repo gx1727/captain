@@ -38,7 +38,17 @@ class Model extends Base
         $this->return_status[0] = "成功";
         $this->return_status[999] = "无效的返回状态";
     }
-    
+
+    public function query($sql, $param = null, $one = true)
+    {
+        $this->database(); //初始化数据库连接
+        if ($one) {
+            return $this->db->rawQueryOne($sql, $param);
+        } else {
+            return $this->db->rawQuery($sql, $param);
+        }
+    }
+
     /**
      * 获取列表
      * @param $return_status
