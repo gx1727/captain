@@ -25,6 +25,13 @@ class Index extends Controller
 
     public function index()
     {
+        $this->model('\captain\system\AccountModel', 'accountMod');
+//        $ret = $this->accountMod->refresh_account('rmb', 'int');
+        $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 10, AC_CREBIT_ADJUSTMENT_DECREASE);
+        $ret = $this->accountMod->get_accountloglist('rmb', 1, 1, 99999);
+        print_r($ret->get_data());
+        exit;
+
 
         $this->model('\captain\system\UserModel', 'userMod', 'system');
         $ret = $this->userMod->register_user('gx1727', '', '', '');

@@ -27,10 +27,6 @@ class UserModel extends Model
         $this->return_status[2] = "用户登陆名已存在，注册新用户失败";
     }
 
-    public function test()
-    {
-        $this->database();
-    }
 
     /**
      * 需求用户数据

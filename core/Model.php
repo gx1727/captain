@@ -27,10 +27,18 @@ class Model extends Base
     public $table_name_extend = CAPTAIN_EXTEND;
 
 
-    function __construct($namespace, $modular)
+    /**
+     * Model constructor.
+     * @param $namespace 名词空间
+     * @param string $modular 模块名
+     * @param bool $database 是否初始化数据库连接
+     */
+    function __construct($namespace, $modular, $database = true)
     {
         parent::__construct($namespace, $modular);
-
+        if ($database) {
+            $this->database(); //初始化数据库连接
+        }
         /**
          * 对模块的返回值进行扩展
          */
@@ -41,7 +49,6 @@ class Model extends Base
 
     public function query($sql, $param = null, $one = true)
     {
-        $this->database(); //初始化数据库连接
         if ($one) {
             return $this->db->rawQueryOne($sql, $param);
         } else {
@@ -64,13 +71,13 @@ class Model extends Base
     public function get_page_list(&$return_status, $sql, $param_array, $start, $page_size, $order_column, $order_dir, $field = '*')
     {
         $ret = new Ret($return_status);
-        $this->database(); //初始化数据库连接
         if (!$param_array) {
             $param_array = false;
         }
         $count_sql = "select count(1) as count " . $sql;
 
         $row = $this->db->rawQueryOne($count_sql, $param_array);
+
         if ($row['count'] > 0) {
             $ret->set_code(0); //设置返回结果为成功
             $ret->set_data($row['count'], 2); //结果数放在第二个位置上
@@ -209,7 +216,7 @@ class Model extends Base
      * @param bool $sort
      * @return Ret
      */
-    public function get_list($page_page, $page_pagesize, $page_order, $page_type, $keyword, $foreign_key = false, $class = false, $sort = false)
+    public function get_extend_list($page_page, $page_pagesize, $page_order, $page_type, $keyword, $foreign_key = false, $class = false, $sort = false)
     {
         $param_array = array();
         $sql = 'from ' . $this->table_name_extend . ' where e_status = 0 ';

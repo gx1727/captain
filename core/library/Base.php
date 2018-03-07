@@ -88,7 +88,6 @@ class Base
         }
 
         if ($key && $table && $key_field) {
-            $this->database(); //初始化数据库连接
             $sql = "select * from  $table where $key_field = ?";
             $ret = $this->db->rawQueryOne($sql, array($key));
         }
@@ -113,7 +112,6 @@ class Base
         }
 
         if ($key && $table && $key) {
-            $this->database(); //初始化数据库连接
             if ($key_field == "where") {
                 $sql = "select * from  $table where $key";
                 $ret = $this->db->rawQuery($sql);
@@ -145,12 +143,10 @@ class Base
      * @param $data
      * @param string $table
      * @param string $key_field
-     * @return mixed
+     * @return mixed 返回修改的行数
      */
     public function edit($key, $data, $table = '', $key_field = '')
     {
-        $this->database(); //初始化数据库连接
-
         if (!$table) {
             $table = $this->table_name;
         }
@@ -158,12 +154,10 @@ class Base
             $key_field = $this->key_id;
         }
 
-        if ($key_field == "where") {
-            $this->db->where($key);
-        } else {
-            $this->db->where($key_field, $key);
-        }
-        return $this->db->update($table, $data);
+        $this->db->where($key_field, $key);
+        $this->db->update($table, $data);
+
+        return $this->db->count;
     }
 
     /**
@@ -175,7 +169,6 @@ class Base
      */
     public function del($key, $table = '', $key_field = '')
     {
-        $this->database(); //初始化数据库连接
         if (!$table) {
             $table = $this->table_name;
         }
