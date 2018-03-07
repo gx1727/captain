@@ -7,6 +7,11 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * User: gx1727
  * Date: 2018-02-10
  * Time: 上午 10:35
+ *
+ * $this->accountMod->refresh_account('rmb');
+ * $ret = $this->accountMod->refresh_account('rmb', 'int');
+ * $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 10, AC_CREBIT_ADJUSTMENT_DECREASE);
+ * $ret = $this->accountMod->get_accountloglist('rmb', 1, 1, 99999);
  */
 
 use \captain\core\Model;
