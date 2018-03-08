@@ -11,6 +11,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * $this->model('\captain\system\UserModel', 'userMod', 'system');
  */
 use \captain\core\Controller;
+use \captain\core\Rand;
 
 require_once(BASEPATH . 'app' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'AccountModel.php');
 
@@ -25,6 +26,16 @@ class Index extends Controller
 
     public function index()
     {
+        $i = 0;
+//        while($i < 20) {
+//             Rand::encodeId(123456789, 6);
+//            echo "<p/>";
+//            $i += 1;
+//        }
+        echo $code =  Rand::encodeId(12345678901, 16);
+        echo "<p/>============<p/>";
+        Rand::decodeId($code);
+        exit;
         $this->model('\captain\system\AccountModel', 'accountMod');
 //        $ret = $this->accountMod->refresh_account('rmb', 'int');
         $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 10, AC_CREBIT_ADJUSTMENT_DECREASE);
