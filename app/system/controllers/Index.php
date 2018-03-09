@@ -26,15 +26,15 @@ class Index extends Controller
 
     public function index()
     {
-        $i = 0;
-//        while($i < 20) {
-//             Rand::encodeId(123456789, 6);
-//            echo "<p/>";
-//            $i += 1;
-//        }
-        echo $code =  Rand::encodeCode(777777, 10);
+        $this->library('\captain\core\code', 'codeLib');
+        $ret = $this->codeLib->get_code('USERCODE2', 2);
+        echo $ret;
         echo "<p/>============<p/>";
-        Rand::decodeCode($code);
+//        exit;
+
+//        echo $code = Rand::encodeCode(333221, 8);
+//        echo "<p/>============<p/>";
+        echo Rand::decodeCode(substr($ret, 1));
         exit;
         $this->model('\captain\system\AccountModel', 'accountMod');
 //        $ret = $this->accountMod->refresh_account('rmb', 'int');

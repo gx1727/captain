@@ -5,7 +5,8 @@
  * User: gx1727
  * Date: 2018/2/28
  * Time: 12:21
- *
+ * $this->library('\captain\core\code', 'codeLib');
+ * $ret = $this->codeLib->get_code('USERCODE2', 2);
  */
 
 namespace captain\core;
@@ -97,7 +98,7 @@ class Code extends Base
                     }
                 }
             } else {
-                $userParams[1] = $params;
+                $userParams[1] = $this->delBlank($params);
             }
         }
 
@@ -137,7 +138,11 @@ class Code extends Base
                 $cell = Rand::getRandNumber($node['length']);
                 break;
             case "ENCODEID":
-                $cell = $this->encodeId($localParam[$localParam['index']], $node['length']);
+                $cell = Rand::encodeCode($localParam[$localParam['index']], $node['length']);
+                $localParam['index']++;
+                break;
+            case "SERIALNUMBERENCODE": //流水后加密
+                $cell = Rand::encodeCode($node['value'], $node['length']);
                 $localParam['index']++;
                 break;
             default;
@@ -157,7 +162,7 @@ class Code extends Base
         $attributeset = json_decode($code_definition['cd_attributeset'], true);
         $serialNumber = array(); // 自增流水的个数
         foreach ($attributeset as $k => $node) {
-            if ($node['type'] == 'SERIALNUMBER') {
+            if ($node['type'] == 'SERIALNUMBER' || $node['type'] == 'SERIALNUMBERENCODE') {
                 $serialNumber[$k] = $node;
             }
         }
@@ -334,66 +339,16 @@ class Code extends Base
         return $strTime;
     }
 
-    private function delblank($string, $replace = ' ')
+    /**
+     * 删除字符串中的空字符
+     * @param $string
+     * @param string $replace
+     * @return mixed|string
+     */
+    private function delBlank($string, $replace = ' ')
     {
         $string = trim($string); //删除首尾空格
         $string = preg_replace('/[sv]+/', $replace, $string); //将多个空字符替换成指定内容
         return $string;
-    }
-
-    /**
-     * 简单加密数字ID
-     * @param $id
-     * @param $length
-     * @return null|string
-     */
-    private function encodeId($id, $length)
-    {
-        $hashtable = array(
-            0 => array('0' => '6', '1' => '7', '2' => '1', '3' => '9', '4' => '0', '5' => '5', '6' => '4', '7' => '8', '8' => '3', '9' => '2'),
-            1 => array('0' => '9', '1' => '5', '2' => '4', '3' => '2', '4' => '8', '5' => '0', '6' => '1', '7' => '7', '8' => '6', '9' => '3'),
-            2 => array('0' => '6', '1' => '4', '2' => '2', '3' => '0', '4' => '8', '5' => '3', '6' => '5', '7' => '9', '8' => '7', '9' => '1'),
-            3 => array('0' => '1', '1' => '3', '2' => '9', '3' => '0', '4' => '5', '5' => '4', '6' => '7', '7' => '2', '8' => '8', '9' => '6'),
-            4 => array('0' => '1', '1' => '4', '2' => '7', '3' => '2', '4' => '8', '5' => '3', '6' => '9', '7' => '0', '8' => '6', '9' => '5'),
-            5 => array('0' => '0', '1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6', '7' => '7', '8' => '8', '9' => '9'),
-            6 => array('0' => '2', '1' => '8', '2' => '0', '3' => '1', '4' => '7', '5' => '3', '6' => '6', '7' => '9', '8' => '4', '9' => '5'),
-            7 => array('0' => '2', '1' => '9', '2' => '7', '3' => '1', '4' => '0', '5' => '3', '6' => '8', '7' => '6', '8' => '4', '9' => '5'),
-            8 => array('0' => '7', '1' => '3', '2' => '5', '3' => '2', '4' => '1', '5' => '8', '6' => '4', '7' => '9', '8' => '0', '9' => '6'),
-            9 => array('0' => '9', '1' => '5', '2' => '2', '3' => '3', '4' => '8', '5' => '1', '6' => '6', '7' => '0', '8' => '7', '9' => '4'),
-        );
-
-        $encode = Rand::getRandNumber($length);
-        $str_id = "" . $id;
-        $id_length = strlen($str_id);
-        if ($id_length > $length - 1) {
-            $id_length = $length - 1;
-        }
-        $hashtable_index = 0;
-        if ($id_length < $length - 1) {
-            $hashtable_index = $encode[$id_length + 1];
-        }
-
-        $encode[0] = $hashtable[0][$id_length];
-
-        for ($i = 0; $i < $id_length; $i++) {
-            $encode[$i + 1] = $hashtable[(($i + $hashtable_index) % 10)][$str_id[$i]];
-        }
-
-
-        if ($this->isEven($encode[0]) != $this->isEven($encode[$length - 1])) {
-            $encode = strrev($encode);
-        }
-
-        return $encode;
-    }
-
-    /**
-     * 是否为偶数
-     * @param $number
-     * @return bool
-     */
-    private function isEven($number)
-    {
-        return (($number % 2) == 0);
     }
 }

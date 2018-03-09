@@ -56,21 +56,21 @@ class Rand
      * @param $length
      * @return null|string
      * 如果将一个字符串藏在另一个字符串中
-     * 原始字符串 $str_id
+     * 原始字符串 $code
      * 最终字符串长度 $length
+     * 信息段位数 $info_length
      *
-     * 加密后的串中，第一位是开始点，第二位为原始字符串长度 第三位开始加密，所以：
-     * 有效加密长度 $code_length，这里注意的是 $code_length <= $length - 2
+     * 加密后的串中，第一位是开始点
+     * 第二位:判断$length， 如果 $length<10, 那么第二位为原始字符串长度 第三位开始加密 ，则 $info_length = 2
+     *                      如果 $length>10, 那么第二位为0,接下来两位为原始字符串长度 第5位开始加密 ，则 $info_length = 4
+     * 所以：
+     * 有效加密长度 $code_length，这里注意的是 $code_length <= $length - $info_length
      *                          所以， 如果要固定最终字符串长度， 当不符合上一条时，要减小有效加密长度，这样最终结果就不能解密了
      *
-     * 思路是：随机一个开始点$hashtable_index，从这个点开始使用$HASHTABLE，将sizeof($str_id) . $str_id 逐个加密到最终串中，再混淆处理
-     * 第一步：随机一个开始点$hashtable_index，
-     * 第二步：处理长度，只处理 $code_length 的个位数，如果 $code_length > 10 ，最终也只能处理到19位，所以，可加密的位数限定在 1-19位
-     *          在$HASHTABLE[0]中找到 $code_length 的替换，放在$encode第一位。如：
-     *          有3位，则$HASHTABLE[$hashtable_index][3] = 9, 所以$encode[1]=9;
-     * 第三步：开始逐个处理
-     * 第四步：混淆处理，判断首尾是否同奇偶，决定是后翻转
-     * 第五步：处理长度，判断长度$code_length是否大于10，大于10，再翻转
+     * 思路是：随机一个开始点$hashtable_rand，从这个点开始使用$HASHTABLE，将sizeof($str_id) . $str_id 逐个加密到最终串中，再混淆处理
+     *
+     * 混淆处理，判断首尾是否同奇偶，决定是后翻转
+     *
      */
     public static function encodeCode($code, $length = 0)
     {
@@ -116,16 +116,8 @@ class Rand
         $encode = Rand::getRandNumber($length); // 随机串
         $hashtable_rand = $encode[0]; // hash指针
 
-        echo "原始:" . $code . '<p/>';
-        echo "原始长度:" . $code_lenght . '<p/>';
-
+        // 组合成要加密的$code  随机起点+原串长度+待加密数据
         $code = $hashtable_rand . (($info_length <= 2) ? '' : '0') . $code_lenght . $code;
-
-        echo "原始:" . $code . '<p/>';
-        echo "原始长度:" . $code_lenght . '<p/>';
-        echo "目标长度:" . $length . '<p/>';
-        echo "随机串:" . $encode . '<p/>';
-        echo "hashtable_rand:" . $hashtable_rand . '<p/>';
 
         $index = 0;
         for ($i = 0; $i < ($code_lenght + $info_length); $i++) {
@@ -133,8 +125,7 @@ class Rand
             $index = $encode[$i] + $hashtable_rand;
         }
 
-        echo "翻转前:" . $encode . '<p/>';
-
+        // 判断首尾是否同奇偶相同
         if (Rand::isEven($encode[0]) != Rand::isEven($encode[$length - 1])) {
             $encode = strrev($encode); // 有翻转
         }
@@ -142,9 +133,13 @@ class Rand
         return $encode;
     }
 
+    /**
+     * 对 encodeCode 后的数据解密
+     * @param $code
+     * @return string
+     */
     public static function decodeCode($code)
     {
-
         // hash 表
         $HASHTABLE = array(
             0 => array('6' => '0', '7' => '1', '1' => '2', '9' => '3', '0' => '4', '5' => '5', '4' => '6', '8' => '7', '3' => '8', '2' => '9'),
@@ -170,28 +165,21 @@ class Rand
         $index = 0;
         $hashtable_rand = $HASHTABLE[$index][$code[$index]];
 
-        echo $code . '<p/>';
-        echo "hashtable_rand:" . $hashtable_rand . '<p/>';
-
-
         $code_lenght = $HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]];
-        echo "原始长度:" . $code_lenght . '<p/>';
+
         // 计算信息位数
         $info_length = 2;
         if ($code_lenght == 0) {
             $info_length = 4;
             $code_lenght = intval($HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]] . $HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]]);
         }
-        echo "原始长度:" . $code_lenght . '<p/>';
-        echo "info_length:" . $info_length . '<p/>';
-
 
         $decode = '';
         for ($i = 0; $i < $code_lenght; $i++) {
             $decode .= $HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]];
         }
 
-        echo "decode:" . $decode . '<p/>';
+        return $decode;
     }
 
     /**

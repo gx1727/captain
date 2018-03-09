@@ -48,6 +48,10 @@ CREATE TABLE `xx_code_definition` (
 INSERT INTO `xx_code_definition` (`cd_name`, `cd_title`, `cd_type`, `cd_level`, `cd_template`, `cd_attributeset`, `cd_remark`, `cd_status`, `cd_auto_create_flag`) VALUES
 ( 'USERCODE', '用户编码', 1, 0, 'U0000000001', '[{\"index\":\"1\",\"type\":\"PREFIX\",\"value\":\"U\"},{\"index\":\"2\",\"type\":\"SERIALNUMBER\",\"loop\":\"NONE\",\"length\":\"10\"}]', '系统中用户的唯一编码', 1, 1);
 
+
+INSERT INTO `xx_code_definition` (`cd_name`, `cd_title`, `cd_type`, `cd_level`, `cd_template`, `cd_attributeset`, `cd_remark`, `cd_status`, `cd_auto_create_flag`) VALUES
+( 'USERCODE2', '用户编码2', 1, 0, 'U0000000001', '[{\"index\":\"1\",\"type\":\"PREFIX\",\"value\":\"U\"},{\"index\":\"2\",\"type\":\"ENCODEID\",\"loop\":\"NONE\",\"length\":\"10\"}]', '系统中用户的唯一编码', 1, 1);
+
 -- --------------------------------------------------------
 
 --
