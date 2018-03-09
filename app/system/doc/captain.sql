@@ -102,3 +102,24 @@ CREATE TABLE `xx_user_weixin` (
   PRIMARY KEY (`uw_id`),
   KEY `user_code` (`user_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户观注微信公众号表' AUTO_INCREMENT=1;
+
+
+
+-- --------------------------------------------------------
+
+--
+-- 帐户类型表
+-- 表的结构 `xx_account`
+--
+
+DROP TABLE IF EXISTS `xx_account`;
+CREATE TABLE `xx_account` (
+  `account_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_name` varchar(32) DEFAULT '' COMMENT '帐户类型名',
+  `account_code` varchar(32) DEFAULT '' COMMENT '帐户类型编号',
+  `account_type` int(10) DEFAULT 1 COMMENT '1:int(11)  2:decimal(10,2)',
+  `account_atime` int(10) DEFAULT NULL COMMENT '创建时间',
+  `account_etime` int(10) DEFAULT NULL COMMENT '删除时间',
+  `account_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
+  PRIMARY KEY (`account_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='帐户类型表' AUTO_INCREMENT=1;

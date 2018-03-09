@@ -26,19 +26,20 @@ class Index extends Controller
 
     public function index()
     {
-        $this->library('\captain\core\code', 'codeLib');
-        $ret = $this->codeLib->get_code('USERCODE2', 2);
-        echo $ret;
-        echo "<p/>============<p/>";
-//        exit;
-
-//        echo $code = Rand::encodeCode(333221, 8);
+//        $this->library('\captain\core\code', 'codeLib');
+//        $ret = $this->codeLib->get_code('USERCODE2', 2);
+//        echo $ret;
 //        echo "<p/>============<p/>";
-        echo Rand::decodeCode(substr($ret, 1));
+//        exit;
+//
+//         $code = Rand::encodeCode('21002100120', 24);
+//        echo "<p/>============<p/>";
+        echo Rand::decodeCode('435945833903035000502262');
+        echo "<p/>============<p/>";
         exit;
         $this->model('\captain\system\AccountModel', 'accountMod');
-//        $ret = $this->accountMod->refresh_account('rmb', 'int');
-        $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 10, AC_CREBIT_ADJUSTMENT_DECREASE);
+//        $ret = $this->accountMod->refresh_account('rmb', 1);
+        $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 5453, AC_CREBIT_ADJUSTMENT_DECREASE);
         $ret = $this->accountMod->get_accountloglist('rmb', 1, 1, 99999);
         print_r($ret->get_data());
         exit;

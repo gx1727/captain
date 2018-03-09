@@ -9,7 +9,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  * Time: 上午 10:35
  *
  * $this->accountMod->refresh_account('rmb');
- * $ret = $this->accountMod->refresh_account('rmb', 'int');
+ * $ret = $this->accountMod->refresh_account('rmb', 1);
  * $ret = $this->accountMod->manage_account('rmb', 'U0000000002', 10, AC_CREBIT_ADJUSTMENT_DECREASE);
  * $ret = $this->accountMod->get_accountloglist('rmb', 1, 1, 99999);
  */
@@ -31,7 +31,7 @@ class AccountModel extends Model
     {
         parent::__construct(__NAMESPACE__, 'system');
         $this->table_name = CAPTAIN_ACCOUNT;
-        $this->key_id = 'ac_id ';
+        $this->key_id = 'account_id';
 
         $this->account_name = ''; // 资金名
         $this->account_tablename = ''; // 表名
@@ -82,7 +82,7 @@ class AccountModel extends Model
     /**
      * @param $account_name 帐户系统名
      * @param $user_code 帐户用户名
-     * @param $capital 数量
+     * @param $capital 变更的数量
      * @param $account_type 变更类型
      * @param int $foreign_key 外连KEY
      * @param string $log 日志内容
@@ -129,17 +129,38 @@ class AccountModel extends Model
     }
 
     /**
-     * 刷新帐户
-     * 1.删除原表
+     *  刷新帐户
+     *  1.删除原表
      * 2.建立新表
      * @param $account_name
+     * @param int $type
      * @return bool
      */
-    public function refresh_account($account_name, $type = 'decimal(10,2)')
+    public function refresh_account($account_name, $type = 1)
     {
         if ($account_name) {
+            $sql = 'select * from ' . $this->table_name . ' where account_code = ?  and account_status = 0';
+            $account_base = $this->query($sql, array($account_name));
+
+            if ($account_base) {
+                // 帐户库已存在 删除
+                $this->edit($account_base['account_id'], array('account_etime' => time(), 'account_status' => 1));
+                $sql = 'RENAME TABLE `captain`.`xx_account_' . $account_base['account_code'] . '` TO `captain`.`xx_account_' . $account_base['account_code'] . '_' . $account_base['account_id'] . '`';
+                $this->query($sql);
+
+                $sql = 'RENAME TABLE `captain`.`xx_account_' . $account_base['account_code'] . '_log` TO `captain`.`xx_account_' . $account_base['account_code'] . '_log_' . $account_base['account_id'] . '`';
+                $this->query($sql);
+
+            }
+            $this->add(array(
+                'account_name' => $account_name,
+                'account_code' => $account_name,
+                'account_type' => $type,
+                'account_atime' => time()
+            ));
+
             $this->get_tablename($account_name);
-            if ($type == 'int') {
+            if ($type == 1) {
                 $this->_manage_account_table('int(11)');
             } else {
                 $this->_manage_account_table('decimal(10,2)');
@@ -191,7 +212,7 @@ class AccountModel extends Model
             'al_amount' => $al_amount,
             'al_type' => $al_type,
             'foreign_key' => $foreign_key,
-            'al_mark' => $this->create_mark(),
+            'al_mark' => $this->create_mark($al_amount, $al_capital),
             'al_time' => time(),
             'al_capital' => $al_capital,
             'al_log' => $al_log
@@ -349,7 +370,7 @@ class AccountModel extends Model
 
     /**
      * @param $account
-     * @param $capital
+     * @param $capital 变更的数量
      * @param $account_type
      * @param int $foreign_key 关联ID
      * @return mixed
@@ -372,15 +393,50 @@ class AccountModel extends Model
         return $this->_get_account_byusercode($account['user_code']);
     }
 
-
     /**
      * 生成随机字符串
+     * @param $al_amount 本次修改
+     * @param $al_capital 上次总值
      * @param int $length
-     * @return string
+     * @return null|string
+     * 明文： [0]$al_amount长度 + $al_amount + [0]$al_capital
+     *     $al_amount长度>10时          $al_capital < 时0
      */
-    private function create_mark($length = 6)
+    private function create_mark($al_amount, $al_capital, $length = 24)
     {
-        $rand_mark = Rand::getRandChar($length);
+        // 上一次的  al_amount
+        $sql = 'select * from ' . $this->account_log_tablename . ' order by al_id desc limit 1';
+        $last_log = $this->query($sql);
+        $last_al_amount = '0';
+        if ($last_log) {
+            $last_al_amount = (string)$last_log['al_amount'];
+        }
+        $last_al_amount_length = strlen($last_al_amount);
+
+        // 第一部分
+        $code = $last_al_amount_length;
+        if ($last_al_amount_length > 10) {
+            $code = '0' . $last_al_amount_length;
+        }
+        $code .= $last_al_amount;
+
+        // 第二部分
+        $al_amount = (string)$al_amount; //
+        $al_amount_lenght = strlen($al_amount);
+        if ($al_amount_lenght <= 10) {
+            $code .= (string)$al_amount_lenght;
+        } else {
+            $code .= '0' . (string)$al_amount_lenght;
+        }
+        $code .= $al_amount;
+
+        // 第三部分
+        $al_capital = (string)$al_capital; //
+        $al_capital = str_replace('-', '0', $al_capital); //如果以负数开头，就替换为0
+        $code .= $al_capital;
+
+        $rand_mark = Rand::encodeCode($code, $length);
+
         return $rand_mark;
     }
 
@@ -390,10 +446,6 @@ class AccountModel extends Model
      */
     private function _manage_account_table($amount_type)
     {
-        //如果表存在
-        $sql = "DROP TABLE IF EXISTS `" . $this->account_tablename . "`;";
-        $this->query($sql);
-
         //创建表
         $sql = "
                 CREATE TABLE IF NOT EXISTS `$this->account_tablename` (
@@ -412,11 +464,6 @@ class AccountModel extends Model
         $this->query($sql);
 
         //日志表
-
-        //如果表存在
-        $sql = "DROP TABLE IF EXISTS `" . $this->account_log_tablename . "`;";
-        $this->query($sql);
-
         //创建表
         $sql = "
                 CREATE TABLE IF NOT EXISTS `$this->account_log_tablename` (

@@ -88,21 +88,21 @@ class Rand
             9 => array('0' => '9', '1' => '5', '2' => '2', '3' => '3', '4' => '8', '5' => '1', '6' => '6', '7' => '0', '8' => '7', '9' => '4'),
         );
 
-        $code = (string)$code; // id 字符串
+        $code = trim((string)$code); // id 字符串
 
         // 确定 id字符串长度 $code_lenght
         $code_lenght = strlen($code);
 
         // 计算信息位数
         $info_length = 2;
-        if ($code_lenght > 10) {
+        if ($code_lenght >= 10) {
             $info_length += strlen($code_lenght);
         }
 
         if ($length) { //有要求最后串长度
             if ($code_lenght > $length - $info_length) {
                 $code_lenght = $length - $info_length;
-                if ($code_lenght <= 10) {
+                if ($code_lenght < 10) {
                     $info_length = 2;
                     $code_lenght = $length - $info_length;
                 }
@@ -119,6 +119,7 @@ class Rand
         // 组合成要加密的$code  随机起点+原串长度+待加密数据
         $code = $hashtable_rand . (($info_length <= 2) ? '' : '0') . $code_lenght . $code;
 
+        ///
         $index = 0;
         for ($i = 0; $i < ($code_lenght + $info_length); $i++) {
             $encode[$i] = $HASHTABLE[$index % 10][$code[$i]];
@@ -130,6 +131,7 @@ class Rand
             $encode = strrev($encode); // 有翻转
         }
 
+        Rand::decodeCode($encode);
         return $encode;
     }
 
@@ -154,7 +156,7 @@ class Rand
             9 => array('9' => '0', '5' => '1', '2' => '2', '3' => '3', '8' => '4', '1' => '5', '6' => '6', '0' => '7', '7' => '8', '4' => '9'),
         );
 
-        $code = (string)$code; // id 字符串
+        $code = trim((string)$code); // id 字符串
 
         $length = strlen($code);
 
@@ -174,6 +176,7 @@ class Rand
             $code_lenght = intval($HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]] . $HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]]);
         }
 
+        ///
         $decode = '';
         for ($i = 0; $i < $code_lenght; $i++) {
             $decode .= $HASHTABLE[($hashtable_rand + $code[$index++]) % 10][$code[$index]];
