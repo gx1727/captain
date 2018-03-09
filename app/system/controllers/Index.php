@@ -32,7 +32,7 @@ class Index extends Controller
 //            echo "<p/>";
 //            $i += 1;
 //        }
-        echo $code =  Rand::encodeId(12345678901, 16);
+        echo $code =  Rand::encodeId(123456789012, 16);
         echo "<p/>============<p/>";
         Rand::decodeId($code);
         exit;

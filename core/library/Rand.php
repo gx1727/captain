@@ -52,7 +52,7 @@ class Rand
 
     /**
      * 简单加密数字ID
-     * @param $code
+     * @param $code 长度限制在 1-99 位
      * @param $length
      * @return null|string
      * 如果将一个字符串藏在另一个字符串中
@@ -92,14 +92,25 @@ class Rand
 
         // 确定 id字符串长度 $code_lenght
         $code_lenght = strlen($code);
-        if($length) { //有要求最后串长度
-            if ($code_lenght > $length - 2) {
-                $code_lenght = $length - 2;
+
+        // 计算信息位数
+        $info_length = 2;
+        if ($code_lenght > 10) {
+            $info_length += strlen($code_lenght);
+        }
+
+        if ($length) { //有要求最后串长度
+            if ($code_lenght > $length - $info_length) {
+                $code_lenght = $length - $info_length;
+                if ($code_lenght <= 10) {
+                    $info_length = 2;
+                    $code_lenght = $length - $info_length;
+                }
                 $code = substr($code, -$code_lenght); // 原串有截断，取后面的字符串
             }
         } else {
             //无要求最后串长度
-            $length = $code_lenght + 2;
+            $length = $code_lenght + $info_length;
         }
 
         $encode = Rand::getRandNumber($length); // 随机串
@@ -130,7 +141,7 @@ class Rand
             $encode = strrev($encode); // 有翻转
         }
 
-        if($code_lenght > 10) {
+        if ($code_lenght > 10) {
             echo "有翻转" . '<p/>';
             $encode = strrev($encode); // 有翻转
         }
@@ -138,7 +149,7 @@ class Rand
         return $encode;
     }
 
-    public static function decodeId($code   )
+    public static function decodeId($code)
     {
         echo $code;
         // hash 表
@@ -159,7 +170,7 @@ class Rand
 
         $length = sizeof($code);
 
-        if($length > 10) {
+        if ($length > 10) {
             $code = strrev($code); // 有翻转
         }
         $code_lenght = 0;
