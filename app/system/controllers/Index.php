@@ -32,9 +32,9 @@ class Index extends Controller
 //            echo "<p/>";
 //            $i += 1;
 //        }
-        echo $code =  Rand::encodeId(123456789012, 16);
+        echo $code =  Rand::encodeCode(777777, 10);
         echo "<p/>============<p/>";
-        Rand::decodeId($code);
+        Rand::decodeCode($code);
         exit;
         $this->model('\captain\system\AccountModel', 'accountMod');
 //        $ret = $this->accountMod->refresh_account('rmb', 'int');
