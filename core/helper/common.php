@@ -149,9 +149,9 @@ if (!function_exists('web_url')) {
 if (!function_exists('web_root')) {
     function static_domain($domain_name = false)
     {
-        if($domain_name) {
+        if ($domain_name) {
             global $configs;
-            if(isset($configs[$domain_name])) {
+            if (isset($configs[$domain_name])) {
                 return $configs[$domain_name];
             }
         }
@@ -161,6 +161,17 @@ if (!function_exists('web_root')) {
 
     }
 }
+
+/**
+ * 组件功能
+ */
+if (!function_exists('component')) {
+    function component()
+    {
+
+    }
+}
+
 if (!function_exists('set_status_header')) {
     /**
      * Set HTTP Status Header

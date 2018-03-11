@@ -28,6 +28,9 @@ $admin = array();
 $manager = array();
 $user = array();
 
+$route_config = array(
+    'default' => 'cms:captain\cms\Welcome@index', // 默认处理器
+);
 
 //权限继承关系
 $route_role = array(

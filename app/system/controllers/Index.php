@@ -26,7 +26,7 @@ class Index extends Controller
 
     public function index()
     {
-//        $this->library('\captain\core\code', 'codeLib');
+        $this->library('\captain\core\code', 'codeLib');
 //        $ret = $this->codeLib->get_code('USERCODE2', 2);
 //        echo $ret;
 //        echo "<p/>============<p/>";

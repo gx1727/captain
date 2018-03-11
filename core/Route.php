@@ -4,6 +4,7 @@ namespace captain\core;
 defined('CAPTAIN') OR exit('No direct script access allowed');
 
 /**
+ * 路由
  * Created by PhpStorm.
  * User: gx1727
  * Date: 2018-02-07
@@ -30,12 +31,18 @@ class Route
     var $route_cmd_history = array(); // 路由解析历史，防止在重定向时，出现死循环
     var $max_route_redirection_count = 3; //同一个路由项最多出现次数，大于该次数，视为死循环
 
+    var $default_controller; //默认处理器
+
     function __construct()
     {
         $this->_request_scheme = $_SERVER['REQUEST_SCHEME'];
         $this->_http_host = $_SERVER['HTTP_HOST'];
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];
+
+        /**  默认处理器 */
+        global $route_config;
+        $this->default_controller = $route_config['default'];
 
         /**  url 模式  */
         $this->_url_model = sys_config('url_model');
@@ -135,7 +142,7 @@ class Route
                 }
             }
             if ($role_name && !$route_cmd) { // 当有角色名 但 没有匹配到路由里， 使用默认路由处理
-                $route_cmd = sys_config('default_controller');// 从配制中获取默认值
+                $route_cmd = $this->default_controller;// 获取默认值
                 if ($this->_uri[0] == '/') {
                     $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
                 }

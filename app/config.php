@@ -44,13 +44,6 @@ $configs['url_model'] = 's';
 $configs['timezone'] = 'Asia/Shanghai';
 
 /**
- * 默认处理器
- */
-$configs['default_controller'] = 'system:captain\system\Index@def';
-//$configs['default_controller'] = '';
-
-
-/**
  * 数据库
  */
 $configs['db'] = array(
