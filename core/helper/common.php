@@ -166,9 +166,24 @@ if (!function_exists('web_root')) {
  * 组件功能
  */
 if (!function_exists('component')) {
-    function component()
+    function component($cmd, $args = array())
     {
+        $p = strpos($cmd, ':');
+        $module = substr($cmd, 0, $p); // 解析出模块名
+        $cmd = substr($cmd, $p + 1);
 
+        $p = strpos($cmd, '@');
+        $controller = substr($cmd, 0, $p); // 解析出类名(带命名空间)
+        $function = substr($cmd, $p + 1); // 解析出方法名
+
+        $p = strrpos($controller, '\\');
+        $class = substr($controller, $p + 1); // 解析出类名(不带命名空间)
+
+        if (file_exists(BASEPATH . 'app' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $class . '.php')) {
+            require_once BASEPATH . 'app' . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $class . '.php';
+            $obj = new  $controller();
+            return call_user_func_array(array(&$obj, $function . 'Component'), $args);
+        }
     }
 }
 

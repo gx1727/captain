@@ -22,13 +22,19 @@ class Welcome extends Controller
 
     public function index()
     {
-        $test = $this->input->get_post('test', '');
-        echo $test;
-//        $this->view('welcome_index');
+//        $test = $this->input->get_post('test', '');
+//        echo $test;
+        $this->view('welcome_index');
     }
 
-    public function top()
+    /**
+     * 组件
+     *
+     */
+    public function topComponent()
     {
-        echo "welcome_top";
+        $args = func_get_args(); // 获取参数
+        return $args;
+        return $this->view('welcome_top', true);
     }
 }

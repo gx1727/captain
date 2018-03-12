@@ -70,11 +70,22 @@ class Controller extends Base
     /**
      * 调用模板，显示到浏览器
      * @param $view
+     * @param bool $buffer
+     * @return bool|string
      */
-    protected function view($view)
+    protected function view($view, $buffer = false)
     {
         extract($this->view_data);
+        if ($buffer) {
+            ob_start();
+        }
         include(BASEPATH . 'app/' . $this->modular . '/views/' . $view . '.php');
+        if ($buffer) {
+            $buffer = ob_get_contents();
+            @ob_end_clean();
+
+            return $buffer;
+        }
     }
 
     /**

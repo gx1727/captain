@@ -89,8 +89,6 @@ class Route
         } else {
             show_404();
         }
-
-
     }
 
     /**
@@ -172,7 +170,7 @@ class Route
             $count = 0;
             foreach ($this->route_cmd_history as $route_cmd_old) {
                 if ($route_cmd == $route_cmd_old) {
-                    $count++;;
+                    $count++;
                 }
             }
             if ($count >= $this->max_route_redirection_count) {
@@ -188,7 +186,7 @@ class Route
             $this->_controller = substr($route_cmd, 0, $p); // 解析出类名(带命名空间)
             $this->_function = substr($route_cmd, $p + 1); // 解析出方法名
 
-            $p = strrpos($route_cmd, '\\');
+            $p = strrpos($this->_controller, '\\');
             $this->_class = substr($this->_controller, $p + 1); // 解析出类名(不带命名空间)
         }
     }
