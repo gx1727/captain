@@ -26,6 +26,12 @@ class Index extends Controller
 
     public function index()
     {
+//        $this->library('\captain\core\Secret', 'secretLib');
+//        print_r($this->secretLib->decoding('kchaA1FJkPwySVJRPhWCNLxwZsai6O4z479s7vrCLMHJS9kan6+l+AQS0Ut8Be94CnjhYnsYBz7yUTV4C3YqfZVL0qpaTDgbZ7oZ2eSEP40em9Up7R39jEWrXCKYqVonZZr+sY5BilfirJ230mP7FERSWU3U4gXhL5fqdxU4BRq/+OCPJj6AmjauPd/J/OBMVoAuqEHuZ9FjDuisk1BsJ0YePUrdwqEZAzTzsqJFKOEE3uwmyIx7GQLs82mLg37dtOWL+Weauxr1CKT31wz/Sa2/kTBCSgDvlJ7mMg7vXOQYR5UGWiJcfi5nUCG+Jr7SkfPn7dxe2qx2TItS2I2cuQ=='));
+//        exit;
+        $this->view('index');
+        exit;
+
         $this->library('\captain\core\code', 'codeLib');
 //        $ret = $this->codeLib->get_code('USERCODE2', 2);
 //        echo $ret;
@@ -49,12 +55,7 @@ class Index extends Controller
         $ret = $this->userMod->register_user('gx1727', '', '', '');
         print_r($ret);
         exit;
-//        echo "index";
-        $this->library('\captain\core\Secret', 'secretLib');
 
-//        $this->codeLib->refresh_code('URLCODE');
-        print_r($this->secretLib->decoding('0753caaf934ad4758cee7ec8bf021001bd51346161eb65eaf222b2ade187471f8d7956197d0330331d5df209f8efca2f0960f509c7abe561ee899b5cda2e94f3bda318151eef502da29ace9748d4d80be183d2daf06ccb1a854c96a6683205728273be0a3fe55e2c9ddf1fa2136c18a68ba7ab1a1120f7089c4ed9589f366b1c'));
-//        exit;
         echo "<hr/>";
         echo $this->input->get_post('hello');
         $this->model('\captain\system\UserModel', 'userMod', 'system');

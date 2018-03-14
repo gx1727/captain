@@ -38,19 +38,31 @@ class Secret
         $this->session = &$captain_session;
 
         $this->private_key = '-----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----';
     }
 
@@ -130,10 +142,9 @@ qqdkiUOLeWQ5TVWRMxaVGY79EikWn14ve0eCHGMLsyXfLw==
     public function decoding($cipher_text, $token_name = 'secret')
     {
         $plain_text = '';
-        $cipher_text = base64_encode(pack("H*", $cipher_text));
         $prikeyid = openssl_get_privatekey($this->private_key);
 
-        if (openssl_private_decrypt(base64_decode($cipher_text), $decrypted, $prikeyid, OPENSSL_NO_PADDING)) {
+        if (openssl_private_decrypt(base64_decode($cipher_text), $decrypted, $prikeyid)) {
             //解密后
             $decrypted = trim($decrypted);
             $token_local = $this->_get_token($token_name);

@@ -346,3 +346,22 @@ function checkIdcard(idcard) {
             break;
     }
 }
+
+/**
+ * 加密字符串
+ * content = "" + md5(plaintext) + token;
+ * content = 倒序 content;
+ * @param plaintext
+ * @param token
+ * @returns {*}
+ */
+function secret(plaintext, token) {
+    if (typeof token === 'undefined') {
+        token = '';
+    }
+    var content = "" + md5(plaintext) + token;
+    content = content.split('').reverse().join('');
+    var key = RSA.getPublicKey('-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwL4aIEULJOYYGnGNMvORWZR978yUAysIITt1IfCSAeGf2tJVuKhTf8qgxZGJICH1BBd6mJZxOPSSlitznlrEZJmDwHn+ktaCtCVcU6KrOO/ZJOnkmCe3seUVTorynTHQMNfvueL4/YGqTULwt6DMs3XtVoDAXst9RR/6b4JINcYAdAvjaNXRepxYL7P+8H8jQ0OTom2nvDGGIhX6ylasq33nYXmCxmF4uajRbQ5JfE3WKlNgEAPpFST8FbcoZWjJWw5L8Pg8jwvRsbUHWpH6TYGSpAeADuvcrGmRqn99/pEXJFpEeDQQed7OwvFh5UDAL9dxNPtlYeY07WJRMCWvOQIDAQAB-----END PUBLIC KEY-----');
+
+    return RSA.encrypt(content, key);
+}
