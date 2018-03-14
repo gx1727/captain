@@ -21,8 +21,6 @@ class UserModel extends Model
         $this->table_name = CAPTAIN_USER;
         $this->key_id = 'user_id';
 
-        $this->model('\captain\system\LoginModel', 'loginMod');
-
         $this->return_status[1] = "没有找到符合条件的数据, 用户不存在";
         $this->return_status[2] = "用户登陆名已存在，注册新用户失败";
     }
@@ -92,6 +90,8 @@ class UserModel extends Model
      */
     public function register_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd = false, $user_role = 'ROLE00004')
     {
+        $this->model('\captain\system\LoginModel', 'loginMod');
+
         $ret = new Ret($this->return_status);
         if ($this->loginMod->get_user($user_name)) { //用户已存在
             $ret->set_code(2);

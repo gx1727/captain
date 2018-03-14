@@ -10,6 +10,7 @@ namespace captain\system;
 defined('CAPTAIN') OR exit('No direct script access allowed');
 
 use \captain\core\Model;
+use \captain\core\Ret;
 
 class LoginModel extends Model
 {
@@ -19,7 +20,8 @@ class LoginModel extends Model
         $this->table_name = CAPTAIN_USER;
         $this->key_id = 'user_id';
 
-        $this->return_status[1] = "";
+        $this->return_status[1] = "用户不存在或密码不正确";
+        $this->return_status[2] = "用户不存在或密码不匹配";
     }
 
     /**
@@ -50,5 +52,71 @@ class LoginModel extends Model
         } else {
             return '';
         }
+    }
+
+    public function username_pwd($username, $pwd)
+    {
+        $this->library('\captain\core\Secret', 'secretLib');
+        $pwd = $this->secretLib->decoding($pwd);
+
+        $ret = new Ret($this->return_status);
+        $user = $this->get_user($username);
+        if ($user) {
+            if ($user['user_pwd'] == $this->get_userpwd($user['user_code'], $pwd)) {
+                unset($user['user_pwd']);
+                $user['role_code'] = $this->get_userrole();
+                return $user;
+            } else {
+                $ret->set_code(2); // 用户不存在
+            }
+        } else {
+            $ret->set_code(1); // 用户不存在
+        }
+        return $ret;
+    }
+
+    /**
+     * 获取用户角色编码
+     * 判断角色是否到期，如到期，需要换到后备角色
+     * @param $user_code
+     * @return string 角色编码
+     */
+    public function get_userrole($user_code)
+    {
+        $user_role = DEFINE_ROLE; // 默认
+
+        $sql = "SELECT * FROM " . CAPTAIN_USERROLE . " WHERE user_code = ? AND ur_status = 0";
+        $role = $this->query($sql, array($user_code));
+        if ($role) {
+            if ($role['ur_failure_time'] > 0 && $role['ur_failure_time'] < time()) {
+                $user_role = $role['ur_bench_role']; // 角色已过期 自动使用后备角色
+                $this->edit($role['ur_id'], array('ur_status' => 1), CAPTAIN_USERROLE, 'ur_id');
+                $data = array(
+                    'user_code' => $user_code,
+                    'ur_role_code' => $role['ur_bench_role'],
+                    'ur_failure_time' => 0,
+                    'ur_bench_role' => DEFINE_ROLE,
+                    'ur_remark' => '',
+                    'ur_atime' => time(),
+                    'ur_status' => 0
+                );
+                $this->db->add($data, CAPTAIN_USERROLE);
+            } else {
+                // 角色还在有效期内
+                $user_role = $role['ur_role_code'];
+            }
+        } else {
+            $data = array(
+                'user_code' => $user_code,
+                'ur_role_code' => DEFINE_ROLE,
+                'ur_failure_time' => 0,
+                'ur_bench_role' => DEFINE_ROLE,
+                'ur_remark' => '',
+                'ur_atime' => time(),
+                'ur_status' => 0
+            );
+            $this->db->add($data, CAPTAIN_USERROLE);
+        }
+        return $user_role;
     }
 }

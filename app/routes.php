@@ -56,6 +56,9 @@ $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 
+//api
+$guest['/api/login'] = 'system:captain\system\Login@login_username_pwd';
+
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
 

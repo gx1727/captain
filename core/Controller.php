@@ -13,7 +13,6 @@ class Controller extends Base
 {
     var $router;
     var $input;
-    var $session;
 
     var $modular; //模块
     var $namespace; //当前命名空间
@@ -26,11 +25,9 @@ class Controller extends Base
         parent::__construct($namespace, $modular);
 
         global $captain_router,
-               $captain_input,
-               $captain_session;
+               $captain_input;
         $this->router = &$captain_router;
         $this->input =  &$captain_input;
-        $this->session =  &$captain_session;
 
         $this->modular = $modular;
         $this->namespace = $namespace;

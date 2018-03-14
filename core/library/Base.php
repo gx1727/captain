@@ -272,4 +272,21 @@ class Base
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// 处理session
+    ///
+
+    /**
+     * 获到session对向
+     * @return bool|Session
+     */
+    protected function & get_session()
+    {
+        global $captain_session;
+        if (!$captain_session) {
+            $captain_session = new Session(sys_config('session'));
+        }
+        return $captain_session;
+    }
 }
