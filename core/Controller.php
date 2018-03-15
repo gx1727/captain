@@ -53,11 +53,16 @@ class Controller extends Base
     /**
      * 返回json串
      * @param $data
-     * @param bool $oflag 如果为真,则$data为数据,需要encode
+     * @param bool $cross 如果为真,可跨域
      */
-    protected function json($data, $oflag = true)
+    protected function json($data, $cross = false)
     {
-        if ($oflag) {
+        if ($cross) {
+            header("Access-Control-Allow-Origin: *");
+            header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+            header('Access-Control-Allow-Headers: x-requested-with,content-type');
+        }
+        if (!is_string($data)) {
             $data = json_encode($data);
         }
         header('Content-Type: application/json');
@@ -70,8 +75,14 @@ class Controller extends Base
      * @param bool $buffer
      * @return bool|string
      */
-    protected function view($view, $buffer = false)
+    protected function view($view, $buffer = false, $cross = false)
     {
+        if ($cross) {
+            header("Access-Control-Allow-Origin: *");
+            header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+            header('Access-Control-Allow-Headers: x-requested-with,content-type');
+        }
+
         extract($this->view_data);
         if ($buffer) {
             ob_start();

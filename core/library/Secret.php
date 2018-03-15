@@ -66,11 +66,6 @@ Me1o6xgEdnmRDlRNqdh+iOYxY3c5pU4dM+UsFWIPGNkgmWup/xbEvx42EACusXDo
 -----END RSA PRIVATE KEY-----';
     }
 
-    public function get_session()
-    {
-        $session = $this->session->all_userdata();
-        return $session;
-    }
 
     /**
      * 生成一个tonken，并保存到session中

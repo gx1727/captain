@@ -55,9 +55,10 @@ $guest['/hello*'] = 'system:captain\system\Index@hello_tag';
 $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
+$guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
-//api
-$guest['/api/login'] = 'system:captain\system\Login@login_username_pwd';
+// 游客组 - 接口类
+$guest['/api/*'] = 'system:captain\system\Login@entrance';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

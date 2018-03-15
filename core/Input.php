@@ -99,7 +99,7 @@ class Input
         }
         return $val;
     }
-
+    
     public function get_post($key, $default = '', $xss_clean = true)
     {
         $val = $this->_fetch_from_array($_GET, $key, $xss_clean);
@@ -110,6 +110,20 @@ class Input
             $val = $default;
         }
         return $val;
+    }
+
+    /**
+     * 获到body数据，数据数据为json格式，自动解析到$_POST中
+     * @return bool|string
+     */
+    public function get_contents()
+    {
+        $raw_post_data = file_get_contents('php://input', 'r');
+        $post_data = json_decode($raw_post_data, true);
+        if ($post_data && is_array($post_data)) {
+            $_POST = array_merge($_POST, $post_data);
+        }
+        return $raw_post_data;
     }
 
     /**

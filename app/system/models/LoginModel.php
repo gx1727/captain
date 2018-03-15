@@ -64,8 +64,9 @@ class LoginModel extends Model
         if ($user) {
             if ($user['user_pwd'] == $this->get_userpwd($user['user_code'], $pwd)) {
                 unset($user['user_pwd']);
-                $user['role_code'] = $this->get_userrole();
-                return $user;
+                $user['role'] = $this->get_userrole($user['user_code']);
+                $this->login($user); // 登录的操作
+                $ret->set_data($user);
             } else {
                 $ret->set_code(2); // 用户不存在
             }
@@ -73,6 +74,19 @@ class LoginModel extends Model
             $ret->set_code(1); // 用户不存在
         }
         return $ret;
+    }
+
+    /**
+     * 登录的操作
+     * @param $user
+     */
+    public function login($user)
+    {
+        $this->log('用户登录:[' . $user['user_code'] . '] ' . $user['user_name']);
+        $session = &$this->get_session(); // 引用 session
+        $session->set_sess('user_code', $user['user_code']);
+        $session->set_sess('login_time', time()); // 登录时间
+        $session->set_sess('role_name', $user['role']['role_name']);
     }
 
     /**
@@ -117,6 +131,8 @@ class LoginModel extends Model
             );
             $this->db->add($data, CAPTAIN_USERROLE);
         }
-        return $user_role;
+
+
+        return $this->get($user_role, CAPTAIN_ROLE, 'role_code');
     }
 }
