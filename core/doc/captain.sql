@@ -68,3 +68,27 @@ CREATE TABLE `xx_code_info` (
   PRIMARY KEY (`ci_id`),
   KEY `cd_name` (`cd_name`,`ci_usercode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='编码值表' AUTO_INCREMENT=1 ;
+
+
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `xx_extend`
+--
+
+DROP TABLE IF EXISTS `xx_extend`;
+CREATE TABLE `xx_extend` (
+  `e_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `foreign_id` int(10) NOT NULL COMMENT '关联ID',
+  `e_class` varchar(128) NOT NULL COMMENT '扩展信息分类',
+  `e_sort` varchar(128) NOT NULL COMMENT '扩展信息分组',
+  `e_title` varchar(128) NOT NULL COMMENT '扩展名称',
+  `e_atime` int(10) DEFAULT '0' COMMENT '插入时间',
+  `e_etime` int(10) DEFAULT '0' COMMENT '修改时间',
+  `e_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
+  `e_data` text COMMENT '内容',
+  PRIMARY KEY (`e_id`),
+  KEY `e_class` (`e_class`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='扩展信息表' AUTO_INCREMENT=1 ;
