@@ -27,7 +27,7 @@ CREATE TABLE `xx_user` (
 --
 
 INSERT INTO `xx_user` (`user_code`, `user_name`, `user_true_name`, `user_phone`, `user_email`, `user_wxopenid`, `user_photo`, `user_pwd`, `user_atime`, `user_status`) VALUES
-('U0000000001', 'admin', NULL, '', '', 'admin', '', '10adba0615c1187091b2f0d505ae60ee', 0, 0);
+('U0000000001', 'admin', NULL, '', '', 'admin', '', '26a3f53a27128edb1e28ad3047102461', 0, 0);
 
 
 DROP TABLE IF EXISTS `xx_role`;
@@ -35,6 +35,7 @@ CREATE TABLE `xx_role` (
   `role_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `role_code` varchar(32) NOT NULL COMMENT '角色编码',
   `role_name` varchar(64) NOT NULL COMMENT '角色名称',
+  `role_title` varchar(64) NOT NULL COMMENT '角色标题',
   `role_extend` varchar(32) DEFAULT NULL COMMENT '父级角色',
   `role_menu` int(10) DEFAULT '0' COMMENT '角色使用的菜单',
   `role_homeurl` varchar(128) NOT NULL DEFAULT '' COMMENT '角色主页',
@@ -48,11 +49,11 @@ CREATE TABLE `xx_role` (
 -- 转存表中的数据 `xx_role`
 --
 
-INSERT INTO `xx_role` (`role_id`, `role_code`, `role_name`, `role_extend`, `role_menu`, `role_homeurl`, `role_template`, `role_remark`) VALUES
-(1, 'ROLE00001', 'admin权限', NULL, 1, '/admin', 'admin/', 'admin权限'),
-(2, 'ROLE00002', '游客角色', NULL, 0, '/', 'default/', '最基础的访问权限'),
-(3, 'ROLE00003', '系统管理员', NULL, 1, '/admin', 'admin/', '系统管理员'),
-(4, 'ROLE00004', '普通会员角色', NULL, 2, '/home', 'default/', '普通会员');
+INSERT INTO `xx_role` (`role_id`, `role_code`, `role_name`, role_title,`role_extend`, `role_menu`, `role_homeurl`, `role_template`, `role_remark`) VALUES
+(1, 'ROLE00001', 'admin', 'admin权限', NULL, 1, 'admin_home', 'admin/', 'admin权限'),
+(2, 'ROLE00002', 'default', '游客角色', NULL, 0, 'default_home', 'default/', '最基础的访问权限'),
+(3, 'ROLE00003', 'manager', '管理员', NULL, 1, 'manager_home', 'admin/', '系统管理员'),
+(4, 'ROLE00004', 'user', '普通会员角色', NULL, 2, 'user_home', 'default/', '普通会员');
 
 
 
