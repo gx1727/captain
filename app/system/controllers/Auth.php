@@ -11,7 +11,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
 
 use \captain\core\Controller;
 
-class Role extends Controller
+class Auth extends Controller
 {
     function __construct()
     {
@@ -20,7 +20,7 @@ class Role extends Controller
         $this->return_status[1] = '';
     }
 
-    public function alist()
+    public function role_list()
     {
         $page = $this->input->get_post('page', 1); //
         $pagesize = $this->input->get_post('pagesize', PAGE_SIZE); //

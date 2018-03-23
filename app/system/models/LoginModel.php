@@ -132,7 +132,6 @@ class LoginModel extends Model
             $this->db->add($data, CAPTAIN_USERROLE);
         }
 
-
         return $this->get($user_role, CAPTAIN_ROLE, 'role_code');
     }
 }
