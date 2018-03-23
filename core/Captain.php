@@ -78,6 +78,8 @@ if (!$captain_router->success()) { // 在needless_context中没有匹配命中
 }
 
 $captain_input = new Input($captain_router->_uri);
+$captain_input->get_contents(); // 将数据整合到post 中
+
 $captain_router->direction(); //指向最终处理函数
 
 if ($captain_db) {

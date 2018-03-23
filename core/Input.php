@@ -12,6 +12,7 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
 class Input
 {
     var $_uri; //uri中的匹配后的部分
+    var $_raw; // $raw_post_data
     var $_enable_xss; //xss检查
     var $_enable_csrf;//csrf检查
 
@@ -114,16 +115,14 @@ class Input
 
     /**
      * 获到body数据，数据数据为json格式，自动解析到$_POST中
-     * @return bool|string
      */
     public function get_contents()
     {
-        $raw_post_data = file_get_contents('php://input', 'r');
-        $post_data = json_decode($raw_post_data, true);
+        $this->_raw = file_get_contents('php://input', 'r');
+        $post_data = json_decode($this->_raw, true);
         if ($post_data && is_array($post_data)) {
             $_POST = array_merge($_POST, $post_data);
         }
-        return $raw_post_data;
     }
 
     /**

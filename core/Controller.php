@@ -55,7 +55,7 @@ class Controller extends Base
      * @param $data
      * @param bool $cross 如果为真,可跨域
      */
-    protected function json($data, $cross = false)
+    protected function json($data, $cross = true)
     {
         if ($cross) {
             header("Access-Control-Allow-Origin: *");
@@ -75,7 +75,7 @@ class Controller extends Base
      * @param bool $buffer
      * @return bool|string
      */
-    protected function view($view, $buffer = false, $cross = false)
+    protected function view($view, $buffer = false, $cross = true)
     {
         if ($cross) {
             header("Access-Control-Allow-Origin: *");
@@ -135,7 +135,7 @@ class Controller extends Base
             $ret_array['code'] = 0;
             $ret_array['msg'] = '';
         } else if (is_array($ret)) {
-            $ret_array = array_merge($ret, $ret_array);
+            $ret_array = array_merge($ret_array, $ret);
         } else if (is_numeric($ret)) {
             $ret_array['id'] = $ret;
         } else if (is_bool($ret) && $code == 0) {//针对   get_result(false)  的处理，直接返回1 失败

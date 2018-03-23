@@ -58,7 +58,8 @@ $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
 // 游客组 - 接口类
-$guest['/api/*'] = 'system:captain\system\Login@entrance';
+$guest['/login'] = 'system:captain\system\Login@enter';
+$guest['/role/list'] = 'system:captain\system\Role@alist';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

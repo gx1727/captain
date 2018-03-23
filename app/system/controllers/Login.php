@@ -20,25 +20,22 @@ class Login extends Controller
         $this->return_status[1] = '';
     }
 
-    public function login()
+    public function enter()
     {
         $this->model('\captain\system\LoginModel', 'loginMod');
-
-        $this->input->get_contents();
         $username = $this->input->get_post('username');
         $pwd = $this->input->get_post('pwd');
 
-        if (isset($username) && isset($pwd)) {
+        if (isset($username) && $username
+            && isset($pwd) && $pwd) {
             $user_ret = $this->loginMod->username_pwd($username, $pwd);
             if ($user_ret->get_code() === 0) {
                 $user_ret->set_result($user_ret->get_data());
-                $this->json($this->get_result($user_ret), true);
+                $this->json($this->get_result($user_ret));
             } else {
-                $this->json($this->get_result($user_ret), true);
+                $this->json($this->get_result($user_ret));
             }
         }
-
-//        print_r($user);
     }
 
     public function entrance()
