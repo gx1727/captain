@@ -97,6 +97,20 @@ class Controller extends Base
     }
 
     /**
+     * 获到列表所需的几个参数
+     * @return array
+     */
+    public function get_list_param()
+    {
+        $list_param = array();
+        $list_param['page'] = $this->input->get_post('page', 1); //
+        $list_param['pagesize'] = $this->input->get_post('pagesize', PAGE_SIZE); //
+        $list_param['orderby'] = $this->input->get_post('orderby'); //
+        $list_param['ordertype'] = $this->input->get_post('ordertype', 'desc'); //
+        return $list_param;
+    }
+
+    /**
      * 通过返回值，获取描述性文字
      * 排除非法key导致php报错
      * @param $key

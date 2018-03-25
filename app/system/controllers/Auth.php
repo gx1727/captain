@@ -17,43 +17,30 @@ class Auth extends Controller
     {
         parent::__construct(__NAMESPACE__, 'system');
 
+        $this->model('\captain\system\AuthModel', 'authMod');
         $this->return_status[1] = '';
     }
 
     public function role_list()
     {
-        $page = $this->input->get_post('page', 1); //
-        $pagesize = $this->input->get_post('pagesize', PAGE_SIZE); //
-        $orderby = $this->input->get_post('orderby'); //
-        $ordertype = $this->input->get_post('ordertype', 'desc'); //
 
-        $data = array(
-            array(
-                'name' => 'Lison',
-                'sex' => '<img  height="60" src="https://file.iviewui.com/dist/5429376049d0fefd8a6f70ff67dc327d.jpg"/>男',
-                'work' => '前端开发'
-            ),
-            array(
-                'name' => 'lisa',
-                'sex' => '女',
-                'work' => '程序员鼓励师'
-            ),
-            array(
-                'name' => 'Aleis',
-                'sex' => '男',
-                'work' => '前端开发'
-            ),
-            array(
-                'name' => 'Aleis',
-                'sex' => '男',
-                'work' => '前端开发'
-            ),
-            array(
-                'name' => 'Aleis',
-                'sex' => '男',
-                'work' => '前端开发'
-            )
-        );
-        $this->json($this->get_result(array('data' => $data, 'total' => sizeof($data))));
+        $keyword = $this->input->get_post('keyword');
+        $role_list_ret = $this->authMod->get_role_list($this->get_list_param(), $keyword);
+
+        if ($role_list_ret->get_code() === 0) {
+            $role_list = $role_list_ret->get_data();
+            $this->json($this->get_result(array('data' => $role_list, 'total' => sizeof($role_list))));
+        } else {
+            $this->json($this->get_result(array('data' => array(), 'total' => 0)));
+        }
+    }
+
+    public function role_edit()
+    {
+        $role_id = $this->input->get_post('role_id');
+        $post_data = $this->input->get_post('postData');
+        $post_data = json_decode($post_data, true);
+        $ret = $this->authMod->role_edit($role_id, $post_data);
+        $this->json($this->get_result($ret));
     }
 }

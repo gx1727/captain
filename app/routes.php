@@ -60,6 +60,7 @@ $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 // 游客组 - 接口类
 $guest['/login'] = 'system:captain\system\Login@enter';
 $guest['/role/list'] = 'system:captain\system\Auth@role_list';
+$guest['/role/edit'] = 'system:captain\system\Auth@role_edit';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
