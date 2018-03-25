@@ -33,8 +33,6 @@ class Sort
      */
     function __construct(&$_mod, $_table_name, $_key_id = 'id', $_parent = 'parent', $_subindex = 'subindex', $_index = 'index', $_title = 'title', $_order = 'order')
     {
-        parent::__construct(__NAMESPACE__, 'system');
-
         $this->mod = $_mod;
         $this->table_name = $_table_name;
         $this->key_id = $_key_id;

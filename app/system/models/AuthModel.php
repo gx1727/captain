@@ -18,6 +18,18 @@ class AuthModel extends Model
         $this->return_status[2] = "";
     }
 
+    public function get_role($role_key)
+    {
+        $role = $this->get($role_key, CAPTAIN_ROLE, 'role_id');
+        if (!$role) {
+            $role = $this->get($role_key, CAPTAIN_ROLE, 'role_code');
+            if (!$role) {
+                $role = $this->get($role_key, CAPTAIN_ROLE, 'role_name');
+            }
+        }
+        return $role;
+    }
+
     public function get_role_list($list_param, $keyword)
     {
         $param_array = array();

@@ -124,3 +124,32 @@ CREATE TABLE `xx_account` (
   `account_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
   PRIMARY KEY (`account_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='帐户类型表' AUTO_INCREMENT=1;
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- 表的结构 `xx_menu`
+--
+
+DROP TABLE IF EXISTS `xx_menu`;
+CREATE TABLE `xx_menu` (
+  `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `menu_title` varchar(64) NOT NULL COMMENT '目录标题',
+  `menu_pinyin` varchar(64) DEFAULT NULL COMMENT '目录标题拼音',
+  `menu_href` varchar(128) NOT NULL DEFAULT '/' COMMENT '目录URL',
+  `menu_subs` tinyint(1) DEFAULT '0' COMMENT '是否有子菜单 0:没有 >1:子菜单个数',
+  `menu_icon` varchar(32) DEFAULT NULL COMMENT '样式',
+  `menu_parent` int(11) DEFAULT NULL COMMENT '父菜单',
+  `menu_subindex` int(11) NOT NULL DEFAULT '0' COMMENT '最小序号',
+  `menu_index` int(11) NOT NULL DEFAULT '0' COMMENT '自身序号',
+  `menu_order` int(11) NOT NULL DEFAULT '1024' COMMENT '排序',
+  PRIMARY KEY (`menu_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1;
+
+
+INSERT INTO `xx_menu` (`menu_title`, `menu_pinyin`, `menu_href`, `menu_subs`, `menu_icon`, `menu_parent`, `menu_subindex`, `menu_index`, `menu_order`) VALUES
+('root', 'root', '/', '0', '', 1, 1, 1, 1);

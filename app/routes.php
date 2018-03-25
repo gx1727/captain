@@ -61,6 +61,8 @@ $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 $guest['/login'] = 'system:captain\system\Login@enter';
 $guest['/role/list'] = 'system:captain\system\Auth@role_list';
 $guest['/role/edit'] = 'system:captain\system\Auth@role_edit';
+$guest['/menu/get_by_role'] = 'system:captain\system\Menu@get_by_role';
+$guest['/menu/get_tree'] = 'system:captain\system\Menu@get_tree';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

@@ -43,9 +43,9 @@ class Ret
      * 构造函数
      * @param $return_status Model中定义的状态
      */
-    public function __construct(&$return_status)
+    public function __construct(&$return_status, $_code = -1)
     {
-        $this->code = -1;
+        $this->code = $_code;
         $this->return_status = $return_status;
 
         $this->result = array();

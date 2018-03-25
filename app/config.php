@@ -80,6 +80,7 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 define('CAPTAIN_EXTEND', 'xx_extend'); //model扩展表
 
 define('CAPTAIN_ROLE', 'xx_role'); //角色表
+define('CAPTAIN_MENU', 'xx_menu'); //角色目录
 
 define('CAPTAIN_USER', 'xx_user'); //用户表
 define('CAPTAIN_USERROLE', 'xx_user_role'); //用户角色表
