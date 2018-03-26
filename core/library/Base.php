@@ -243,8 +243,6 @@ class Base
         } else {
             //模块不存在类库文件
             $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . $class_name . '.php';
-            echo "dd";
-            print_r($param);
             if (file_exists($file_path)) {
                 $this->$alias = load_class($file_path, $library_name, $param);
             }

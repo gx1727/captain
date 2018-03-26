@@ -31,7 +31,12 @@ class Sort
      * @param string $_title 标题字段名
      * @param string $_order 排序字段名
      */
-    function __construct(&$_mod, $_table_name, $_key_id = 'id', $_parent = 'parent', $_subindex = 'subindex', $_index = 'index', $_title = 'title', $_order = 'order')
+    function __construct()
+    {
+        $this->prefix = ' / ';
+    }
+
+    public function init(&$_mod, $_table_name, $_key_id = 'id', $_parent = 'parent', $_subindex = 'subindex', $_index = 'index', $_title = 'title', $_order = 'order')
     {
         $this->mod = $_mod;
         $this->table_name = $_table_name;
@@ -43,9 +48,6 @@ class Sort
         $this->order = $_order;
 
         $this->return_status = $this->mod->return_status;
-
-
-        $this->prefix = ' / ';
     }
 
     /**
@@ -199,16 +201,15 @@ class Sort
      * @param bool $fun_create_node
      * @return array
      */
-    public function get_sort_tree($root = 0, $fun_create_node = false)
+    public function get_sort_tree($root = 0, $fun_create_node = false, $children_name = 'children')
     {
         $sort_list_db = array();//所有分类的k-v列表
 
-        $sql = "select * from " . $this->table_name . " order by " . $this->order . ' desc ';
+        $sql = 'select * from ' . $this->table_name . ' order by ? desc ';
 
-        $query = $this->mod->query($sql);
+        $query_list = $this->mod->query($sql, array($this->order), false);
 
-        if ($query->num_rows() > 0) {
-            $query_list = $query->result_array();
+        if ($query_list) {
             foreach ($query_list as $sort_node) {
                 $sort_list_db[$sort_node[$this->key_id]] = $sort_node;
             }
@@ -217,14 +218,14 @@ class Sort
         $sort_tree = array();
         if ($sort_list_db) {
             foreach ($sort_list_db as $sort_node) {
-                if ($sort_node[$this->parent] > 0) {
-                    $sort_list_db[$sort_node[$this->parent]]['children'][$sort_node[$this->key_id]] = $sort_node[$this->key_id];
+                if ($sort_node[$this->parent] > 0 && $sort_node[$this->parent] != $sort_node[$this->key_id]) {
+                    $sort_list_db[$sort_node[$this->parent]][$children_name][$sort_node[$this->key_id]] = $sort_node[$this->key_id];
                 }
             }
 
             foreach ($sort_list_db as $sort_id => $sort_node) {
                 if ($sort_node[$this->parent] == $root) {
-                    $this->_create_tree($sort_tree[], $sort_list_db, $sort_id, $fun_create_node);
+                    $this->_create_tree($sort_tree[], $sort_list_db, $sort_id, $fun_create_node, $children_name);
                 }
             }
         }
@@ -232,14 +233,14 @@ class Sort
         return $sort_tree;
     }
 
-    private function _create_tree(&$sort_tree, &$sort_list_db, $sort_id, $fun_create_node)
+    private function _create_tree(&$sort_tree, &$sort_list_db, $sort_id, $fun_create_node, $children_name = 'children')
     {
         $sort_node = $sort_list_db[$sort_id];
-        if (isset($sort_node['children']) && $sort_node['children']) {
-            $children = $sort_node['children'];
-            unset($sort_node['children']);
+        if (isset($sort_node[$children_name]) && $sort_node[$children_name]) {
+            $children = $sort_node[$children_name];
+            unset($sort_node[$children_name]);
             foreach ($children as $childern_sort_id) {
-                $this->_create_tree($sort_node['children'][], $sort_list_db, $childern_sort_id, $fun_create_node);
+                $this->_create_tree($sort_node[$children_name][], $sort_list_db, $childern_sort_id, $fun_create_node);
             }
         }
 
