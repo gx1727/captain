@@ -78,7 +78,7 @@ class MenuModel extends Model
     public function manage_menu_node($sort_node)
     {
         $sort_node['title'] = $sort_node['menu_title'];
-        $sort_node['name'] = $sort_node['menu_href'];
+            $sort_node['name'] = $sort_node['menu_href'];
         $sort_node['icon'] = $sort_node['menu_icon'];
         $sort_node['expand'] = true;
         return $sort_node;
