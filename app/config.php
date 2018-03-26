@@ -94,6 +94,9 @@ define('CAPTAIN_MATERIAL', 'xx_code_e'); //物资编码表 这只是前缀，后
 // 资金相关
 define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
+// CMS管理
+define("CMS_SORT", 'cms_sort'); // 文章分类
+
 /**
  * --------------------------------------------------------------------------
  *  编码相关
