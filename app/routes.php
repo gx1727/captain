@@ -82,3 +82,4 @@ $user['/user/home'] = 'system:captain\system\Admin@home';
  * $needless_context
  */
 $needless_context['/api'] = 'system:captain\system\Index@api';
+$needless_context['/tools/imagetools_proxy'] = 'system:captain\system\Tools@imagetools_proxy';
