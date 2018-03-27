@@ -18,25 +18,30 @@ class Sort
     var $subindex;
     var $index;
     var $title;
+    var $status; // 有效状态
     var $prefix; // 拼接时的分隔符
+
 
     /**
      * Sort constructor.
-     * @param $_mod 模型
-     * @param string $_table_name 表名
-     * @param string $_key_id 键
-     * @param string $_parent 父结点的字段名
-     * @param string $_subindex 最小的index字段名
-     * @param string $_index 自身的index字段名
-     * @param string $_title 标题字段名
-     * @param string $_order 排序字段名
      */
     function __construct()
     {
         $this->prefix = ' / ';
     }
 
-    public function init(&$_mod, $_table_name, $_key_id = 'id', $_parent = 'parent', $_subindex = 'subindex', $_index = 'index', $_title = 'title', $_order = 'order')
+    /**
+     * @param $_mod
+     * @param $_table_name 表名
+     * @param string $_key_id 键
+     * @param string $_parent 父结点的字段名
+     * @param string $_subindex 最小的index字段名
+     * @param string $_index 自身的index字段名
+     * @param string $_title 标题字段名
+     * @param string $_order 排序字段名
+     * @param string $_status 有效状态段名
+     */
+    public function init(&$_mod, $_table_name, $_key_id = 'id', $_parent = 'parent', $_subindex = 'subindex', $_index = 'index', $_title = 'title', $_order = 'order', $_status = '')
     {
         $this->mod = $_mod;
         $this->table_name = $_table_name;
@@ -46,6 +51,7 @@ class Sort
         $this->index = $_index;
         $this->title = $_title;
         $this->order = $_order;
+        $this->status = $_status;
 
         $this->return_status = $this->mod->return_status;
     }
@@ -205,7 +211,11 @@ class Sort
     {
         $sort_list_db = array();//所有分类的k-v列表
 
-        $sql = 'select * from ' . $this->table_name . ' order by ? desc ';
+        $sql = 'select * from ' . $this->table_name;
+        if ($this->status) {
+            $sql .= ' where ' . $this->status . ' = 0 ';
+        }
+        $sql .= ' order by ? desc ';
 
         $query_list = $this->mod->query($sql, array($this->order), false);
 

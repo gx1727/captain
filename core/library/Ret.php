@@ -83,7 +83,9 @@ class Ret
         $key = "data_" . $index;
         $this->$key = $data;
 
-        $this->set_code(0);
+        if ($this->code < 0) {
+            $this->set_code(0);
+        }
     }
 
     /**

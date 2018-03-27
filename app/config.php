@@ -96,6 +96,8 @@ define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 
 // CMS管理
 define("CMS_SORT", 'cms_sort'); // 文章分类
+define("CMS_TAG", 'cms_tag'); // 文章TAG
+define("CMS_TAGGROUP", 'cms_tag_group'); // 文章TAG分组
 
 /**
  * --------------------------------------------------------------------------

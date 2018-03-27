@@ -214,6 +214,7 @@ class Base
 
     /**
      * 加载类库
+     * 先找模块
      * @param $library_name 模型
      * @param null $alias 别名
      * @param null $modular 模块
@@ -250,7 +251,46 @@ class Base
     }
 
     /**
+     * 加载类库
+     * 先找core
+     * @param $library_name 模型
+     * @param null $alias 别名
+     * @param null $modular 模块
+     * @param null $param 参数
+     */
+    protected function library_core($library_name, $alias = null, $modular = null, $param = null)
+    {
+        $class_name = $library_name; //类名 文件名
+        if (strpos($library_name, '\\') === false) {
+            //不带命名空空间
+            $library_name = '\\' . $this->namespace . '\\' . $library_name;
+        } else {
+            //带命名空间
+            $class_name = substr($library_name, strrpos($library_name, '\\') + 1);
+        }
+
+        //模块不存在类库文件
+        $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . $class_name . '.php';
+        if (file_exists($file_path)) {
+            $this->$alias = load_class($file_path, $library_name, $param);
+        } else {
+            if (!$alias) {
+                $alias = $class_name;
+            }
+            if (!$modular) {
+                $modular = $this->modular;
+            }
+            $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . $class_name . '.php';
+
+            if (file_exists($file_path)) {
+                $this->$alias = load_class($file_path, $library_name, $param);
+            }
+        }
+    }
+
+    /**
      * 加载help
+     * 先找模块
      * @param $help_name 模型
      * @param null $modular 模块
      */
@@ -267,6 +307,30 @@ class Base
         } else {
             //模块不存在类库文件
             $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'helper' . DIRECTORY_SEPARATOR . $help_name . '.php';
+            if (file_exists($file_path)) {
+                require_once($file_path);
+            }
+        }
+    }
+
+    /**
+     * 加载help
+     * 先找core
+     * @param $help_name 模型
+     * @param null $modular 模块
+     */
+    protected function help_core($help_name, $modular = null)
+    {
+        $file_path = BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'helper' . DIRECTORY_SEPARATOR . $help_name . '.php';
+        if (file_exists($file_path)) {
+            require_once($file_path);
+        } else {
+            if (!$modular) {
+                $modular = $this->modular;
+            }
+
+            $file_path = BASEPATH . 'app' . DIRECTORY_SEPARATOR . $modular . DIRECTORY_SEPARATOR . 'helper' . DIRECTORY_SEPARATOR . $help_name . '.php';
+
             if (file_exists($file_path)) {
                 require_once($file_path);
             }

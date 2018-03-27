@@ -29,6 +29,7 @@ class MenuModel extends Model
         $this->sortLib->init($this, CAPTAIN_MENU, 'menu_id', 'menu_parent', 'menu_subindex', 'menu_index', 'menu_title', 'menu_order');
         $this->return_status[1] = '目录不存在';
         $this->return_status[2] = '目录有下级目录，有能删除';
+        $this->return_status[3] = '上级目录不能为自己';
     }
 
     public function get_menu($menu_id)
@@ -51,7 +52,12 @@ class MenuModel extends Model
 
     public function edit_menu($menu_id, $menu_data)
     {
-        return $this->edit($menu_id, $menu_data, CAPTAIN_MENU, 'menu_id');
+        if ($menu_data['menu_parent'] == $menu_id) {
+            $ret = new Ret($this->return_status, 3);
+            return $ret;
+        } else {
+            return $this->edit($menu_id, $menu_data, CAPTAIN_MENU, 'menu_id');
+        }
     }
 
     public function del_menu($menu_id)
@@ -78,7 +84,7 @@ class MenuModel extends Model
     public function manage_menu_node($sort_node)
     {
         $sort_node['title'] = $sort_node['menu_title'];
-            $sort_node['name'] = $sort_node['menu_href'];
+        $sort_node['name'] = $sort_node['menu_href'];
         $sort_node['icon'] = $sort_node['menu_icon'];
         $sort_node['expand'] = true;
         return $sort_node;

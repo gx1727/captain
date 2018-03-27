@@ -61,11 +61,23 @@ $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 $guest['/login'] = 'system:captain\system\Login@enter';
 $guest['/role/list'] = 'system:captain\system\Auth@role_list';
 $guest['/role/edit'] = 'system:captain\system\Auth@role_edit';
-$guest['/menu/get_tree'] = 'system:captain\system\Menu@get_tree';
+$guest['/menu/tree'] = 'system:captain\system\Menu@get_tree';
 $guest['/menu/get'] = 'system:captain\system\Menu@get_menu';
 $guest['/menu/form'] = 'system:captain\system\Menu@form_menu';
 $guest['/menu/del'] = 'system:captain\system\Menu@del_menu';
 
+$guest['/cms/sort/tree'] = 'cms:captain\cms\Cms@get_tree';
+$guest['/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
+$guest['/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
+$guest['/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
+$guest['/cms/tag_group/list'] = 'cms:captain\cms\Cms@tag_group_list';
+$guest['/cms/tag_group/add'] = 'cms:captain\cms\Cms@tag_group_add';
+$guest['/cms/tag_group/edit'] = 'cms:captain\cms\Cms@tag_group_edit';
+$guest['/cms/tag_group/del'] = 'cms:captain\cms\Cms@tag_group_del';
+$guest['/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
+$guest['/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
+$guest['/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
+$guest['/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

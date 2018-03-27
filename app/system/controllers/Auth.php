@@ -23,13 +23,12 @@ class Auth extends Controller
 
     public function role_list()
     {
-
         $keyword = $this->input->get_post('keyword');
         $role_list_ret = $this->authMod->get_role_list($this->get_list_param(), $keyword);
 
         if ($role_list_ret->get_code() === 0) {
             $role_list = $role_list_ret->get_data();
-            $this->json($this->get_result(array('data' => $role_list, 'total' => sizeof($role_list))));
+            $this->json($this->get_result(array('data' => $role_list, 'total' => $role_list_ret->get_data(2))));
         } else {
             $this->json($this->get_result(array('data' => array(), 'total' => 0)));
         }
