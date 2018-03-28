@@ -98,6 +98,10 @@ define("CAPTAIN_ACCOUNT", 'xx_account'); //资金帐户表 注：前缀
 define("CMS_SORT", 'cms_sort'); // 文章分类
 define("CMS_TAG", 'cms_tag'); // 文章TAG
 define("CMS_TAGGROUP", 'cms_tag_group'); // 文章TAG分组
+define("CMS_ARTICLE", 'cms_article'); // 文章
+define("CMS_ARTICLEDRAFT", 'cms_article_draft'); // 文章草稿
+define("CMS_ARTICLESORT", 'cms_article_sort'); // 文章分类
+define("CMS_ARTICLETAG", 'cms_article_tag'); // 文章TAG
 
 /**
  * --------------------------------------------------------------------------

@@ -53,3 +53,66 @@ CREATE TABLE `cms_tag` (
    PRIMARY KEY (`ct_id`),
     KEY `cs_name` (`ct_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='TAG管理'  AUTO_INCREMENT=1;
+
+
+
+--
+-- 表的结构 `cms_content`
+--
+
+DROP TABLE IF EXISTS `cms_article`;
+CREATE TABLE `cms_article` (
+  `a_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_code` varchar(32) NOT NULL DEFAULT '' COMMENT '用户编码',
+  `a_title` varchar(512) NOT NULL DEFAULT '' COMMENT '标题',
+  `a_img` varchar(128) NOT NULL DEFAULT '' COMMENT '文章图',
+  `a_abstract` varchar(1024) NOT NULL DEFAULT '' COMMENT '摘要',
+  `a_content` text COMMENT '内容',
+  `a_atime` int(10) DEFAULT '0' COMMENT '创建时间',
+  `a_etime` int(10) DEFAULT '0' COMMENT '修改时间',
+  `a_count` int(10) DEFAULT '0' COMMENT '查看次数',
+  `a_extended` varchar(256) DEFAULT '' COMMENT '扩展参数',
+  `a_publish_time` int(10) DEFAULT '0' COMMENT '发布时间',
+  `a_status` tinyint(1) NOT NULL DEFAULT '3' COMMENT '是否删除,默认为0 0:删除 1:显示 2:未发布，不显示 3:草稿中',
+   PRIMARY KEY (`a_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章表';
+
+DROP TABLE IF EXISTS `cms_article_draft`;
+CREATE TABLE `cms_article_draft` (
+  `a_id` int(10) UNSIGNED NOT NULL,
+  `user_code` varchar(32) NOT NULL DEFAULT '' COMMENT '用户编码',
+  `a_title` varchar(512) NOT NULL DEFAULT '' COMMENT '标题',
+  `a_img` varchar(128) NOT NULL DEFAULT '' COMMENT '文章图',
+  `a_abstract` varchar(1024) NOT NULL DEFAULT '' COMMENT '摘要',
+  `a_content` text COMMENT '内容',
+  `a_atime` int(10) DEFAULT '0' COMMENT '创建时间',
+  `a_etime` int(10) DEFAULT '0' COMMENT '修改时间',
+  `a_count` int(10) DEFAULT '0' COMMENT '查看次数',
+  `a_extended` varchar(256) DEFAULT '' COMMENT '扩展参数',
+   PRIMARY KEY (`a_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章草稿表';
+
+
+DROP TABLE IF EXISTS `cms_article_tag`;
+CREATE TABLE `cms_article_tag` (
+  `at_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ct_title` varchar(128) NOT NULL DEFAULT '' COMMENT 'tag标题',
+  `ct_name` int(10) NOT NULL DEFAULT '0' COMMENT 'tagID',
+  `a_id` int(10) NOT NULL DEFAULT '0' COMMENT '文章ID',
+  `at_order` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
+   PRIMARY KEY (`at_id`),
+   KEY cms_article_tag_ct_name (`ct_name`),
+   KEY cms_article_tag_a_id (`a_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章tag关系';
+
+DROP TABLE IF EXISTS `cms_article_sort`;
+CREATE TABLE `cms_article_sort` (
+  `as_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cs_title` varchar(128) NOT NULL DEFAULT '' COMMENT '分类标题',
+  `cs_name` int(10) NOT NULL DEFAULT '0' COMMENT '分类ID',
+  `a_id` int(10) NOT NULL DEFAULT '0' COMMENT '文章ID',
+  `as_order` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
+   PRIMARY KEY (`as_id`),
+   KEY cms_article_sort_cs_name (`cs_name`),
+   KEY cms_article_sort_a_id (`a_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章分类关系';

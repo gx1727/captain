@@ -52,6 +52,9 @@ class Base
     protected function log_file()
     {
         $args = func_get_args();
+        if (sizeof($args) <= 1) {
+            return $this->log($args);
+        }
         call_user_func_array(array(&$this->log, 'log'), $args);
     }
 
@@ -119,6 +122,9 @@ class Base
                 $sql = "select * from  $table where $key_field = ?";
                 $ret = $this->db->rawQuery($sql, array($key));
             }
+        } else {
+            $sql = "select * from  $table";
+            $ret = $this->db->rawQuery($sql);
         }
         return $ret;
     }

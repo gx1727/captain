@@ -187,4 +187,10 @@ class Cms extends Controller
         $this->json($this->get_result($ret));
     }
 
+    public function tag_get()
+    {
+        $ret = $this->tagMod->get_tag_data();
+        $this->json($this->get_result(array('tagData' => $ret)));
+    }
+
 }

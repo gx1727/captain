@@ -100,6 +100,8 @@ class SortModel extends Model
     public function edit_sort($cs_id, $sort_data)
     {
         $ret = new Ret($this->return_status);
+        $old_sort = $this->get($cs_id); // 原分类
+
         if (!$sort_data['cs_title']) {
             $ret->set_code(3);
             return $ret;
@@ -124,6 +126,11 @@ class SortModel extends Model
         $sort_data['cs_etime'] = time();
         $this->edit($cs_id, $sort_data);
         $ret->set_data($sort_data);
+
+        if($sort_data['cs_name'] != $old_sort['cs_name']) { // 记录原cs_name, 如有变更，要同步修改文章关系
+            $sql = 'update cms_article_sort set cs_name = ? where cs_name = ?';
+            $this->query($sql, array($sort_data['cs_name'], $old_sort['cs_name']));
+        }
         return $ret;
     }
 
@@ -161,7 +168,7 @@ class SortModel extends Model
      */
     public function manage_menu_node($sort_node)
     {
-        $sort_node['title'] = $sort_node['cs_title'] . ' [' . $sort_node['cs_name'] . ']';
+        $sort_node['title'] = $sort_node['cs_title'];
         $sort_node['name'] = $sort_node['cs_name'];
         $sort_node['expand'] = true;
         return $sort_node;

@@ -25,6 +25,7 @@ class TagModel extends Model
 
         $this->return_status[1] = "TAG分组不存在";
         $this->return_status[3] = "TAG标题不能为空";
+        $this->return_status[4] = 'TAG标题已存在，不能重复';
         $this->return_status[5] = 'TAG名称已存在，不能重复';
         $this->return_status[6] = '新增TAG时，自动获取的分类名称有重复，系统默认增加了随机尾缀';
     }
@@ -76,6 +77,11 @@ class TagModel extends Model
             $ret->set_code(3);
             return $ret;
         }
+        if($this->check_tag_title($ct_title, 0))
+        {
+            $ret->set_code(4); // TAG标题已存在，不能重复
+            return $ret;
+        }
 
         $ct_name = $this->pinyinLib->py($ct_title);
         while ($this->check_tag_name($ct_name)) {
@@ -84,7 +90,7 @@ class TagModel extends Model
         }
 
 
-        $data = array(
+        $tag_data = array(
             'ctg_name' => $ctg_name,
             'ct_name' => $ct_name,
             'ct_title' => $ct_title,
@@ -94,8 +100,10 @@ class TagModel extends Model
             'ct_atime' => time(),
             'ct_etime' => time(),
         );
-        $ct_id = $this->add($data);
+        $ct_id = $this->add($tag_data);
+        $tag_data['ct_id'] = $ct_id;
         $ret->set_data($ct_id);
+        $ret->set_result($tag_data);
         return $ret;
     }
 
@@ -108,12 +116,28 @@ class TagModel extends Model
     public function tag_edit($ct_id, $param)
     {
         $ret = new Ret($this->return_status);
+        if(isset($param['ct_title'])) {
+            if (!$param['ct_title']) {
+                $ret->set_code(3);
+                return $ret;
+            }
+
+            if($this->check_tag_title($param['ct_title'], $ct_id))
+            {
+                $ret->set_code(4); // TAG标题已存在，不能重复
+                return $ret;
+            }
+        }
+
         if (isset($param['ct_name']) && $this->check_tag_name($param['ct_name'], $ct_id)) {
             $ret->set_code(5);
             return $ret;
         }
         $tag = $this->get($ct_id, CMS_TAG, 'ct_id');
+
+
         if ($tag) {
+            $old_ct_name = $tag['ct_name']; // 记录原ct_name, 如有变更，要同步修改文章关系
             foreach ($tag as $key => $val) {
                 if (isset($param[$key])) {
                     $tag[$key] = $param[$key];
@@ -121,6 +145,11 @@ class TagModel extends Model
             }
             $tag['ct_etime'] = time();
             $ret = $this->edit($ct_id, $tag, CMS_TAG, 'ct_id');
+
+            if($old_ct_name != $tag['ct_name']) { // 有变更
+                $sql = 'update cms_article_tag set ct_name = ? where ct_name = ?';
+                $this->query($sql, array($tag['ct_name'], $old_ct_name));
+            }
             return $ret;
         } else {
             $ret = new Ret($this->return_status);
@@ -164,6 +193,44 @@ class TagModel extends Model
         }
     }
 
+    /**
+     * 检查是否存在同名的tag
+     * @param $ct_title
+     * @param int $ct_id
+     * @return mixed
+     */
+    public function check_tag_title($ct_title, $ct_id = 0)
+    {
+        $query_param = array($ct_title);
+        $sql = 'select ct_id from ' . $this->table_name . ' where ct_status = 0 and ct_title = ?';
+        if ($ct_id > 0) {
+            $sql .= ' and ct_id != ? ';
+            $query_param[] = $ct_id;
+        }
+        $sql .= ' limit 1';
+        $tag = $this->query($sql, $query_param);
+        return $tag;
+    }
+
+    /**
+     * 获取所有tag数据
+     */
+    public function get_tag_data()
+    {
+        $tag_groups = $this->get_all(false, CMS_TAGGROUP);
+        $tags = $this->get_all(false, CMS_TAG);
+        $tag_data = array();
+        foreach($tag_groups as $tag_group_node) {
+            $tag_group_node['tagList'] = array();
+            $tag_data[$tag_group_node['ctg_name']] = $tag_group_node;
+        }
+
+        foreach($tags as $tags_node) {
+            $tag_data[$tags_node['ctg_name']]['tagList'][] = $tags_node;
+        }
+
+        return $tag_data;
+    }
     //////////////////////////////////////////////////////////
     /// CMS_TAGGROUP
     public function get_tag_group_byid($ctg_id)

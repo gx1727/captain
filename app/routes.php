@@ -78,6 +78,7 @@ $guest['/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
 $guest['/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
 $guest['/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
 $guest['/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
+$guest['/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
