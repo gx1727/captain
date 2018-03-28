@@ -127,7 +127,7 @@ class SortModel extends Model
         $this->edit($cs_id, $sort_data);
         $ret->set_data($sort_data);
 
-        if($sort_data['cs_name'] != $old_sort['cs_name']) { // 记录原cs_name, 如有变更，要同步修改文章关系
+        if ($sort_data['cs_name'] != $old_sort['cs_name']) { // 记录原cs_name, 如有变更，要同步修改文章关系
             $sql = 'update cms_article_sort set cs_name = ? where cs_name = ?';
             $this->query($sql, array($sort_data['cs_name'], $old_sort['cs_name']));
         }
@@ -136,11 +136,17 @@ class SortModel extends Model
 
     /**
      * 删除分类
+     * 同时删除文章-分类关系数据
      * @param $cs_id
      * @return mixed
      */
     public function del_sort($cs_id)
     {
+        $sort = $this->get($cs_id);
+        if ($sort) {
+            $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
+            $this->query($sql, array($sort['cs_name']));
+        }
         $sort_data['cs_status'] = 1;
         $sort_data['cs_etime'] = time();
         return $this->edit($cs_id, $sort_data);

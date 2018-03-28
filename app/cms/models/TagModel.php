@@ -77,8 +77,7 @@ class TagModel extends Model
             $ret->set_code(3);
             return $ret;
         }
-        if($this->check_tag_title($ct_title, 0))
-        {
+        if ($this->check_tag_title($ct_title, 0)) {
             $ret->set_code(4); // TAG标题已存在，不能重复
             return $ret;
         }
@@ -116,14 +115,13 @@ class TagModel extends Model
     public function tag_edit($ct_id, $param)
     {
         $ret = new Ret($this->return_status);
-        if(isset($param['ct_title'])) {
+        if (isset($param['ct_title'])) {
             if (!$param['ct_title']) {
                 $ret->set_code(3);
                 return $ret;
             }
 
-            if($this->check_tag_title($param['ct_title'], $ct_id))
-            {
+            if ($this->check_tag_title($param['ct_title'], $ct_id)) {
                 $ret->set_code(4); // TAG标题已存在，不能重复
                 return $ret;
             }
@@ -146,7 +144,7 @@ class TagModel extends Model
             $tag['ct_etime'] = time();
             $ret = $this->edit($ct_id, $tag, CMS_TAG, 'ct_id');
 
-            if($old_ct_name != $tag['ct_name']) { // 有变更
+            if ($old_ct_name != $tag['ct_name']) { // 有变更
                 $sql = 'update cms_article_tag set ct_name = ? where ct_name = ?';
                 $this->query($sql, array($tag['ct_name'], $old_ct_name));
             }
@@ -158,8 +156,19 @@ class TagModel extends Model
         }
     }
 
+    /**
+     * 删除TAG
+     * 同时删除文章-TAG关系数据
+     * @param $ct_id
+     * @return mixed
+     */
     public function del_tag($ct_id)
     {
+        $tag = $this->get($ct_id);
+        if ($tag) {
+            $sql = 'delete from ' . CMS_ARTICLETAG . ' where ct_name = ?';
+            $this->query($sql, array($tag['ct_name']));
+        }
         return $this->edit($ct_id, array('ct_status' => 1, 'ct_etime' => time()), CMS_TAG, 'ct_id');
     }
 
@@ -220,12 +229,12 @@ class TagModel extends Model
         $tag_groups = $this->get_all(false, CMS_TAGGROUP);
         $tags = $this->get_all(false, CMS_TAG);
         $tag_data = array();
-        foreach($tag_groups as $tag_group_node) {
+        foreach ($tag_groups as $tag_group_node) {
             $tag_group_node['tagList'] = array();
             $tag_data[$tag_group_node['ctg_name']] = $tag_group_node;
         }
 
-        foreach($tags as $tags_node) {
+        foreach ($tags as $tags_node) {
             $tag_data[$tags_node['ctg_name']]['tagList'][] = $tags_node;
         }
 
