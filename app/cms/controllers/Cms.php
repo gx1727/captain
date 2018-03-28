@@ -13,20 +13,44 @@ use \captain\core\Controller;
 
 class Cms extends Controller
 {
+    var $user_code;
+    var $role_name;
+
     function __construct()
     {
         parent::__construct(__NAMESPACE__, 'cms');
         $this->model('\captain\cms\SortModel', 'sortMod');
         $this->model('\captain\cms\TagModel', 'tagMod');
+        $this->model('\captain\cms\CmsModel', 'cmsMod');
+
+//        $session = &$this->get_session(); // 引用 session
+//
+//        $this->user_code = $session->get_sess('user_code');
+//        $this->role_name = $session->get_sess('role_code');
 
         $this->return_status[1] = '失败';
         $this->return_status[2] = '分类不存在';
     }
-
+    ////////////////////////////////////////////////////////////////////////
+    /// 文章操作
+    ///
     /**
-     * 通过用户角色，获到角色的菜单树
+     * 创建一个空文章
      */
-    public function get_tree()
+    public function create_article()
+    {
+//        $article = $this->cmsMod->create_article($this->user_code);
+//        $this->json($this->get_result($article));
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////
+    /// 分类操作
+    /**
+     * 获到分类树
+     */
+    public function get_sort_tree()
     {
         $cs_id = $this->input->get_post('cs_id');
         $role_sort_tree = $this->sortMod->get_sort_tree($cs_id);
@@ -38,7 +62,7 @@ class Cms extends Controller
     }
 
     /**
-     * 获取菜单详细
+     * 获取分类详细
      */
     public function get_sort()
     {
@@ -52,7 +76,7 @@ class Cms extends Controller
     }
 
     /**
-     * 编辑菜单
+     * 编辑分类
      */
     public function form_sort()
     {
@@ -146,7 +170,7 @@ class Cms extends Controller
 
         if ($tag_list_ret->get_code() === 0) {
             $tag_list = $tag_list_ret->get_data();
-            foreach($tag_list as &$tag_item) {
+            foreach ($tag_list as &$tag_item) {
                 $tag_group = $this->tagMod->get_tag_group_byname($tag_item['ctg_name']);
                 $tag_item['ctg_name_title'] = $tag_group['ctg_title'];
 

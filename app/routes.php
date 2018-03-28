@@ -66,7 +66,7 @@ $guest['/menu/get'] = 'system:captain\system\Menu@get_menu';
 $guest['/menu/form'] = 'system:captain\system\Menu@form_menu';
 $guest['/menu/del'] = 'system:captain\system\Menu@del_menu';
 
-$guest['/cms/sort/tree'] = 'cms:captain\cms\Cms@get_tree';
+$guest['/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
 $guest['/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
 $guest['/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
 $guest['/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
@@ -79,6 +79,8 @@ $guest['/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
 $guest['/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
 $guest['/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
 $guest['/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
+
+$guest['/cms/article/create'] = 'cms:captain\cms\Cms@create_article1';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

@@ -22,6 +22,11 @@ require_once BASEPATH . 'app/routes.php';
 include_once BASEPATH . 'core/helper/common.php';
 
 /**
+ * 设置时区
+ */
+date_default_timezone_set(sys_config('timezone'));
+
+/**
  * 工具类
  */
 include_once BASEPATH . 'core/library/Ret.php';
@@ -39,11 +44,6 @@ include_once BASEPATH . 'core/Log.php';
 include_once BASEPATH . 'core/Session.php';
 include_once BASEPATH . 'core/Controller.php';
 
-
-/**
- * 设置时区
- */
-date_default_timezone_set(sys_config('timezone'));
 
 /**
  * 日志

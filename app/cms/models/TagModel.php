@@ -31,6 +31,72 @@ class TagModel extends Model
     }
 
     //////////////////////////////////////////////////////////
+    /// CMS_TAGGROUP
+    public function get_tag_group_byid($ctg_id)
+    {
+        $tag_group = $this->get($ctg_id, CMS_TAGGROUP, 'ctg_id');
+
+        return $tag_group;
+    }
+
+    public function get_tag_group_byname($ctg_name)
+    {
+        $tag_group = $this->get($ctg_name, CMS_TAGGROUP, 'ctg_name');
+        return $tag_group;
+    }
+
+    public function get_all_tag_group($keyword)
+    {
+        $param_array = array();
+        $sql = "from " . CMS_TAGGROUP . ' where ctg_status = 0';
+        if ($keyword !== false) {
+            $sql .= ' and (ctg_name like ?';
+            $sql .= ' or ctg_title like ?)';
+            $param_array[] = '%' . $keyword . '%';
+            $param_array[] = '%' . $keyword . '%';
+        }
+
+        return $this->get_page_list($this->return_status, $sql, $param_array, 0, 999, false, false);
+    }
+
+    public function add_tag_group($data)
+    {
+        $data['ctg_atime'] = time();
+        $data['ctg_etime'] = time();
+        $this->add($data, CMS_TAGGROUP);
+    }
+
+    /**
+     * 编辑TAG分组数据
+     * @param $ctg_id
+     * @param $param
+     * @return Ret|mixed
+     */
+    public function tag_group_edit($ctg_id, $param)
+    {
+        $tag_group = $this->get($ctg_id, CMS_TAGGROUP, 'ctg_id');
+        if ($tag_group) {
+            foreach ($tag_group as $key => $val) {
+                if (isset($param[$key])) {
+                    $tag_group[$key] = $param[$key];
+                }
+            }
+            $tag_group['ctg_etime'] = time();
+            $ret = $this->edit($ctg_id, $tag_group, CMS_TAGGROUP, 'ctg_id');
+            return $ret;
+        } else {
+            $ret = new Ret($this->return_status);
+            $ret->set_code(1);
+            return $ret;
+        }
+    }
+
+    public function del_tag_group($ctg_id)
+    {
+        return $this->edit($ctg_id, array('ctg_status' => 1, 'ctg_etime' => time()), CMS_TAGGROUP, 'ctg_id');
+    }
+
+    //////////////////////////////////////////////////////////
     /// CMS_TAG
     public function get_tag_byid($ct_id)
     {
@@ -240,69 +306,10 @@ class TagModel extends Model
 
         return $tag_data;
     }
-    //////////////////////////////////////////////////////////
-    /// CMS_TAGGROUP
-    public function get_tag_group_byid($ctg_id)
+
+    public function del_article($a_id)
     {
-        $tag_group = $this->get($ctg_id, CMS_TAGGROUP, 'ctg_id');
-
-        return $tag_group;
-    }
-
-    public function get_tag_group_byname($ctg_name)
-    {
-        $tag_group = $this->get($ctg_name, CMS_TAGGROUP, 'ctg_name');
-        return $tag_group;
-    }
-
-    public function get_all_tag_group($keyword)
-    {
-        $param_array = array();
-        $sql = "from " . CMS_TAGGROUP . ' where ctg_status = 0';
-        if ($keyword !== false) {
-            $sql .= ' and (ctg_name like ?';
-            $sql .= ' or ctg_title like ?)';
-            $param_array[] = '%' . $keyword . '%';
-            $param_array[] = '%' . $keyword . '%';
-        }
-
-        return $this->get_page_list($this->return_status, $sql, $param_array, 0, 999, false, false);
-    }
-
-    public function add_tag_group($data)
-    {
-        $data['ctg_atime'] = time();
-        $data['ctg_etime'] = time();
-        $this->add($data, CMS_TAGGROUP);
-    }
-
-    /**
-     * 编辑TAG分组数据
-     * @param $ctg_id
-     * @param $param
-     * @return Ret|mixed
-     */
-    public function tag_group_edit($ctg_id, $param)
-    {
-        $tag_group = $this->get($ctg_id, CMS_TAGGROUP, 'ctg_id');
-        if ($tag_group) {
-            foreach ($tag_group as $key => $val) {
-                if (isset($param[$key])) {
-                    $tag_group[$key] = $param[$key];
-                }
-            }
-            $tag_group['ctg_etime'] = time();
-            $ret = $this->edit($ctg_id, $tag_group, CMS_TAGGROUP, 'ctg_id');
-            return $ret;
-        } else {
-            $ret = new Ret($this->return_status);
-            $ret->set_code(1);
-            return $ret;
-        }
-    }
-
-    public function del_tag_group($ctg_id)
-    {
-        return $this->edit($ctg_id, array('ctg_status' => 1, 'ctg_etime' => time()), CMS_TAGGROUP, 'ctg_id');
+        $sql = 'delete from ' . CMS_ARTICLETAG . ' where a_id = ?';
+        $this->query($sql, array($a_id));
     }
 }

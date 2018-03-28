@@ -233,6 +233,11 @@ class SortModel extends Model
             // 上级ID不存在，出现错误
             return true;
         }
+    }
 
+    public function del_article($a_id)
+    {
+        $sql = 'delete from ' . CMS_ARTICLESORT . ' where a_id = ?';
+        $this->query($sql, array($a_id));
     }
 }
