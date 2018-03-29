@@ -18,7 +18,9 @@ class Session extends Base
     var $_ip_address = null;
     var $_create_time = 0;
     var $_last_activity = 0;
+    var $_cookie_activity = 0;
     var $_user_data = array();
+    var $_ctime;
 
     function __construct($config)
     {
@@ -29,6 +31,8 @@ class Session extends Base
         $this->table_name = $config['sess_save_path'];
         $this->key_id = 'session_id';
 
+        $this->_ctime = time();
+
         $this->database(); // 初始化数据库连接
         $this->start(); // 初始化session数据
 
@@ -38,55 +42,78 @@ class Session extends Base
     {
         if (isset($_COOKIE[$this->_config['sess_cookie_name']])) {
             $this->_session_id = $_COOKIE[$this->_config['sess_cookie_name']];
-            $ret = $this->get($this->_session_id);
-            if ($ret) { // session已存在
-                $this->_ip_address = $ret['ip_address'];
-                $this->_create_time = $ret['create_time'];
-                $this->_user_data = json_decode($ret['user_data'], true);
-
-                $this->update();
+            $session = $this->get($this->_session_id);
+            if ($session && $session['last_activity'] >= $this->_ctime) { // session已存在 且有效
+                $this->_ip_address = $session['ip_address'];
+                $this->_create_time = $session['create_time'];
+                $this->_cookie_activity = $session['cookie_activity'];
+                $this->_user_data = json_decode($session['user_data'], true);
+                $this->update(false);
             } else {
                 $this->_session_id = '';
             }
         }
-        if (!$this->_session_id) {
-            // 创建seesion_id, 33位到39位不定
-            $this->_session_id = md5($this->_ip_address . $this->_create_time . Rand::getRandChar(40))
-                . Rand::createRand((1 + Rand::randNum(7)), '0123456789abcdefghijklmnopqrstuvwxyz');
+        if (!$this->_session_id) { // 还没有seesion,新建
+            $this->refresh_cookie();
 
-
-            $this->_create_time = time();
-            $this->_last_activity = time();
+            $this->_create_time = $this->_ctime;
+            $this->_last_activity = $this->_ctime + $this->_config['sess_expiration'];
+            $this->_cookie_activity = $this->_ctime + $this->_config['cookie_expiration'];
             $session_data = array(
                 'session_id' => $this->_session_id,
                 'ip_address' => $this->_ip_address,
                 'create_time' => $this->_create_time,
                 'last_activity' => $this->_last_activity,
+                'cookie_activity' => $this->_cookie_activity,
                 'user_data' => json_encode($this->_user_data)
             );
             $this->add($session_data);
-
-            setcookie(
-                $this->_config['sess_cookie_name'],
-                $this->_session_id,
-                time() + $this->_config['sess_expiration'],
-                $this->_config['cookie_path'],
-                $this->_config['cookie_domain']
-            );
         }
     }
 
     /**
-     * 更新session失效时间
+     * 刷新 cookie
      */
-    private function update()
+    private function refresh_cookie()
     {
-        $this->_last_activity = time();
+        // 创建seesion_id, 33位到39位不定
+        $this->_session_id = md5($this->_ip_address . $this->_create_time . Rand::getRandChar(40))
+            . Rand::createRand((1 + Rand::randNum(7)), '0123456789abcdefghijklmnopqrstuvwxyz');
+
+        setcookie(
+            $this->_config['sess_cookie_name'],
+            $this->_session_id,
+            $this->_ctime + $this->_config['sess_expiration'],
+            $this->_config['cookie_path'],
+            $this->_config['cookie_domain']
+        );
+    }
+
+    /**
+     * 更新session失效时间
+     * @param bool $user_data_flag 是否有数据更新
+     */
+    private function update($user_data_flag = true)
+    {
+        $c_session_id = $this->_session_id; //当前session_id, 可能被刷新掉
+
+        $this->_last_activity = $this->_ctime + $this->_config['sess_expiration'];
         $session_data = array(
             'last_activity' => $this->_last_activity,
-            'user_data' => json_encode($this->_user_data)
         );
-        $this->edit($this->_session_id, $session_data);
+        if ($user_data_flag) {
+            $session_data['user_data'] = json_encode($this->_user_data);
+        }
+
+        // 判断是否有必要刷新cookie值 即 session_id
+        if ($this->_cookie_activity < $this->_ctime) {
+            $this->refresh_cookie();
+            $session_data['cookie_activity'] = $this->_ctime + $this->_config['cookie_expiration'];
+            $session_data['session_id'] = $this->_session_id; // 在刷新cookie后，这个值是有变化的
+        }
+
+
+        $this->edit($c_session_id, $session_data);
     }
 
     /**
@@ -118,9 +145,12 @@ class Session extends Base
         $this->del($this->_session_id);
     }
 
+    /**
+     * 删除无用的sesseion
+     */
     public function gc()
     {
-        $sql = 'delete from ' . $this->_config['sess_save_path'] . ' where last_activity < ' . (time() - $this->_config['sess_expiration']);
+        $sql = 'delete from ' . $this->_config['sess_save_path'] . ' where last_activity < ' . $this->_ctime;
         $this->db->query($sql);
     }
 }

@@ -23,9 +23,9 @@ class Cms extends Controller
         $this->model('\captain\cms\TagModel', 'tagMod');
         $this->model('\captain\cms\CmsModel', 'cmsMod');
 
-//        $session = &$this->get_session(); // 引用 session
+        $session = &$this->get_session(); // 引用 session
 //
-//        $this->user_code = $session->get_sess('user_code');
+        $this->user_code = $session->get_sess('user_code');
 //        $this->role_name = $session->get_sess('role_code');
 
         $this->return_status[1] = '失败';

@@ -80,7 +80,7 @@ $guest['/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
 $guest['/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
 $guest['/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
 
-$guest['/cms/article/create'] = 'cms:captain\cms\Cms@create_article1';
+$guest['/cms/article/create'] = 'cms:captain\cms\Cms@create_article';
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
