@@ -97,7 +97,7 @@ DROP TABLE IF EXISTS `cms_article_tag`;
 CREATE TABLE `cms_article_tag` (
   `at_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ct_title` varchar(128) NOT NULL DEFAULT '' COMMENT 'tag标题',
-  `ct_name` int(10) NOT NULL DEFAULT '0' COMMENT 'tagID',
+  `ct_name` varchar(64) NOT NULL DEFAULT '' COMMENT 'tag名称',
   `a_id` int(10) NOT NULL DEFAULT '0' COMMENT '文章ID',
   `at_order` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
    PRIMARY KEY (`at_id`),
@@ -109,7 +109,7 @@ DROP TABLE IF EXISTS `cms_article_sort`;
 CREATE TABLE `cms_article_sort` (
   `as_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `cs_title` varchar(128) NOT NULL DEFAULT '' COMMENT '分类标题',
-  `cs_name` int(10) NOT NULL DEFAULT '0' COMMENT '分类ID',
+  `cs_name` varchar(64)  NOT NULL DEFAULT '' COMMENT '分类名称',
   `a_id` int(10) NOT NULL DEFAULT '0' COMMENT '文章ID',
   `as_order` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
    PRIMARY KEY (`as_id`),

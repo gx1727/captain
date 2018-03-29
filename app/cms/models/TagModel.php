@@ -107,8 +107,8 @@ class TagModel extends Model
 
     public function get_tag_byname($ct_name)
     {
-        $tag_group = $this->get($ct_name, CMS_TAG, 'ct_name');
-        return $tag_group;
+        $tag = $this->get($ct_name, CMS_TAG, 'ct_name');
+        return $tag;
     }
 
     public function get_tag_list($list_param, $ctg_name, $keyword)

@@ -44,6 +44,11 @@ class SortModel extends Model
         return $this->get($cs_id, $this->table_name, $key);
     }
 
+    public function get_sort_byname($cs_name)
+    {
+        $sort = $this->get($cs_name, $this->table_name, 'cs_name');
+        return $sort;
+    }
 
     /**
      * 增加分类

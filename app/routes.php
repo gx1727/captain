@@ -58,29 +58,35 @@ $guest['/z*'] = 'system:captain\system\Index@hello_tag';
 $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
 // 游客组 - 接口类
-$guest['/login'] = 'system:captain\system\Login@enter';
-$guest['/role/list'] = 'system:captain\system\Auth@role_list';
-$guest['/role/edit'] = 'system:captain\system\Auth@role_edit';
-$guest['/menu/tree'] = 'system:captain\system\Menu@get_tree';
-$guest['/menu/get'] = 'system:captain\system\Menu@get_menu';
-$guest['/menu/form'] = 'system:captain\system\Menu@form_menu';
-$guest['/menu/del'] = 'system:captain\system\Menu@del_menu';
+$guest['/api/login'] = 'system:captain\system\Login@enter';
+$guest['/api/role/list'] = 'system:captain\system\Auth@role_list';
+$guest['/api/role/edit'] = 'system:captain\system\Auth@role_edit';
+$guest['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
+$guest['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
+$guest['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
+$guest['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
 
-$guest['/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
-$guest['/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
-$guest['/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
-$guest['/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
-$guest['/cms/tag_group/list'] = 'cms:captain\cms\Cms@tag_group_list';
-$guest['/cms/tag_group/add'] = 'cms:captain\cms\Cms@tag_group_add';
-$guest['/cms/tag_group/edit'] = 'cms:captain\cms\Cms@tag_group_edit';
-$guest['/cms/tag_group/del'] = 'cms:captain\cms\Cms@tag_group_del';
-$guest['/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
-$guest['/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
-$guest['/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
-$guest['/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
-$guest['/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
+$guest['/api/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
+$guest['/api/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
+$guest['/api/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
+$guest['/api/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
+$guest['/api/cms/tag_group/list'] = 'cms:captain\cms\Cms@tag_group_list';
+$guest['/api/cms/tag_group/add'] = 'cms:captain\cms\Cms@tag_group_add';
+$guest['/api/cms/tag_group/edit'] = 'cms:captain\cms\Cms@tag_group_edit';
+$guest['/api/cms/tag_group/del'] = 'cms:captain\cms\Cms@tag_group_del';
+$guest['/api/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
+$guest['/api/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
+$guest['/api/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
+$guest['/api/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
+$guest['/api/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
+$guest['/api/cms/article/get'] = 'cms:captain\cms\Cms@article_get';
+$guest['/api/cms/article/list'] = 'cms:captain\cms\Cms@article_list';
+$guest['/api/cms/article/create'] = 'cms:captain\cms\Cms@article_create';
+$guest['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
+$guest['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
+$guest['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
 
-$guest['/cms/article/create'] = 'cms:captain\cms\Cms@create_article';
+
 
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';

@@ -7,13 +7,18 @@
  */
 //declare(strict_types=1);
 
+function cors() {
+
+    header("Access-Control-Allow-Credentials:true");
+    header("Access-Control-Allow-Origin: http://localhost:8080");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+    header('Access-Control-Allow-Headers: x-requested-with,content-type');
+}
 /**
  * 如果为 OPTIONS 协议，什么也不做
  */
 if (strtoupper($_SERVER['REQUEST_METHOD']) == 'OPTIONS') {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-    header('Access-Control-Allow-Headers: x-requested-with,content-type');
+    cors();
     // 什么也不做
     return;
 }

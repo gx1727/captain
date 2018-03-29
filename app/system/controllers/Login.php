@@ -40,19 +40,11 @@ class Login extends Controller
 
     public function entrance()
     {
-        if (strtoupper($_SERVER['REQUEST_METHOD']) == 'OPTIONS') {
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-            header('Access-Control-Allow-Headers: x-requested-with,content-type');
-            // 什么也不做
-            return;
+        if (method_exists($this, $this->input->_uri)) {
+            return call_user_func_array(array($this, $this->input->_uri), array());
         } else {
-            if (method_exists($this, $this->input->_uri)) {
-                return call_user_func_array(array($this, $this->input->_uri), array());
-            } else {
-                // 不是默认对应的function
-                show_404();
-            }
+            // 不是默认对应的function
+            show_404();
         }
     }
 }

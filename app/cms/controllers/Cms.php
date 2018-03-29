@@ -26,7 +26,7 @@ class Cms extends Controller
         $session = &$this->get_session(); // 引用 session
 //
         $this->user_code = $session->get_sess('user_code');
-//        $this->role_name = $session->get_sess('role_code');
+        $this->role_name = $session->get_sess('role_code');
 
         $this->return_status[1] = '失败';
         $this->return_status[2] = '分类不存在';
@@ -34,14 +34,98 @@ class Cms extends Controller
     ////////////////////////////////////////////////////////////////////////
     /// 文章操作
     ///
+    public function article_get()
+    {
+        $a_id = $this->input->get_post('a_id');
+        $article = $this->cmsMod->get_article_draft($a_id);
+        $this->json($this->get_result($article));
+    }
+    public function article_list()
+    {
+        $keyword = $this->input->get_post('keyword');
+        $article_list_ret = $this->cmsMod->get_article_list($this->get_list_param(), $keyword);
+
+        if ($article_list_ret->get_code() === 0) {
+            $article_list = $article_list_ret->get_data();
+
+            $article = array();
+            foreach ($article_list as $article_item) {
+                $article[] = $article_item;
+
+            }
+            $this->json($this->get_result(array('data' => $article, 'total' => $article_list_ret->get_data(2))));
+        } else {
+            $this->json($this->get_result(array('data' => array(), 'total' => 0)));
+        }
+    }
+
     /**
      * 创建一个空文章
      */
-    public function create_article()
+    public function article_create()
     {
-//        $article = $this->cmsMod->create_article($this->user_code);
-//        $this->json($this->get_result($article));
+        $a_title = $this->input->get_post('a_title');
+        $article = $this->cmsMod->create_article($this->user_code, $a_title);
+        $this->json($this->get_result($article));
     }
+
+    public function article_edit()
+    {
+        $a_id = $this->input->get_post('a_id');
+        $a_title = $this->input->get_post('a_title');
+        $a_abstract = $this->input->get_post('a_abstract');
+        $a_content = $this->input->get_post('a_content', '', false);
+        $a_extended = $this->input->get_post('a_extended');
+        $a_publish_time = $this->input->get_post('a_publish_time');
+        $sort = $this->input->get_post('sort');
+        $tag = $this->input->get_post('tag');
+
+        $tag_list = array();
+        $tag_list_ret = json_decode($tag, true);
+        if($tag_list_ret) {
+            foreach($tag_list_ret as $ct_name) {
+                $tag_list[] = $this->tagMod->get_tag_byname($ct_name);
+            }
+        }
+        $sort_list = array();
+        $sort_list_ret = json_decode($sort, true);
+        if($sort_list_ret) {
+            foreach($sort_list_ret as $cs_name) {
+                $sort_list[] = $this->sortMod->get_sort_byname($cs_name);
+            }
+        }
+
+        $article = array(
+            'a_title' => $a_title,
+            'a_abstract' => $a_abstract,
+            'a_content' => $a_content,
+            'a_extended' => $a_extended
+        );
+
+        $ret = $this->cmsMod->edit_article($this->user_code, $a_id, $article, $tag_list, $sort_list);
+
+        $this->json($this->get_result($ret));
+    }
+
+    public function article_publish()
+    {
+
+    }
+
+    public function article_del()
+    {
+
+    }
+
+    /**
+     * 增加次数
+     */
+    public function article_add_count()
+    {
+
+    }
+
+
 
 
 

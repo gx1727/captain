@@ -53,14 +53,12 @@ class Controller extends Base
     /**
      * 返回json串
      * @param $data
-     * @param bool $cross 如果为真,可跨域
+     * @param bool $cros 如果为真,可跨域
      */
-    protected function json($data, $cross = true)
+    protected function json($data, $cros = true)
     {
-        if ($cross) {
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-            header('Access-Control-Allow-Headers: x-requested-with,content-type');
+        if ($cros) {
+            cors();
         }
         if (!is_string($data)) {
             $data = json_encode($data);
@@ -75,12 +73,10 @@ class Controller extends Base
      * @param bool $buffer
      * @return bool|string
      */
-    protected function view($view, $buffer = false, $cross = true)
+    protected function view($view, $buffer = false, $cros = true)
     {
-        if ($cross) {
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-            header('Access-Control-Allow-Headers: x-requested-with,content-type');
+        if ($cros) {
+            cors();
         }
 
         extract($this->view_data);

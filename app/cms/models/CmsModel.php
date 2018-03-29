@@ -40,6 +40,21 @@ class CmsModel extends Model
 
     }
 
+    public function get_article_list($list_param, $keyword)
+    {
+        $param_array = array();
+        $sql = "from " . CMS_ARTICLE . ' where a_status > 0 ';
+        if ($keyword !== false) {
+            $sql .= ' and (a_title like ?';
+            $sql .= ' or a_abstract like ?)';
+            $param_array[] = '%' . $keyword . '%';
+            $param_array[] = '%' . $keyword . '%';
+        }
+
+        $start = ($list_param['page'] - 1) * $list_param['pagesize'];
+        return $this->get_page_list($this->return_status, $sql, $param_array, $start, (int)$list_param['pagesize'], $list_param['orderby'], $list_param['ordertype']);
+    }
+
     /**
      * 获到草稿
      * @param $a_id
@@ -56,12 +71,17 @@ class CmsModel extends Model
                 $article['a_abstract'] = $article['draft']['a_abstract'];
                 $article['a_content'] = $article['draft']['a_content'];
                 $article['a_extended'] = $article['draft']['a_extended'];
+                $article['draft_etime'] = date('Y-m-d H:i:s', $article['draft']['a_etime']); // 草稿最后修改时间
+            } else {
+                $article['draft_etime'] = '';
             }
             $article['sort'] = $this->get_all($a_id, CMS_ARTICLESORT, 'a_id');
             $article['tag'] = $this->get_all($a_id, CMS_ARTICLETAG, 'a_id');
+            $article['publish_time'] = date('Y-m-d H:i:s', $article['a_etime']); // 文章最后修改时间，即发布时间
+            $article['a_publish_time'] = $article['a_publish_time'] > 0 ? date('Y-m-d H:i:s', $article['a_publish_time']) : ''; // 文章最后修改时间，即发布时间
             return $article;
         } else {
-            return new Ret($this->create_article, 1);
+            return new Ret($this->return_status, 1);
         }
     }
 
@@ -69,22 +89,23 @@ class CmsModel extends Model
     /**
      * 创建一个空文章
      * @param $user_code
+     * @param $a_title
      * @return mixed 文章ID
      */
-    public function create_article($user_code)
+    public function create_article($user_code, $a_title)
     {
         $new_article = array(
             'user_code' => $user_code,
+            'a_title' => $a_title,
             'a_atime' => time(),
             'a_etime' => time(),
             'a_status' => 3
         );
         $a_id = $this->add($new_article);
-        echo $a_id;
-        exit;
 
         $article_draft = array(
             'user_code' => $user_code,
+            'a_title' => $a_title,
             'a_id' => $a_id,
             'a_atime' => time(),
             'a_etime' => time(),
@@ -133,17 +154,21 @@ class CmsModel extends Model
      */
     public function edit_article($user_code, $a_id, $article, $tag, $sort)
     {
+        $ret = new Ret($this->return_status);
         $this->log('修改文章:[' . $user_code . ']  [' . $a_id . ']');
         $article_draft = $this->get_article_draft($a_id); // 确保文章草稿存在
         if ($article_draft) {
             $article['a_etime'] = time();
-            $ret = $this->edit($a_id, CMS_ARTICLEDRAFT, 'a_id');
+            $this->edit($a_id, $article, CMS_ARTICLEDRAFT, 'a_id');
             $this->manage_tag($a_id, $tag);
             $this->manage_sort($a_id, $sort);
-            return $ret;
+            $ret->set_result(array('draft_etime' => date('Y-m-d H:i:s', $article['a_etime'])));
+            $ret->set_code(0);
         } else {
-            return new Ret($this->create_article, 1);
+            $ret->set_code(1);
+
         }
+        return $ret;
     }
 
     /**
@@ -248,7 +273,7 @@ class CmsModel extends Model
                     'ct_title' => $new_tag_node['ct_title'],
                     'ct_name' => $new_tag_node['ct_name'],
                     'a_id' => $a_id,
-                    'at_order' => $new_tag_node['at_order'],
+                    'at_order' => 0,
                 );
                 $this->add($data, CMS_ARTICLETAG);
             }
@@ -284,7 +309,7 @@ class CmsModel extends Model
                     // 两次都存在，从新数据中剔除
                     unset($new_sort[$old_sort_node['cs_name']]);
                 } else {
-                    $this->del($old_sort_node['at_id'], CMS_ARTICLESORT, 'at_id');
+                    $this->del($old_sort_node['as_id'], CMS_ARTICLESORT, 'as_id');
                 }
             }
         }
@@ -293,10 +318,10 @@ class CmsModel extends Model
             // 新数据中还存在未插入的数据
             foreach ($new_sort as $new_sort_node) {
                 $data = array(
-                    'ct_title' => $new_sort_node['ct_title'],
+                    'cs_title' => $new_sort_node['cs_title'],
                     'cs_name' => $new_sort_node['cs_name'],
                     'a_id' => $a_id,
-                    'at_order' => $new_sort_node['at_order'],
+                    'as_order' => 0,
                 );
                 $this->add($data, CMS_ARTICLESORT);
             }

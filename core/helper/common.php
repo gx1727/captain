@@ -85,10 +85,7 @@ if (!function_exists('load_class')) {
 if (!function_exists('show_404')) {
     function show_404($msg = '')
     {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-        header('Access-Control-Allow-Headers: x-requested-with,content-type');
-
+        cors();
         set_status_header(404);
         exit(4); // EXIT_UNKNOWN_FILE
     }
