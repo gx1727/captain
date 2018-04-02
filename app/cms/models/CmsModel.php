@@ -37,7 +37,13 @@ class CmsModel extends Model
 
     public function get_article($a_id)
     {
+        $article = $this->get($a_id);
+        if ($article) {
+            $article['sorts'] = $this->sortMod->get_all($article['a_id'], CMS_ARTICLESORT, 'a_id');
+            $article['tags'] = $this->tagMod->get_all($article['a_id'], CMS_ARTICLETAG, 'a_id');
+        }
 
+        return $article;
     }
 
     /**
@@ -91,16 +97,24 @@ class CmsModel extends Model
             $param_array = array();
             $sql = "from " . $this->table_name . " a  where a.a_status = 1 ";
 
-            if ($search_param['search']) {
+            if (isset($search_param['search']) && $search_param['search']) {
                 $sql .= " and a.a_title like '%" . $search_param['search'] . "%'";
             }
 
             if ($sorts) {
-                $sql .= ' and exists (select * from ' . CMS_ARTICLESORT . ' as where a.a_id = as.a_id and as.cs_name  in (' . implode(',', $sorts) . '))';
+                $in_sorts = array();
+                foreach ($sorts as $sort) {
+                    $in_sorts[] = '\'' . $sort . '\'';
+                }
+                $sql .= ' and exists (select * from ' . CMS_ARTICLESORT . ' as where a.a_id = as.a_id and as.cs_name  in (' . implode(',', $in_sorts) . '))';
             }
 
             if ($tags) {
-                $sql .= ' and exists (select * from ' . CMS_ARTICLETAG . ' at where a.a_id = at.a_id and at.ct_name  in (' . implode(',', $tags) . '))';
+                $in_tags = array();
+                foreach ($tags as $tag) {
+                    $in_tags[] = '\'' . $tag . '\'';
+                }
+                $sql .= ' and exists (select * from ' . CMS_ARTICLETAG . ' at where a.a_id = at.a_id and at.ct_name  in (' . implode(',', $in_tags) . '))';
             }
 
             $start = ($search_param['page'] - 1) * $search_param['pagesize'];
@@ -400,6 +414,65 @@ class CmsModel extends Model
                 $this->add($data, CMS_ARTICLESORT);
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////
+    ///
+
+    public function get_sorts_tags()
+    {
+        $sorts_tags = array();
+        $cache_file_path = BASEPATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cms' .
+            DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'sorts_tags.php';
+        if (file_exists($cache_file_path)) {
+            include_once $cache_file_path;
+        } else {
+            $this->refresh_cache();
+        }
+        return $sorts_tags;
+    }
+
+    /**
+     * 刷新缓存
+     */
+    public function refresh_cache()
+    {
+        $cache_file_path = BASEPATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cms' .
+            DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'sorts_tags.php';
+        $sorts = $this->get_all(false, CMS_SORT);
+        $tag_groups = $this->get_all(false, CMS_TAGGROUP);
+        $tags = $this->get_all(false, CMS_TAG);
+        $sorts_list = array();
+        foreach ($sorts as $sort) {
+            $sorts_list[$sort['cs_id']] = $sort;
+        }
+        $sorts_tags = '<?php ';
+        $sorts_tags .= '$sorts_tags = array (';
+        foreach ($sorts as $sort) {
+            $sorts_tags .= '\'' . $sort['cs_name'] . '\' => array (';
+            $sorts_tags .= '\'type\' => \'sort\',';
+            $sorts_tags .= '\'name\' => \'' . $sort['cs_name'] . '\',';
+            $sorts_tags .= '\'title\' => \'' . $sort['cs_title'] . '\',';
+            $sorts_tags .= '\'parent\' => \'' . (isset($sorts_list[$sort['cs_parent']]) ? $sorts_list[$sort['cs_parent']]['cs_name'] : '') . '\',';
+            $sorts_tags .= '\'img\' => \'' . $sort['cs_img'] . '\',';
+            $sorts_tags .= '\'template\' => \'' . $sort['cs_template'] . '\',';
+            $sorts_tags .= '), ';
+        }
+
+        foreach ($tags as $tag) {
+            $sorts_tags .= '\'' . $tag['ct_name'] . '\' => array (';
+            $sorts_tags .= '\'type\' => \'tag\',';
+            $sorts_tags .= '\'name\' => \'' . $tag['ct_name'] . '\',';
+            $sorts_tags .= '\'title\' => \'' . $tag['ct_title'] . '\',';
+            $sorts_tags .= '\'parent\' => \'' . $tag['ctg_name'] . '\',';
+            $sorts_tags .= '\'img\' => \'' . $tag['ct_img'] . '\',';
+            $sorts_tags .= '\'template\' => \'' . $tag['ct_template'] . '\',';
+            $sorts_tags .= '), ';
+        }
+        $sorts_tags .= '); ';
+
+        file_put_contents($cache_file_path, $sorts_tags);
+
     }
 
 

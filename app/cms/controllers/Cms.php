@@ -31,6 +31,8 @@ class Cms extends Controller
         $this->return_status[1] = '失败';
         $this->return_status[2] = '分类不存在';
     }
+
+
     ////////////////////////////////////////////////////////////////////////
     /// 文章操作
     ///
@@ -52,6 +54,7 @@ class Cms extends Controller
         $search_param = $this->get_list_param();
         $search_param['search'] = $this->input->get_post('keyword');
         $article_list_ret = $this->cmsMod->search_article($search_param);
+        $this->help('cms_helper'); // 引入 cms_helper
 
         if ($article_list_ret->get_code() === 0) {
             $article_list = $article_list_ret->get_data();
@@ -60,6 +63,7 @@ class Cms extends Controller
             foreach ($article_list as $article_item) {
                 $article_item['a_atime'] = date('Y-m-d H:i:s', $article_item['a_atime']);
                 $article_item['a_etime'] = date('Y-m-d H:i:s', $article_item['a_etime']);
+                $article_item['a_status_title'] = a_status($article_item['a_status']);
                 $article[] = $article_item;
 
             }
@@ -136,7 +140,7 @@ class Cms extends Controller
     /**
      * 增加次数
      */
-    public function article_add_count()
+    public function plus_article_count()
     {
 
     }
@@ -197,9 +201,11 @@ class Cms extends Controller
                 'cs_img' => $cs_img
             );
             $ret = $this->sortMod->edit_sort($cs_id, $data);
+            $this->cmsMod->refresh_cache(); //刷新cache
             $this->json($this->get_result($ret));
         } else {
             $ret = $this->sortMod->add_sort($cs_name, $cs_title, $cs_template, $cs_parent, $cs_order, $cs_img);
+            $this->cmsMod->refresh_cache(); //刷新cache
             $this->json($this->get_result($ret));
         }
     }
@@ -211,6 +217,7 @@ class Cms extends Controller
     {
         $cs_id = $this->input->get_post('cs_id');
         $ret = $this->sortMod->del_sort($cs_id);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 
@@ -248,6 +255,7 @@ class Cms extends Controller
         $post_data = $this->input->get_post('postData');
         $post_data = json_decode($post_data, true);
         $ret = $this->tagMod->tag_group_edit($ctg_id, $post_data);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 
@@ -255,6 +263,7 @@ class Cms extends Controller
     {
         $ctg_id = $this->input->get_post('ctg_id');
         $ret = $this->tagMod->del_tag_group($ctg_id);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 
@@ -292,6 +301,7 @@ class Cms extends Controller
         $ct_order = $this->input->get_post('ct_order', 0);
         $ct_img = $this->input->get_post('ct_img');
         $ret = $this->tagMod->add_tag($ctg_name, $ct_title, $ct_template, $ct_order, $ct_img);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 
@@ -301,6 +311,7 @@ class Cms extends Controller
         $post_data = $this->input->get_post('postData');
         $post_data = json_decode($post_data, true);
         $ret = $this->tagMod->tag_edit($ct_id, $post_data);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 
@@ -308,6 +319,7 @@ class Cms extends Controller
     {
         $ct_id = $this->input->get_post('ct_id');
         $ret = $this->tagMod->del_tag($ct_id);
+        $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
     }
 

@@ -47,10 +47,10 @@ $route_role = array(
 
 //游客组
 $guest['/'] = 'system:captain\system\Index@index';
-$guest['/hello/a'] = 'system:captain\system\Index@index';
+$guest['/*'] = 'cms:captain\cms\Article@index';
 
+$guest['/hello/a'] = 'system:captain\system\Index@index';
 $guest['/hello/world'] = 'system:captain\system\Index@hello';
-$guest['/a*'] = 'system:captain\system\Index@hello_tag';
 $guest['/hello*'] = 'system:captain\system\Index@hello_tag';
 $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
@@ -85,7 +85,6 @@ $guest['/api/cms/article/create'] = 'cms:captain\cms\Cms@article_create';
 $guest['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
 $guest['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
 $guest['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
-
 
 
 //admin管理员组
