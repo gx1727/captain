@@ -40,6 +40,87 @@ class CmsModel extends Model
 
     }
 
+    /**
+     * 浏览次数加1
+     * @param $a_id
+     * @return mixed
+     */
+    public function plus_article_count($a_id)
+    {
+        $sql = 'update ' . $this->table_name . ' set a_count = a_count + 1 where a_id = ?';
+        return $this->query($sql, array($a_id));
+    }
+
+    /**
+     * @param  $search_param = array(
+                        'search' => '搜索关键词',
+                        'article' => '指定文章的ID',
+                        'sorts' => array(
+                            '分类名'
+                        ),
+                        'tags' => array(
+                            'tag名'
+                        ),
+                        'page' => '当前页',
+                        'pagesize' => '分页大小',
+                        'orderby' => '',
+                        'ordertype' => ''
+                    );
+     *
+     *
+     * @param $sorts_key
+     * @return Ret
+     */
+    public function search_article($search_param, $sorts_key)
+    {
+        $ret = new Ret($this->return_status);
+        if ($search_param['size'] <= 0) {
+            $ret->set_code(1);
+            return $ret;
+        }
+        if ($search_param['article']) {
+            $ret = $this->get_content($search_param['article']);
+        } else {
+            $sorts = false;
+            if (is_array($search_param['sorts'])) {
+                $sorts = array();
+                foreach ($search_param['sorts'] as $s_name) {
+                    $sorts[] = $sorts_key[$s_name];
+                }
+            }
+            $tags = false;
+            if (is_array($search_param['tags'])) {
+                $tags_key = $this->get_alltags('t_key');
+
+                $tags = array();
+                foreach ($search_param['tags'] as $t_id) {
+                    $tags[] = $tags_key[$t_id]['t_id'];
+                }
+            }
+
+            $param_array = array();
+            $sql = "from " . $this->table_name . " a  where a.a_status = 1 ";
+
+            if ($search_param['search']) {
+                $sql .= " and a.a_title like '%" . $search_param['search'] . "%'";
+            }
+
+            if ($sorts) {
+                $sql .= ' and exists (select * from ' . CMS_ARTICLESORT . ' as where a.a_id = as.a_id and as.cs_name  in (' . implode(',', $sorts) . '))';
+            }
+
+            if ($tags) {
+                $sql .= ' and exists (select * from ' . CMS_ARTICLETAG . ' at where a.a_id = at.a_id and at.ct_name  in (' . implode(',', $tags) . '))';
+            }
+
+            $start = ($search_param['page'] - 1) * $search_param['pagesize'];
+
+            return $this->get_page_list($this, $sql, $param_array, $start, (int)$search_param['pagesize'], $search_param['orderby'], $search_param['ordertype']);
+        }
+        return $ret;
+    }
+
+
     public function get_article_list($list_param, $keyword)
     {
         $param_array = array();
