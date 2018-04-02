@@ -136,6 +136,20 @@ class TagModel extends Model
         return $this->get_page_list($this->return_status, $sql, $param_array, $start, (int)$list_param['pagesize'], $list_param['orderby'], $list_param['ordertype']);
     }
 
+    /**
+     * 获到所有TAG的key-value
+     * @return array
+     */
+    public function get_alltags()
+    {
+        $all_tags_list = $this->get_all();
+        $alltags = array();
+        foreach ($all_tags_list as $tag) {
+            $alltags[$tag['ct_name']] = $tag['ct_title'];
+        }
+        return $alltags;
+    }
+
     public function add_tag($ctg_name, $ct_title, $ct_template, $ct_order, $ct_img)
     {
         $ret = new Ret($this->return_status);

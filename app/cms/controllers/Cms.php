@@ -34,22 +34,32 @@ class Cms extends Controller
     ////////////////////////////////////////////////////////////////////////
     /// 文章操作
     ///
+    /**
+     * 获到文章 草稿
+     */
     public function article_get()
     {
         $a_id = $this->input->get_post('a_id');
         $article = $this->cmsMod->get_article_draft($a_id);
         $this->json($this->get_result($article));
     }
+
+    /**
+     *
+     */
     public function article_list()
     {
-        $keyword = $this->input->get_post('keyword');
-        $article_list_ret = $this->cmsMod->get_article_list($this->get_list_param(), $keyword);
+        $search_param = $this->get_list_param();
+        $search_param['search'] = $this->input->get_post('keyword');
+        $article_list_ret = $this->cmsMod->search_article($search_param);
 
         if ($article_list_ret->get_code() === 0) {
             $article_list = $article_list_ret->get_data();
 
             $article = array();
             foreach ($article_list as $article_item) {
+                $article_item['a_atime'] = date('Y-m-d H:i:s', $article_item['a_atime']);
+                $article_item['a_etime'] = date('Y-m-d H:i:s', $article_item['a_etime']);
                 $article[] = $article_item;
 
             }
@@ -82,15 +92,15 @@ class Cms extends Controller
 
         $tag_list = array();
         $tag_list_ret = json_decode($tag, true);
-        if($tag_list_ret) {
-            foreach($tag_list_ret as $ct_name) {
+        if ($tag_list_ret) {
+            foreach ($tag_list_ret as $ct_name) {
                 $tag_list[] = $this->tagMod->get_tag_byname($ct_name);
             }
         }
         $sort_list = array();
         $sort_list_ret = json_decode($sort, true);
-        if($sort_list_ret) {
-            foreach($sort_list_ret as $cs_name) {
+        if ($sort_list_ret) {
+            foreach ($sort_list_ret as $cs_name) {
                 $sort_list[] = $this->sortMod->get_sort_byname($cs_name);
             }
         }
@@ -109,7 +119,13 @@ class Cms extends Controller
 
     public function article_publish()
     {
-
+        $a_id = $this->input->get_post('a_id');
+        $publish_time = $this->input->get_post('publish_time');
+        if ($publish_time) {
+            $publish_time = strtotime($publish_time);
+        }
+        $ret = $this->cmsMod->publish_article($this->user_code, $a_id, $publish_time);
+        $this->json($this->get_result($ret));
     }
 
     public function article_del()

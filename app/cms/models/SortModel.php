@@ -172,6 +172,21 @@ class SortModel extends Model
         );
     }
 
+
+    /**
+     * 获到所有分类的key-value
+     * @return array
+     */
+    public function get_allsorts()
+    {
+        $all_sorts_list = $this->get_all();
+        $allsorts = array();
+        foreach ($all_sorts_list as $sort) {
+            $allsorts[$sort['cs_name']] = $sort['cs_title'];
+        }
+        return $allsorts;
+    }
+
     /**
      * 组合树结点的回调
      * @param $sort_node

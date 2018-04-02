@@ -53,49 +53,39 @@ class CmsModel extends Model
 
     /**
      * @param  $search_param = array(
-                        'search' => '搜索关键词',
-                        'article' => '指定文章的ID',
-                        'sorts' => array(
-                            '分类名'
-                        ),
-                        'tags' => array(
-                            'tag名'
-                        ),
-                        'page' => '当前页',
-                        'pagesize' => '分页大小',
-                        'orderby' => '',
-                        'ordertype' => ''
-                    );
+     * 'search' => '搜索关键词',
+     * 'article' => '指定文章的ID',
+     * 'sorts' => array(
+     * '分类名'
+     * ),
+     * 'tags' => array(
+     * 'tag名'
+     * ),
+     * 'page' => '当前页',
+     * 'pagesize' => '分页大小',
+     * 'orderby' => '',
+     * 'ordertype' => ''
+     * );
      *
-     *
-     * @param $sorts_key
      * @return Ret
      */
-    public function search_article($search_param, $sorts_key)
+    public function search_article($search_param)
     {
         $ret = new Ret($this->return_status);
-        if ($search_param['size'] <= 0) {
+        if ($search_param['pagesize'] <= 0) {
             $ret->set_code(1);
             return $ret;
         }
-        if ($search_param['article']) {
+        if (isset($search_param['article']) && $search_param['article']) {
             $ret = $this->get_content($search_param['article']);
         } else {
             $sorts = false;
-            if (is_array($search_param['sorts'])) {
-                $sorts = array();
-                foreach ($search_param['sorts'] as $s_name) {
-                    $sorts[] = $sorts_key[$s_name];
-                }
+            if (isset($search_param['sorts']) && is_array($search_param['sorts'])) {
+                $sorts = $search_param['sorts'];
             }
             $tags = false;
-            if (is_array($search_param['tags'])) {
-                $tags_key = $this->get_alltags('t_key');
-
-                $tags = array();
-                foreach ($search_param['tags'] as $t_id) {
-                    $tags[] = $tags_key[$t_id]['t_id'];
-                }
+            if (isset($search_param['tags']) && is_array($search_param['tags'])) {
+                $tags = $search_param['tags'];
             }
 
             $param_array = array();
@@ -237,13 +227,13 @@ class CmsModel extends Model
     {
         $ret = new Ret($this->return_status);
         $this->log('修改文章:[' . $user_code . ']  [' . $a_id . ']');
-        $article_draft = $this->get_article_draft($a_id); // 确保文章草稿存在
+        $article_draft = $this->create_article_draft($a_id); // 确保文章草稿存在
         if ($article_draft) {
             $article['a_etime'] = time();
             $this->edit($a_id, $article, CMS_ARTICLEDRAFT, 'a_id');
             $this->manage_tag($a_id, $tag);
             $this->manage_sort($a_id, $sort);
-            $ret->set_result(array('draft_etime' => date('Y-m-d H:i:s', $article['a_etime'])));
+            $ret->set_result($this->get_article_draft($a_id));
             $ret->set_code(0);
         } else {
             $ret->set_code(1);
@@ -292,6 +282,7 @@ class CmsModel extends Model
      */
     public function publish_article($user_code, $a_id, $a_publish_time = false)
     {
+        $ret = new Ret($this->return_status);
         $this->log('发布文章:[' . $user_code . ']  [' . $a_id . ']');
         $article_draft = $this->get($a_id, CMS_ARTICLEDRAFT, 'a_id');
         if ($article_draft) {
@@ -305,13 +296,15 @@ class CmsModel extends Model
                 'a_publish_time' => ($a_publish_time && $a_publish_time > time()) ? $a_publish_time : 0,
                 'a_status' => ($a_publish_time && $a_publish_time > time()) ? 2 : 1
             );
-            $ret = $this->edit($a_id, $article);
+            $this->edit($a_id, $article);
 
             $this->del_article_draft($a_id); // 删除草稿
-            return $ret;
+            $ret->set_result($this->get_article_draft($a_id));
+            $ret->set_code(0);
         } else {
-            return new Ret($this->return_status, 1);
+            $ret->set_code(1);
         }
+        return $ret;
     }
 
     /**
