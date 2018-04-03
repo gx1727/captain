@@ -67,7 +67,7 @@ class Weixin extends WXController
                         exit();
                     }
                 } else if ($weixin_oauth2['wo_state'] == 2) { // 获到用户详细信息 判断用户并注册新用户
-
+                    $ret = $this->weixinMod->weixin_register($_GET['code']);
                 }
                 header('Location: ' . $weixin_oauth2['wo_back_url']);  // 回跳
                 exit();
