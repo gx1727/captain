@@ -114,7 +114,7 @@ class WeixinModel extends Model
             } else {
                 log_message("wx", '本微信号获到详细信息失败');
             }
-            header('Location: ' . $session['back_url']);
+           // header('Location: ' . $session['back_url']);
             exit();
         }else { // 获到用户openid失败
             $ret->set_code(3);
