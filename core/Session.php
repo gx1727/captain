@@ -55,19 +55,6 @@ class Session extends Base
         }
         if (!$this->_session_id) { // 还没有seesion,新建
             $this->refresh_cookie();
-
-            $this->_create_time = $this->_ctime;
-            $this->_last_activity = $this->_ctime + $this->_config['sess_expiration'];
-            $this->_cookie_activity = $this->_ctime + $this->_config['cookie_expiration'];
-            $session_data = array(
-                'session_id' => $this->_session_id,
-                'ip_address' => $this->_ip_address,
-                'create_time' => $this->_create_time,
-                'last_activity' => $this->_last_activity,
-                'cookie_activity' => $this->_cookie_activity,
-                'user_data' => json_encode($this->_user_data)
-            );
-            $this->add($session_data);
         }
     }
 
@@ -87,6 +74,19 @@ class Session extends Base
             $this->_config['cookie_path'],
             $this->_config['cookie_domain']
         );
+
+        $this->_create_time = $this->_ctime;
+        $this->_last_activity = $this->_ctime + $this->_config['sess_expiration'];
+        $this->_cookie_activity = $this->_ctime + $this->_config['cookie_expiration'];
+        $session_data = array(
+            'session_id' => $this->_session_id,
+            'ip_address' => $this->_ip_address,
+            'create_time' => $this->_create_time,
+            'last_activity' => $this->_last_activity,
+            'cookie_activity' => $this->_cookie_activity,
+            'user_data' => json_encode($this->_user_data)
+        );
+        $this->add($session_data);
     }
 
     /**
@@ -108,12 +108,9 @@ class Session extends Base
         // 判断是否有必要刷新cookie值 即 session_id
         if ($this->_cookie_activity < $this->_ctime) {
             $this->refresh_cookie();
-            $session_data['cookie_activity'] = $this->_ctime + $this->_config['cookie_expiration'];
-            $session_data['session_id'] = $this->_session_id; // 在刷新cookie后，这个值是有变化的
+        } else {
+            $this->edit($c_session_id, $session_data);
         }
-
-
-        $this->edit($c_session_id, $session_data);
     }
 
     /**

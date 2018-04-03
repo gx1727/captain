@@ -40,6 +40,7 @@ $route_role = array(
     'user' => array('guest', 'user')
 );
 
+
 /**
  * 路由指令
  * 模块名:类名(带命名空间)@方法名
@@ -66,6 +67,7 @@ $guest['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
 $guest['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
 $guest['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
 
+// 文章相关
 $guest['/api/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
 $guest['/api/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
 $guest['/api/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
@@ -87,6 +89,9 @@ $guest['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
 $guest['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
 
 
+// 微信相关
+
+
 //admin管理员组
 $admin['/admin/home'] = 'system:captain\system\Admin@home';
 
@@ -103,3 +108,10 @@ $user['/user/home'] = 'system:captain\system\Admin@home';
  */
 $needless_context['/api'] = 'system:captain\system\Index@api';
 $needless_context['/tools/imagetools_proxy'] = 'system:captain\system\Tools@imagetools_proxy';
+
+foreach ($configs['app'] as $app) {
+    $routes_file = BASEPATH . 'app/' . $app . '/routes.php';
+    if (file_exists($routes_file)) {
+        include($routes_file);
+    }
+}

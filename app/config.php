@@ -61,12 +61,23 @@ $configs['session'] = array(
     'sess_driver' => 'mysql',
     'sess_save_path' => 'xx_sessions',
     'sess_cookie_name' => 'PHPSESSID',
-    'sess_expiration' => 6000,
-    'cookie_expiration' => 5400, // cookie的生活有效期， 过期后重建cookie，但session不变， 比 sess_expiration 小
+    'sess_expiration' => 2000,
+    'cookie_expiration' => 1990, // cookie的生活有效期， 过期后重建cookie，但session不变， 比 sess_expiration 小
     'cookie_domain' => '',
     'cookie_path' => '/'
 );
 $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+
+
+/**
+ * 模块
+ */
+$configs['app'] = array(
+    'system',
+    'cms',
+    'weixin',
+    'acase'
+);
 
 
 /*************************************************************/
@@ -105,6 +116,14 @@ define("CMS_ARTICLEDRAFT", 'cms_article_draft'); // 文章草稿
 define("CMS_ARTICLESORT", 'cms_article_sort'); // 文章分类
 define("CMS_ARTICLETAG", 'cms_article_tag'); // 文章TAG
 
+
+// weixin 管理
+define("WEIXIN_CONF", 'weixin_conf'); // weixin配制
+define("WEIXIN_OAUTH2", 'weixin_oauth2'); // 微信鉴权配制表
+define("WEIXIN_MENU", 'weixin_menu'); // 微信自定义菜单
+define("WEIXIN_RESPONDER", 'weixin_responder'); // 应答表
+define("WEIXIN_SCENE", 'weixin_scene'); // 场景表
+define("WEIXIN_SCENELOG", 'weixin_scene_log'); // 场景扫码日志表
 /**
  * --------------------------------------------------------------------------
  *  编码相关
