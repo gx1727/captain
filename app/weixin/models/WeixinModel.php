@@ -129,16 +129,18 @@ class WeixinModel extends Model
     /**
      * 对接验证
      */
-    public function valid()
+    public function valid($weixin_code)
     {
+        $this->config($weixin_code);
         $this->weixinLib->valid();
     }
 
     /**
      * 自动回复信息
      */
-    public function response_msg()
+    public function response_msg($weixin_code)
     {
+        $this->config($weixin_code);
         $this->weixinLib->response_msg();
     }
 

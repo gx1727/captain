@@ -24,14 +24,16 @@ class Weixin extends WXController
      * @title 微信事件接管
      * @group 微信对接
      * @auth none
+     * /weixin/alanbeibei
      */
     public function index()
     {
+        $param = $this->input->get_uri();
         if (!isset($_GET['echostr'])) {
-            $this->weixinMod->response_msg();
+            $this->weixinMod->response_msg($param[0]);
         } else {
             //验证
-            $this->weixinMod->valid();
+            $this->weixinMod->valid($param[0]);
         }
     }
 
