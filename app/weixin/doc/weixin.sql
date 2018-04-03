@@ -17,7 +17,7 @@ CREATE TABLE `weixin_conf` (
 --
 
 INSERT INTO `weixin_conf` (`weixin_id`, `weixin_code`, `weixin_appid`, `weixin_appsecret`, `weixin_token`, `weixin_encodingaeskey`, `weixin_access_token`, `weixin_jsapi_ticket`, `expire_time`) VALUES
-(1, 'alanbeibei', 'wx6489c52fc67cbabc', '5280ba0df8f9ac8f5864a5f2930e46ce', 'alanbeibei', 'oyYj6t6jr1rSfG88Gb87tNTTahkAQ4531AY6z1MPVfo', 'tWahZYoQR6_dGWXUs0xwjh--nhPH5J_E0EsD71ipmsm7PYt6WxFvpIrDjox36gmnqACZ5Z0TvzRqHsdvL6J58fiYg_y99N2FnCf5wGTYrhXQyCAwXZRIvMD2j1RICG6IMQTdAFAUYB', NULL, 1510974886);
+(1, 'alanbeibei', 'wxa54aa84375925ca3', '705579f9adb736b0af9d3c0313ac23e5', 'alanbeibei', 'oyYj6t6jr1rSfG88Gb87tNTTahkAQ4531AY6z1MPVfo', 'tWahZYoQR6_dGWXUs0xwjh--nhPH5J_E0EsD71ipmsm7PYt6WxFvpIrDjox36gmnqACZ5Z0TvzRqHsdvL6J58fiYg_y99N2FnCf5wGTYrhXQyCAwXZRIvMD2j1RICG6IMQTdAFAUYB', NULL, 1510974886);
 
 -- --------------------------------------------------------
 

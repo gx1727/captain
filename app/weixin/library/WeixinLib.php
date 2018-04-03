@@ -13,6 +13,8 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
 require_once(BASEPATH . "core/third_party/easyhttp/include.php");
 require_once(BASEPATH . "core/third_party/weixin/wxBizMsgCrypt.php");
 
+use \EasyHttp;
+
 class WeixinLib
 {
     var $AppID = ""; //应用ID
