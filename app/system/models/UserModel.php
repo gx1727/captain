@@ -22,7 +22,7 @@ class UserModel extends Model
         $this->key_id = 'user_id';
 
         $this->return_status[1] = "没有找到符合条件的数据, 用户不存在";
-        $this->return_status[2] = "用户登陆名已存在，注册新用户失败";
+        $this->return_status[2] = "用户已存在，注册新用户失败";
     }
 
 
@@ -42,23 +42,26 @@ class UserModel extends Model
 
     /**
      * @param $user_name
+     * @param $user_title
      * @param $user_phone
      * @param $user_email
      * @param $user_wxopenid
      * @param $user_pwd
      * @return mixed
      */
-    private function add_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd)
+    private function add_user($user_name, $user_title, $user_phone, $user_email, $user_wxopenid, $user_pwd, $user_photo = '')
     {
         $this->library('\captain\core\code', 'codeLib');
         $user_code = $this->codeLib->get_code('USERCODE');
         $userData = array(
             'user_code' => $user_code,
             'user_name' => $user_name,
+            'user_title' => $user_title, // 用户显示名
             'user_phone' => $user_phone,
             'user_email' => $user_email,
             'user_wxopenid' => $user_wxopenid,
-            'user_pwd' => $this->loginMod->get_userpwd($user_code, $user_pwd),
+            'user_photo' => $user_photo,
+            'user_pwd' => $user_pwd ? $this->loginMod->get_userpwd($user_code, $user_pwd) : '',
             'user_atime' => time(),
             'user_status' => 0
         );
@@ -80,6 +83,7 @@ class UserModel extends Model
     }
 
     /**
+     * 一般注册新用户
      * @param $user_name
      * @param $user_phone
      * @param $user_email
@@ -96,9 +100,29 @@ class UserModel extends Model
         if ($this->loginMod->get_user($user_name)) { //用户已存在
             $ret->set_code(2);
         } else {
-            $user_code = $this->add_user($user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd);
+            $user_code = $this->add_user($user_name, $user_name, $user_phone, $user_email, $user_wxopenid, $user_pwd);
             $this->add_userrole($user_code, $user_role);
             $ret->set_data($user_code);
+        }
+        return $ret;
+    }
+
+    public function register_weixin($weixin_data, $user_role = 'ROLE00004')
+    {
+        $this->model('\captain\system\LoginModel', 'loginMod');
+
+        $ret = new Ret($this->return_status);
+        if ($this->loginMod->get_user($weixin_data['openid'])) { //用户已存在
+            $ret->set_code(2);
+        } else {
+            $user_code = $this->add_user('', $weixin_data['nickname'], '', '', $weixin_data['openid'], '', $weixin_data['headimgurl']);
+            $this->add_userrole($user_code, $user_role);
+            $weixin_data['user_code'] = $user_code;
+            $weixin_data['uw_atime'] = time();
+            $weixin_data['uw_status'] = 0;
+            $this->add($weixin_data, CAPTAIN_USERWEIXIN);
+            $ret->set_data($user_code);
+            $ret->set_code(0);
         }
         return $ret;
     }

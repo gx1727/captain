@@ -6,6 +6,7 @@
  * Date: 2018/4/3
  * Time: 15:55
  */
+
 namespace captain\weixin;
 defined('CAPTAIN') OR exit('No direct script access allowed');
 
@@ -40,6 +41,34 @@ class WeixinLib
     }
 
     /**
+     * 验证签名
+     */
+    public function valid()
+    {
+        $echoStr = isset($_GET["echostr"]) ? $_GET["echostr"] : '';
+        $signature = isset($_GET["signature"]) ? $_GET["signature"] : '';
+        $timestamp = isset($_GET["timestamp"]) ? $_GET["timestamp"] : '';
+        $nonce = isset($_GET["nonce"]) ? $_GET["nonce"] : '';
+        $tmpArr = array($this->Token, $timestamp, $nonce);
+        sort($tmpArr);
+        $tmpStr = implode($tmpArr);
+        log_message("wx", "验证签名:" . $tmpStr);
+        $tmpStr = sha1($tmpStr);
+        if ($tmpStr == $signature) {
+            echo $echoStr;
+            exit;
+        }
+    }
+
+    /**
+     * 消息处理
+     */
+    public function response_msg($mod, $access_token)
+    {
+
+    }
+
+    /**
      * oauth2 鉴权 获到 access_token
      * @param $code
      * @return bool|mixed
@@ -64,7 +93,8 @@ class WeixinLib
 
     ////////////////////////////////////////////////////////////////////////////////////////
     ///
-    private function http($url, $method, $body) {
+    private function http($url, $method, $body)
+    {
         $http = new EasyHttp();
         $response = $http->request($url, array( //
             'method' => $method, //	GET/POST

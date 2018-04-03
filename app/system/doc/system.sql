@@ -9,6 +9,7 @@ CREATE TABLE `xx_user` (
   `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_code` varchar(32) NOT NULL COMMENT '用户编码',
   `user_name` varchar(64) NOT NULL COMMENT '用户名',
+  `user_title` varchar(64) DEFAULT '' COMMENT '用户显示名',
   `user_true_name` varchar(64) DEFAULT NULL COMMENT '用户真实姓名',
   `user_phone` varchar(32) DEFAULT NULL COMMENT '用户手机号',
   `user_email` varchar(64) DEFAULT NULL COMMENT '用户邮箱',
@@ -26,8 +27,8 @@ CREATE TABLE `xx_user` (
 -- 转存表中的数据 `xx_user`
 --
 
-INSERT INTO `xx_user` (`user_code`, `user_name`, `user_true_name`, `user_phone`, `user_email`, `user_wxopenid`, `user_photo`, `user_pwd`, `user_atime`, `user_status`) VALUES
-('U0000000001', 'admin', NULL, '', '', 'admin', '', '26a3f53a27128edb1e28ad3047102461', 0, 0);
+INSERT INTO `xx_user` (`user_code`, `user_name`, `user_title`, `user_true_name`, `user_phone`, `user_email`, `user_wxopenid`, `user_photo`, `user_pwd`, `user_atime`, `user_status`) VALUES
+('U0000000001', 'admin', 'admin', NULL, '', '', 'admin', '', '26a3f53a27128edb1e28ad3047102461', 0, 0);
 
 
 DROP TABLE IF EXISTS `xx_role`;
@@ -95,15 +96,21 @@ DROP TABLE IF EXISTS `xx_user_weixin`;
 CREATE TABLE `xx_user_weixin` (
   `uw_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_code` varchar(32) NOT NULL COMMENT '用户编码',
-  `uw_openid` varchar(64) DEFAULT NULL COMMENT '公众号对应open_id',
-  `uw_weixin_id` varchar(64) DEFAULT NULL COMMENT '公众号ID',
-  `uw_weixin_name` varchar(64) DEFAULT NULL COMMENT '公众号名称',
+  `subscribe` tinyint(2) DEFAULT '0' COMMENT '是否观注',
+  `openid` varchar(64) DEFAULT NULL COMMENT '公众号ID',
+  `nickname` varchar(256) DEFAULT NULL COMMENT '名称',
+  `sex` tinyint(2) DEFAULT '0' COMMENT '性别',
+  `city` varchar(64) DEFAULT NULL COMMENT '市',
+  `province` varchar(64) DEFAULT NULL COMMENT '省',
+  `country` varchar(64) DEFAULT NULL COMMENT '国家',
+  `headimgurl` varchar(1024) DEFAULT NULL COMMENT '头像',
+  `subscribe_time` int(10) DEFAULT NULL COMMENT '关注时间',
+  `unionid` varchar(64) DEFAULT NULL COMMENT '市',
   `uw_atime` int(10) DEFAULT NULL COMMENT '创建时间',
   `uw_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
   PRIMARY KEY (`uw_id`),
   KEY `user_code` (`user_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户观注微信公众号表' AUTO_INCREMENT=1;
-
 
 
 -- --------------------------------------------------------

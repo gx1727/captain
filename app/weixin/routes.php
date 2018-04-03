@@ -7,3 +7,4 @@
  */
 
 $guest['/weixin'] = 'weixin:captain\weixin\Weixin@index';
+$guest['/weixin/oauth2'] = 'weixin:captain\weixin\Weixin@oauth2';

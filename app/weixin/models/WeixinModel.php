@@ -28,9 +28,11 @@ class WeixinModel extends Model
         $this->library('\captain\weixin\WeixinLib', 'weixinLib');
 
         $this->return_status[1] = "weixin配制不存在";
-        $this->return_status[2] = "weixin配制不存在";
+        $this->return_status[2] = "其它错误，自动注册用户失败";
         $this->return_status[3] = "获到微信openid失败";
         $this->return_status[4] = "微信openid还未注册";
+        $this->return_status[5] = "微信openid已注册";
+        $this->return_status[6] = "本微信号获到详细信息失败";
 
     }
 
@@ -39,9 +41,10 @@ class WeixinModel extends Model
      * @param $winxin_code
      * @return bool
      */
-    public function config($winxin_code) {
+    public function config($winxin_code)
+    {
         $weixin = $this->get_weixin($winxin_code);
-        if($weixin) {
+        if ($weixin) {
             $this->weixinLib->config($weixin['weixin_appid'], $weixin['weixin_appsecret'], $weixin['weixin_token'], $weixin['weixin_encodingaeskey']);
             return $weixin;
         } else {
@@ -68,7 +71,7 @@ class WeixinModel extends Model
             }
         } else { // 获到用户openid失败
             $ret->set_code(3);
-            $this->log_file("wx", '获到用户openid失败:' . json_encode($oauth2_user));
+            $this->log_file('wx', '获到用户openid失败:' . json_encode($oauth2_user));
         }
 
         return $ret;
@@ -83,10 +86,10 @@ class WeixinModel extends Model
         $oauth2_user = $this->weixinLib->oauth2_access_token($code);
         if ($oauth2_user && isset($oauth2_user['openid']) && $oauth2_user['openid']) {
             $userinfo = $this->xxweixin->sns_userinfo($oauth2_user);
-            $this->log_file("wx", '获取微信数据sns_userinfo:' . json_encode($userinfo));
+            $this->log_file('wx', '获取微信数据sns_userinfo:' . json_encode($userinfo));
 
             if ($userinfo['openid']) {
-                $data = array(
+                $weixin_data = array(
                     'openid' => $oauth2_user['openid'],
                     'nickname' => $userinfo['nickname'] ? $userinfo['nickname'] : '',
                     'sex' => $userinfo['sex'],
@@ -96,35 +99,50 @@ class WeixinModel extends Model
                     'headimgurl' => $userinfo['headimgurl'],
                 );
 
-                $ret_user = $this->userMod->register_user($oauth2_user['openid'], 'ROLE00004', $userinfo['nickname'], $userinfo['headimgurl']);
+                $ret_user = $this->userMod->register_weixin($weixin_data);
 
                 if ($ret_user->get_code() === 0) {
-                    $user_code = $ret_user->get_data();
-                    $this->weixinMod->add_weixin_user($user_code, $data);
-                    log_message("wx", '自动注册微信用户成功, user_code:' . $user_code);
+                    $this->log_file('wx', '自动注册微信用户成功, user_code:' . $ret_user->get_data());
+                    $ret->set_code(0);
+                } else if ($ret_user->get_code() === 2) {
+                    $this->log_file('wx', '本微信号已绑定用户');
+                    $ret->set_code(5); // 微信openid已注册
                 } else {
-                    log_message("wx", '自动注册用户失败, code:' . $ret_user->get_code());
-                }
-
-                if ($ret_user->get_code() === 1) {
-                    log_message("wx", '本用户已绑定微信号');
-                } elseif ($ret_user->get_code() === 2) {
-                    log_message("wx", '本微信号已绑定用户');
+                    $this->log_file('wx', '自动注册用户失败, code:' . $ret_user->get_code());
+                    $ret->set_code(2); // 其它错误，自动注册用户失败
                 }
             } else {
-                log_message("wx", '本微信号获到详细信息失败');
+                $this->log_file('wx', '本微信号获到详细信息失败');
+                $ret->set_code(6); // 本微信号获到详细信息失败
             }
-           // header('Location: ' . $session['back_url']);
-            exit();
-        }else { // 获到用户openid失败
+        } else { // 获到用户openid失败
             $ret->set_code(3);
-            $this->log_file("wx", '获到用户openid失败:' . json_encode($oauth2_user));
+            $this->log_file('wx', '获到用户openid失败:' . json_encode($oauth2_user));
         }
 
         return $ret;
     }
 
     /////////////////////////////////////////////////////////////
+    ///
+    ///
+    /**
+     * 对接验证
+     */
+    public function valid()
+    {
+        $this->weixinLib->valid();
+    }
+
+    /**
+     * 自动回复信息
+     */
+    public function response_msg()
+    {
+        $this->weixinLib->response_msg();
+    }
+
+    ////////////////////////////////////////////////////////////////
 
     /**
      * 能过openid获到用户信息
@@ -138,7 +156,7 @@ class WeixinModel extends Model
             $user = $this->get($weixin['user_code'], XS_USER, 'user_code');
             if (!$user) {
                 //指定微信用户不存在
-                log_message("wx", "微信用户不存在,需要删除微信记录" . json_encode($weixin));
+                $this->log_file('wx', "微信用户不存在,需要删除微信记录" . json_encode($weixin));
                 $this->del($weixin['uw_id'], CAPTAIN_USERWEIXIN, 'uw_id');
                 $weixin = false;
             }
@@ -161,9 +179,36 @@ class WeixinModel extends Model
         }
     }
 
+    /**
+     * 获到微信鉴权配制
+     * @param $weixin_code
+     * @param $state
+     * @return mixed
+     */
     public function get_weixin_oauth2($weixin_code, $state)
     {
         $sql = 'select * from ' . WEIXIN_OAUTH2 . ' where weixin_code = ? and wo_state = ?';
         return $this->query($sql, array($weixin_code, $state));
+    }
+
+    /**
+     * 获取weixin 的　access_token
+     * @param bool|false $weixin_code
+     * @return bool
+     */
+    public function get_access_token($weixin_code = false)
+    {
+        $wx = $this->get_weixin($weixin_code);
+        $access_token = false;
+        if ($wx) {
+            if ($wx['expire_time'] > time()) {
+                $access_token = $wx['weixin_access_token'];
+            } else {
+                $access_token_ret = $this->xxweixin->get_access_token();
+                $access_token = $access_token_ret['access_token'];
+                $this->edit($wx['weixin_id'], array('weixin_access_token' => $access_token, 'expire_time' => time() + $access_token_ret['expires_in'] - 60));
+            }
+        }
+        return $access_token;
     }
 }
