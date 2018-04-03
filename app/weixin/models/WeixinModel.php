@@ -59,6 +59,7 @@ class WeixinModel extends Model
     {
         $ret = new Ret($this->return_status);
         $oauth2_user = $this->weixinLib->oauth2_access_token($code);
+        var_dump($oauth2_user);exit;
         if ($oauth2_user && isset($oauth2_user['openid']) && $oauth2_user['openid']) {
             $weixin_user = $this->weixinMod->get_user_by_openid($oauth2_user['openid']);
             if ($weixin_user && $weixin_user['user_code']) { //用户已绑定，登陆操作
