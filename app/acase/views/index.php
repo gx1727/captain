@@ -69,7 +69,7 @@
                 </div>
                 <span class="project-name">ig_title</span>
                 <p class="participation">共 <span>15</span> 人参与挑战</p>
-                <div class="text-center" style="margin-top:2vw;"><span class="quest">投票</span></div>
+                <div class="text-center" style="margin-top:2vw;"><span class="quest" cvc_id="1">投票</span></div>
             </a>
             <a class="home-project" href="#">
                 <div class="project-top">
@@ -141,7 +141,17 @@
             $(".follow-modal").hide();
         });
         $(".quest").click(function () {
-            $(".follow-modal").show();
+            var cvc_id = $(this).attr('cvc_id');
+            $.post('/case/vote',{cvc_id: cvc_id}, function(ret){
+                console.log(ret);
+                if(ret.code == 0) {
+
+                } else {
+                    alert(ret.msg);
+                    $(".follow-modal").show();
+                }
+            });
+
             return false;
         })
     });

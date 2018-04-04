@@ -18,6 +18,8 @@ class Acase extends CaseController
     {
         parent::__construct(__NAMESPACE__, 'acase');
 
+        $this->model('\captain\acase\VoteModel', 'voteMod');
+
         $this->return_status[1] = '';
     }
 
@@ -49,6 +51,8 @@ class Acase extends CaseController
      */
     public function vote()
     {
-
+        $cvc_id = $this->get_post('cvc_id', 0);
+        $ret = $this->voteMod->vote($this->user_code, $cvc_id);
+        $this->json($this->get_result($ret));
     }
 }

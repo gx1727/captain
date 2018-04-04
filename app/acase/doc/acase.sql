@@ -34,8 +34,8 @@ CREATE TABLE `case_vote_candidate` (
 DROP TABLE IF EXISTS `case_vote_ballot`;
 CREATE TABLE `case_vote_ballot` (
   `cvb_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cvc_id` int(10) NOT NULL COMMENT '候选人ID',
   `user_code` varchar(32) NOT NULL COMMENT '用户编码',
-  `user_name` varchar(64) DEFAULT '' COMMENT '用户名',
   `cvb_atime` int(10) DEFAULT '0' COMMENT '选票时间',
   `cvb_year` int(10) DEFAULT '0' COMMENT '选票年',
   `cvb_month` int(10) DEFAULT '0' COMMENT '选票月',

@@ -124,6 +124,11 @@ define("WEIXIN_MENU", 'weixin_menu'); // 微信自定义菜单
 define("WEIXIN_RESPONDER", 'weixin_responder'); // 应答表
 define("WEIXIN_SCENE", 'weixin_scene'); // 场景表
 define("WEIXIN_SCENELOG", 'weixin_scene_log'); // 场景扫码日志表
+
+// case 管理
+define("CASE_VOTE", 'case_vote'); // 投票活动表
+define("CASE_VOTE_CANDIDATE", 'case_vote_candidate'); // 候选人表
+define("CASE_VOTE_BALLOT", 'case_vote_ballot'); // 选票表
 /**
  * --------------------------------------------------------------------------
  *  编码相关

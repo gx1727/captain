@@ -68,7 +68,7 @@
 
     <div class="modal" id="share" tabindex="-1" role="dialog" style="background:url('/static/acase/img/weixin-share.png') top center;background-size:100% auto;">
 
-
+    <input type="hidden" id="cvc_id" value="1"/>
     <script type="text/javascript" src="/static/acase/js/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="/static/acase/js/swiper.min.js"></script>
     <script type="text/javascript" src="/static/acase/js/jquery.swipebox.js"></script>
