@@ -48,9 +48,9 @@ $configs['timezone'] = 'Asia/Shanghai';
  * 数据库
  */
 $configs['db'] = array(
-    'mysql_host' => '127.0.0.1',
+    'mysql_host' => 'localhost',
     'mysql_username' => 'root',
-    'mysql_pwd' => '123456',
+    'mysql_pwd' => '(+T!@)b+fsGgElGS7H#]j@giQAT463cs',
     'mysql_database' => 'captain',
 );
 
