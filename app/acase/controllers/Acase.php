@@ -51,7 +51,7 @@ class Acase extends CaseController
      */
     public function vote()
     {
-        $cvc_id = $this->get_post('cvc_id', 0);
+        $cvc_id = $this->input->get_post('cvc_id', 0);
         $ret = $this->voteMod->vote($this->user_code, $cvc_id);
         $this->json($this->get_result($ret));
     }
