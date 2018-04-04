@@ -51,7 +51,7 @@ class UserModel extends Model
      */
     private function add_user($user_name, $user_title, $user_phone, $user_email, $user_wxopenid, $user_pwd, $user_photo = '')
     {
-        $this->library_core('\captain\core\code', 'codeLib');
+        $this->library_core('\captain\core\Code', 'codeLib');
         $user_code = $this->codeLib->get_code('USERCODE');
         $userData = array(
             'user_code' => $user_code,

@@ -5,7 +5,7 @@
  * User: gx1727
  * Date: 2018/2/28
  * Time: 12:21
- * $this->library('\captain\core\code', 'codeLib');
+ * $this->library('\captain\core\Code', 'codeLib');
  * $ret = $this->codeLib->get_code('USERCODE2', 2);
  */
 
