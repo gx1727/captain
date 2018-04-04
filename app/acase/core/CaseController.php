@@ -30,7 +30,6 @@ class CaseController extends Controller
         $this->model('\captain\weixin\WeixinModel', 'weixinMod', 'weixin');
 
         $this->session = &$this->get_session(); // 引用 session
-        $this->openid = $this->session->get_sess('openid');
         $this->user_code = $this->session->get_sess('user_code');
         $this->role_name = $this->session->get_sess('role_code');
 
@@ -42,7 +41,7 @@ class CaseController extends Controller
      */
     public function init()
     {
-        if ($this->is_weixin() && !$this->openid) {
+        if ($this->is_weixin() && !$this->user_code) {
             $weixin_code = $this->input->get_post('weixin', $this->weixin);
             $weixin = $this->weixinMod->get_weixin($weixin_code);
             if ($weixin) {
