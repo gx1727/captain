@@ -145,9 +145,9 @@
             $.post('/case/vote',{cvc_id: cvc_id}, function(ret){
                 console.log(ret);
                 if(ret.code == 0) {
-
-                } else {
+                } else if(ret.code == 2) {
                     alert(ret.msg);
+                } else {
                     $(".follow-modal").show();
                 }
             });
