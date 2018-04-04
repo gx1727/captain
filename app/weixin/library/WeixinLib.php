@@ -93,6 +93,15 @@ class WeixinLib
             'GET', '');
     }
 
+    /**
+     * 获到 access_token
+     * @return bool|mixed
+     */
+    public function get_access_token()
+    {
+        return $this->http('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $this->AppID . '&secret=' . $this->AppSecret,
+            'GET', '');
+    }
     ////////////////////////////////////////////////////////////////////////////////////////
     ///
     private function http($url, $method, $body)

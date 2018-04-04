@@ -59,9 +59,9 @@ class WeixinModel extends Model
     {
         $ret = new Ret($this->return_status);
         $oauth2_user = $this->weixinLib->oauth2_access_token($code);
-        var_dump($oauth2_user);exit;
+
         if ($oauth2_user && isset($oauth2_user['openid']) && $oauth2_user['openid']) {
-            $weixin_user = $this->weixinMod->get_user_by_openid($oauth2_user['openid']);
+            $weixin_user = $this->get_user_by_openid($oauth2_user['openid']);
             if ($weixin_user && $weixin_user['user_code']) { //用户已绑定，登陆操作
                 $login_user = $this->userMod->get_user($weixin_user['user_code']);
                 $login_user['role'] = $this->loginMod->get_userrole($login_user['user_code']);
@@ -86,7 +86,7 @@ class WeixinModel extends Model
         $ret = new Ret($this->return_status);
         $oauth2_user = $this->weixinLib->oauth2_access_token($code);
         if ($oauth2_user && isset($oauth2_user['openid']) && $oauth2_user['openid']) {
-            $userinfo = $this->xxweixin->sns_userinfo($oauth2_user);
+            $userinfo = $this->weixinLib->sns_userinfo($oauth2_user);
             $this->log_file('wx', '获取微信数据sns_userinfo:' . json_encode($userinfo));
 
             if ($userinfo['openid']) {
@@ -207,7 +207,7 @@ class WeixinModel extends Model
             if ($wx['expire_time'] > time()) {
                 $access_token = $wx['weixin_access_token'];
             } else {
-                $access_token_ret = $this->xxweixin->get_access_token();
+                $access_token_ret = $this->weixinLib->get_access_token();
                 $access_token = $access_token_ret['access_token'];
                 $this->edit($wx['weixin_id'], array('weixin_access_token' => $access_token, 'expire_time' => time() + $access_token_ret['expires_in'] - 60));
             }
