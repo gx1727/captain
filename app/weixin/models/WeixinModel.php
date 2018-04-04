@@ -91,7 +91,7 @@ class WeixinModel extends Model
 
             if ($userinfo['openid']) {
                 $weixin_data = array(
-                    'openid' => $oauth2_user['openid'],
+                    'openid' => $userinfo['openid'],
                     'nickname' => $userinfo['nickname'] ? $userinfo['nickname'] : '',
                     'sex' => $userinfo['sex'],
                     'city' => $userinfo['city'],
@@ -99,7 +99,7 @@ class WeixinModel extends Model
                     'country' => $userinfo['country'],
                     'headimgurl' => $userinfo['headimgurl'],
                 );
-
+print_r($weixin_data);exit;
                 $ret_user = $this->userMod->register_weixin($weixin_data);
 
                 if ($ret_user->get_code() === 0) {
