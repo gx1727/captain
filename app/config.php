@@ -45,16 +45,6 @@ $configs['url_model'] = 's';
 $configs['timezone'] = 'Asia/Shanghai';
 
 /**
- * 数据库
- */
-$configs['db'] = array(
-    'mysql_host' => 'localhost',
-    'mysql_username' => 'root',
-    'mysql_pwd' => '(+T!@)b+fsGgElGS7H#]j@giQAT463cs',
-    'mysql_database' => 'captain',
-);
-
-/**
  * session
  */
 $configs['session'] = array(

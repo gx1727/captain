@@ -19,6 +19,7 @@ error_reporting(E_ALL | E_STRICT);
  * 全局配制
  */
 require_once BASEPATH . 'app/config.php';
+require_once BASEPATH . 'app/database.php';
 require_once BASEPATH . 'app/routes.php';
 
 
