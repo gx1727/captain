@@ -61,31 +61,31 @@ class VoteModel extends Model
         $user = $this->userMod->get_user($user_code);
         if (!$user['weixin'] || $user['weixin']['subscribe'] == 0) {
             $wx_userinfo = $this->weixinMod->sync_weixin_user_info($this->weixin_code, $user['user_wxopenid']);
-            if ($wx_userinfo && isset($wx_userinfo['subscribe']) && $wx_userinfo['subscribe']) {
-                $ballot_count = $this->get_ballot_count($user_code, 'day', date('Ymd'));
-                if ($ballot_count >= 1) {
-                    $ret->set_code(2);
-                } else {
-                    $data = array(
-                        'cvc_id' => $cvc_id,
-                        'user_code' => $user_code,
-                        'cvb_atime' => time(),
-                        'cvb_year' => date('Y'),
-                        'cvb_month' => date('Ym'),
-                        'cvb_week' => date('YW'),
-                        'cvb_day' => date('Ymd'),
-                        'cvb_status' => 0
-                    );
-                    $this->add($data, CASE_VOTE_BALLOT);
-                    $ret->set_code(0);
-                }
-
-                return $ret;
-            } else {
+            if (!$wx_userinfo || !isset($wx_userinfo['subscribe']) || !$wx_userinfo['subscribe']) {
                 $ret->set_code(5);
                 return $ret;
             }
         }
+
+        $ballot_count = $this->get_ballot_count($user_code, 'day', date('Ymd'));
+        if ($ballot_count >= 1) {
+            $ret->set_code(2);
+        } else {
+            $data = array(
+                'cvc_id' => $cvc_id,
+                'user_code' => $user_code,
+                'cvb_atime' => time(),
+                'cvb_year' => date('Y'),
+                'cvb_month' => date('Ym'),
+                'cvb_week' => date('YW'),
+                'cvb_day' => date('Ymd'),
+                'cvb_status' => 0
+            );
+            $this->add($data, CASE_VOTE_BALLOT);
+            $ret->set_code(0);
+        }
+
+        return $ret;
     }
 
     public function get_ballot_count($user_code, $key, $val)
