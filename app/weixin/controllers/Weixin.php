@@ -65,9 +65,9 @@ class Weixin extends WXController
                         }
                     } else if ($ret->get_code() === 4) { // 微信openid还未注册
                         $weixin_oauth2 = $this->weixinMod->get_weixin_oauth2($weixin_oauth2['weixin_code'], 2); // 获到注册的配制
-//                        header('Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=' . $weixin['weixin_appid'] . '&redirect_uri=' . urlencode($weixin_oauth2['sortwo_redirect_url'])
-//                            . '&response_type=code&scope=' . $weixin_oauth2['wo_scope'] . '&state=' . $weixin_oauth2['wo_id'] . '#wechat_redirect');
-//                        exit();
+                        header('Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=' . $weixin['weixin_appid'] . '&redirect_uri=' . urlencode($weixin_oauth2['sortwo_redirect_url'])
+                            . '&response_type=code&scope=' . $weixin_oauth2['wo_scope'] . '&state=' . $weixin_oauth2['wo_id'] . '#wechat_redirect');
+                        exit();
                     }
                 } else if ($weixin_oauth2['wo_state'] == 2) { // 获到用户详细信息 判断用户并注册新用户
                     $ret = $this->weixinMod->weixin_register($_GET['code']);
@@ -80,8 +80,7 @@ class Weixin extends WXController
                         }
                     }
                 }
-                echo $weixin_oauth2['wo_back_url'];
-//                header('Location: ' . $weixin_oauth2['wo_back_url']);  // 回跳
+                header('Location: ' . $weixin_oauth2['wo_back_url']);  // 回跳
                 exit();
             } else {
                 $this->log_file("wx", '获取微信鉴权配制失败wo_id:' . $wo_id);
