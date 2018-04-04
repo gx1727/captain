@@ -50,7 +50,7 @@ class VoteModel extends Model
     public function vote($user_code, $cvc_id)
     {
         $ret = new Ret($this->return_status);
-        $ballot_count = $this->get_ballot_count($user_code, 'cvb_day', date('Ymd'));
+        $ballot_count = $this->get_ballot_count($user_code, 'day', date('Ymd'));
         if($ballot_count >= 1) {
             $ret->set_code(2);
         } else {
@@ -73,8 +73,17 @@ class VoteModel extends Model
 
     public function get_ballot_count($user_code, $key, $val)
     {
-        $query_param = array($user_code, $key, $val);
-        $sql = 'select count(*) as ballot_count from ' . CASE_VOTE_BALLOT . ' where user_code = ? and ? = ? and cvb_status = 0';
+        $query_param = array($user_code, $val);
+        $sql = 'select count(*) as ballot_count from ' . CASE_VOTE_BALLOT . ' where user_code = ? and cvb_status = 0 ';
+        if ($key == 'year') {
+            $sql .= ' and cvb_year = ?';
+        } else if ($key == 'month') {
+            $sql .= ' and cvb_month = ?';
+        } else if ($key == 'week') {
+            $sql .= ' and cvb_week = ?';
+        } else if ($key == 'day') {
+            $sql .= ' and cvb_day = ?';
+        }
         $vote_ballot = $this->query($sql, $query_param);
         return $vote_ballot['ballot_count'];
     }
