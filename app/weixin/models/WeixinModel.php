@@ -144,6 +144,33 @@ class WeixinModel extends Model
         $this->weixinLib->response_msg();
     }
 
+    /**
+     * 从微信服务器获到用户信息
+     * @param $weixin_code
+     * @param $openid
+     * @return mixed
+     */
+    public function sync_weixin_user_info($weixin_code, $openid)
+    {
+        $wx_userinfo = $this->weixinLib->get_weixin_user_info($this->get_access_token($weixin_code), $openid);
+        $this->log_file('wx', '从微信服务器同步用户信息，openid:[' . $openid . '] wx:' . json_encode($wx_userinfo));
+        if ($wx_userinfo) {
+            $user_weixin = array(
+                'subscribe' => 0
+            );
+            if ($wx_userinfo) {
+                $user_weixin['subscribe'] = $wx_userinfo['subscribe'];
+                if (isset($wx_userinfo['nickname']) && $wx_userinfo['nickname']) {
+                    $user_weixin['nickname'] = $wx_userinfo['nickname'];
+                }
+                if (isset($wx_userinfo['headimgurl']) && $wx_userinfo['headimgurl']) {
+                    $user_weixin['headimgurl'] = $wx_userinfo['headimgurl'];
+                }
+            }
+            $this->userMod->edit($openid, $user_weixin, CAPTAIN_USERWEIXIN, 'openid');
+        }
+        return $wx_userinfo;
+    }
     ////////////////////////////////////////////////////////////////
 
     /**

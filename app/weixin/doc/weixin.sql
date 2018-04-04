@@ -9,6 +9,7 @@ CREATE TABLE `weixin_conf` (
   `weixin_access_token` varchar(512) DEFAULT NULL COMMENT 'access_token',
   `weixin_jsapi_ticket` varchar(512) DEFAULT NULL COMMENT 'JsApiTicket',
   `expire_time` int(10) DEFAULT '0' COMMENT 'expire_time',
+  `jsapi_expire_time` int(10) DEFAULT '0' COMMENT 'jsapi_ticket失效时间',
    PRIMARY KEY (`weixin_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='微信表' AUTO_INCREMENT=1;
 
@@ -16,8 +17,8 @@ CREATE TABLE `weixin_conf` (
 -- 转存表中的数据 `weixin_conf`
 --
 
-INSERT INTO `weixin_conf` (`weixin_id`, `weixin_code`, `weixin_appid`, `weixin_appsecret`, `weixin_token`, `weixin_encodingaeskey`, `weixin_access_token`, `weixin_jsapi_ticket`, `expire_time`) VALUES
-(1, 'alanbeibei', 'wxa54aa84375925ca3', '705579f9adb736b0af9d3c0313ac23e5', 'alanbeibei', 'oyYj6t6jr1rSfG88Gb87tNTTahkAQ4531AY6z1MPVfo', 'tWahZYoQR6_dGWXUs0xwjh--nhPH5J_E0EsD71ipmsm7PYt6WxFvpIrDjox36gmnqACZ5Z0TvzRqHsdvL6J58fiYg_y99N2FnCf5wGTYrhXQyCAwXZRIvMD2j1RICG6IMQTdAFAUYB', NULL, 1510974886);
+INSERT INTO `weixin_conf` (`weixin_id`, `weixin_code`, `weixin_appid`, `weixin_appsecret`, `weixin_token`, `weixin_encodingaeskey`, `weixin_access_token`, `weixin_jsapi_ticket`, `expire_time`, `jsapi_expire_time`) VALUES
+(1, 'alanbeibei', 'wxa54aa84375925ca3', '705579f9adb736b0af9d3c0313ac23e5', 'alanbeibei', 'oyYj6t6jr1rSfG88Gb87tNTTahkAQ4531AY6z1MPVfo', '', NULL, 0, 0);
 
 -- --------------------------------------------------------
 

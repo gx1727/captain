@@ -94,6 +94,18 @@ class WeixinLib
     }
 
     /**
+     * 获到微信用户信息
+     * @param $access_token
+     * @param $openid
+     * @return bool|mixed
+     */
+    public function get_weixin_user_info($access_token, $openid)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $access_token . '&openid=' . $openid . '&lang=zh_CN';
+        return $this->http($url, 'POST', '');
+    }
+
+    /**
      * 获到 access_token
      * @return bool|mixed
      */
