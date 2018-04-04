@@ -10,6 +10,12 @@ defined('CAPTAIN') OR exit('No direct script access allowed');
  */
 
 /**
+ * 打开所有报错
+ */
+ini_set("display_errors", "On");
+error_reporting(E_ALL | E_STRICT);
+
+/**
  * 全局配制
  */
 require_once BASEPATH . 'app/config.php';
