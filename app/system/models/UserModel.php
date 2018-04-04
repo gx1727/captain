@@ -27,7 +27,7 @@ class UserModel extends Model
 
 
     /**
-     * 需求用户数据
+     * 获取用户数据
      * @param $user_code
      * @return bool
      */
@@ -36,6 +36,20 @@ class UserModel extends Model
         $user = $this->get($user_code, $this->table_name, 'user_code');
         if ($user) {
             $user['weixin'] = $this->get($user_code, CAPTAIN_USERWEIXIN, 'user_code');
+        }
+        return $user;
+    }
+
+    /**
+     * 通过微信号获取用户数据
+     * @param $openid
+     * @return bool
+     */
+    public function get_user_by_openid($openid)
+    {
+        $user = $this->get($openid, $this->table_name, 'user_wxopenid');
+        if ($user) {
+            $user['weixin'] = $this->get($user['user_code'], CAPTAIN_USERWEIXIN, 'user_code');
         }
         return $user;
     }

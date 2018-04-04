@@ -61,11 +61,10 @@ class WeixinModel extends Model
         $oauth2_user = $this->weixinLib->oauth2_access_token($code);
 
         if ($oauth2_user && isset($oauth2_user['openid']) && $oauth2_user['openid']) {
-            $weixin_user = $this->get_user_by_openid($oauth2_user['openid']);
-            if ($weixin_user && $weixin_user['user_code']) { //用户已绑定，登陆操作
-                $login_user = $this->userMod->get_user($weixin_user['user_code']);
-                $login_user['role'] = $this->loginMod->get_userrole($login_user['user_code']);
-                $this->loginMod->login($login_user); // 登录的操作
+            $weixin_user = $this->userMod->get_user_by_openid($oauth2_user['openid']);
+            if ($weixin_user) { //用户已绑定，登陆操作
+                $weixin_user['role'] = $this->loginMod->get_userrole($weixin_user['user_code']);
+                $this->loginMod->login($weixin_user); // 登录的操作
                 $ret->set_code(0);
             } else {
                 $ret->set_code(4);
@@ -146,27 +145,6 @@ class WeixinModel extends Model
     }
 
     ////////////////////////////////////////////////////////////////
-
-    /**
-     * 能过openid获到用户信息
-     * @param $openid
-     * @return bool|mixed
-     */
-    public function get_user_by_openid($openid)
-    {
-        $weixin = $this->get($openid, CAPTAIN_USERWEIXIN, 'openid');
-        if ($weixin) {
-            $user = $this->get($weixin['user_code'], XS_USER, 'user_code');
-            if (!$user) {
-                //指定微信用户不存在
-                $this->log_file('wx', "微信用户不存在,需要删除微信记录" . json_encode($weixin));
-                $this->del($weixin['uw_id'], CAPTAIN_USERWEIXIN, 'uw_id');
-                $weixin = false;
-            }
-        }
-
-        return $weixin;
-    }
 
     /**
      * 获到获到配制信息
