@@ -16,13 +16,39 @@ class Acase extends CaseController
 {
     function __construct()
     {
-        parent::__construct(__NAMESPACE__, 'case');
+        parent::__construct(__NAMESPACE__, 'acase');
 
         $this->return_status[1] = '';
     }
 
     public function index()
     {
-        echo "dds";
+        $this->view('index');
+    }
+
+    public function rank()
+    {
+        $this->view('rank');
+    }
+
+    public function rule()
+    {
+        $this->view('rule');
+    }
+
+    /**
+     * 候选人
+     */
+    public function candidate()
+    {
+        $this->view('candidate');
+    }
+
+    /**
+     * 投票
+     */
+    public function vote()
+    {
+
     }
 }
