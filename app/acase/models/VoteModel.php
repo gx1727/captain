@@ -26,7 +26,7 @@ class VoteModel extends Model
         $this->weixin_code = 'alanbeibei';
 
         $this->model('\captain\system\UserModel', 'userMod', 'system');
-        $this->library('\captain\weixin\WeixinModel', 'weixinMod');
+        $this->model('\captain\weixin\WeixinModel', 'weixinMod', 'weixin');
         $this->weixinMod->config($this->weixin_code);
 
         $this->return_status[1] = "";
