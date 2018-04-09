@@ -35,7 +35,9 @@ class Route
 
     function __construct()
     {
-        $this->_request_scheme = $_SERVER['REQUEST_SCHEME'];
+        $this->_request_scheme = '';
+//        $this->_request_scheme = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https' : 'http';
+//        $this->_request_scheme = $_SERVER['REQUEST_SCHEME'];
         $this->_http_host = $_SERVER['HTTP_HOST'];
         $this->_server_port = $_SERVER['SERVER_PORT'];
         $this->_request_method = $_SERVER['REQUEST_METHOD'];

@@ -29,7 +29,7 @@ class VoteModel extends Model
         $this->model('\captain\weixin\WeixinModel', 'weixinMod', 'weixin');
         $this->weixinMod->config($this->weixin_code);
 
-        $this->return_status[1] = "";
+        $this->return_status[1] = "用户不存在";
         $this->return_status[2] = "每天只能投一票";
         $this->return_status[3] = "活动还没有开始";
         $this->return_status[4] = "活动已经结束";
@@ -50,7 +50,7 @@ class VoteModel extends Model
     }
 
     /**
-     * 设票
+     * 投票
      * @param $user_code
      * @param $cvc_id
      * @return Ret
@@ -59,6 +59,10 @@ class VoteModel extends Model
     {
         $ret = new Ret($this->return_status);
         $user = $this->userMod->get_user($user_code);
+        if(!$user) {
+            $ret->set_code(1);
+            return $ret;
+        }
         if (!$user['weixin'] || $user['weixin']['subscribe'] == 0) {
             $wx_userinfo = $this->weixinMod->sync_weixin_user_info($this->weixin_code, $user['user_wxopenid']);
             if (!$wx_userinfo || !isset($wx_userinfo['subscribe']) || !$wx_userinfo['subscribe']) {

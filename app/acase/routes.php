@@ -11,3 +11,5 @@ $guest['/case/rank'] = 'acase:captain\acase\Acase@rank';
 $guest['/case/rule'] = 'acase:captain\acase\Acase@rule';
 $guest['/case/candidate'] = 'acase:captain\acase\Acase@candidate'; // 候选人
 $guest['/case/vote'] = 'acase:captain\acase\Acase@vote'; // 投票
+
+$guest['/case/manager'] = 'acase:captain\acase\Manager@home'; // 投票管理员
