@@ -515,7 +515,7 @@ class MysqliDb
         $this->_query = $query;
         $stmt = $this->_prepareQuery();
 
-        if (is_array($bindParams) === true) {
+        if (is_array($bindParams) === true && sizeof($bindParams) > 0) {
             foreach ($bindParams as $prop => $val) {
                 $params[0] .= $this->_determineType($val);
                 array_push($params, $bindParams[$prop]);
