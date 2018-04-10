@@ -142,7 +142,7 @@ if (!function_exists('web_url')) {
     }
 }
 
-if (!function_exists('web_root')) {
+if (!function_exists('static_domain')) {
     function static_domain($domain_name = false)
     {
         if ($domain_name) {
@@ -153,7 +153,7 @@ if (!function_exists('web_root')) {
         }
 
         global $captain_router;
-        return $captain_router->_request_scheme . '://' . $captain_router->_http_host . $captain_router->_sub_directory;
+        return ($captain_router->_request_scheme ? $captain_router->_request_scheme . '://' : '//')  . $captain_router->_http_host . $captain_router->_sub_directory;
 
     }
 }

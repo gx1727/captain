@@ -51,10 +51,10 @@ CREATE TABLE `xx_role` (
 --
 
 INSERT INTO `xx_role` (`role_id`, `role_code`, `role_name`, role_title,`role_extend`, `role_menu`, `role_homeurl`, `role_template`, `role_remark`) VALUES
-(1, 'ROLE00001', 'admin', 'admin权限', NULL, 1, 'admin_home', 'admin/', 'admin权限'),
-(2, 'ROLE00002', 'default', '游客角色', NULL, 0, 'default_home', 'default/', '最基础的访问权限'),
-(3, 'ROLE00003', 'manager', '管理员', NULL, 1, 'manager_home', 'admin/', '系统管理员'),
-(4, 'ROLE00004', 'user', '普通会员角色', NULL, 2, 'user_home', 'default/', '普通会员');
+(1, 'ROLE00001', 'admin', 'admin权限', NULL, 2, 'admin_home', 'admin/', 'admin权限'),
+(2, 'ROLE00002', 'default', '游客角色', NULL, 3, 'default_home', 'default/', '最基础的访问权限'),
+(3, 'ROLE00003', 'manager', '管理员', NULL, 4, 'manager_home', 'admin/', '系统管理员'),
+(4, 'ROLE00004', 'user', '普通会员角色', NULL, 5, 'user_home', 'default/', '普通会员');
 
 
 
@@ -158,5 +158,48 @@ CREATE TABLE `xx_menu` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1;
 
 
-INSERT INTO `xx_menu` (`menu_title`, `menu_pinyin`, `menu_href`, `menu_subs`, `menu_icon`, `menu_parent`, `menu_subindex`, `menu_index`, `menu_order`) VALUES
-('root', 'root', '/', '0', '', 1, 1, 1, 1);
+INSERT INTO `xx_menu` (`menu_id`, `menu_title`, `menu_pinyin`, `menu_href`, `menu_subs`, `menu_icon`, `menu_parent`, `menu_subindex`, `menu_index`, `menu_order`) VALUES
+(1, 'root', 'root', '/', 0, '', 0, 1, 1, 1),
+(2, 'admin权限', '', '', 0, '', 1, 0, 0, 99999),
+(3, '游客角色', '', '', 0, '', 1, 0, 0, 99999),
+(4, '管理员', '', '', 0, '', 1, 0, 0, 99999),
+(5, '普通会员角色', '', '', 0, '', 1, 0, 0, 99999),
+(6, '系统设置', '', 'sys', 0, '', 2, 0, 0, 0),
+(7, '菜单管理', '', 'auth_menu', 0, '', 6, 0, 0, 0),
+(8, '角色管理', '', 'auth_role', 0, '', 6, 0, 0, 0),
+(9, '文章管理', '', 'cms', 0, '', 2, 0, 0, 0),
+(10, '文章分类', '', 'cms_sort', 0, '', 9, 0, 0, 0),
+(11, '文章TAG分组', '', 'cms_tag_group', 0, '', 9, 0, 0, 0),
+(12, '文章TAG', '', 'cms_tag', 0, '', 9, 0, 0, 0),
+(13, '文章列表', '', 'cms_article_list', 0, '', 9, 0, 0, 0);
+
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- 附件
+-- 表的结构 `xx_attachment`
+--
+
+DROP TABLE IF EXISTS `xx_attachment`;
+CREATE TABLE `xx_attachment` (
+  `att_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_code` varchar(32) DEFAULT '' COMMENT '附件所属用户编码',
+  `att_filename` varchar(64) NOT NULL COMMENT '附件标题',
+  `att_originalname` varchar(256) DEFAULT NULL COMMENT '附件原始名',
+  `att_class` tinyint(1) NOT NULL DEFAULT '1' COMMENT '附件分类 1：图片 2：txt文本 ',
+  `att_type` varchar(32) NOT NULL DEFAULT '' COMMENT '附件类型 ',
+  `att_size` int(11) NOT NULL DEFAULT '0' COMMENT '附件大小',
+  `att_domain` varchar(128) DEFAULT NULL COMMENT '附件所在域名',
+  `att_filepath` varchar(128) DEFAULT NULL COMMENT '附件全路径',
+  `att_cdn` varchar(128) DEFAULT NULL COMMENT '附件cdn地址',
+  `att_thumbnail` varchar(128) DEFAULT NULL COMMENT '附件缩略图地址',
+  `att_tag` varchar(62) DEFAULT NULL COMMENT '附件tag',
+  `att_atime` int(10) DEFAULT NULL COMMENT '创建时间',
+  `att_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
+  PRIMARY KEY (`att_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='附件表' AUTO_INCREMENT=1;

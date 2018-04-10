@@ -56,6 +56,7 @@ $guest['/hello*'] = 'system:captain\system\Index@hello_tag';
 $guest['/hello/*'] = 'system:captain\system\Index@hello_art';
 $guest['/cms/*'] = 'system:captain\system\Index@cms';
 $guest['/z*'] = 'system:captain\system\Index@hello_tag';
+
 $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
 // 游客组 - 接口类
@@ -88,6 +89,9 @@ $guest['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
 $guest['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
 $guest['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
 
+// 附件操作
+$guest['/api/attachment/upload'] = 'system:captain\system\Attachment@upload';
+$guest['/api/attachment/list'] = 'system:captain\system\Attachment@alist';
 
 // 微信相关
 

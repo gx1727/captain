@@ -36,6 +36,9 @@ CREATE TABLE `cms_tag_group` (
     KEY `cs_name` (`ctg_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='TAG分组管理'  AUTO_INCREMENT=1;
 
+INSERT INTO `cms_tag_group` (`ctg_id`, `ctg_name`, `ctg_title`, `ctg_img`, `ctg_atime`, `ctg_etime`, `ctg_status`) VALUES
+(null, 'other', '常规', '', 0, 0, 0);
+
 
 
 DROP TABLE IF EXISTS `cms_tag`;
