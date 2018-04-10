@@ -25,7 +25,6 @@ class Upload
 
     public function __construct()
     {
-
         $this->error = 0;
     }
 
