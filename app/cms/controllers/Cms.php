@@ -87,10 +87,12 @@ class Cms extends Controller
     {
         $a_id = $this->input->get_post('a_id');
         $a_title = $this->input->get_post('a_title');
+        $a_img = $this->input->get_post('a_img');
         $a_abstract = $this->input->get_post('a_abstract');
         $a_content = $this->input->get_post('a_content', '', false);
         $a_extended = $this->input->get_post('a_extended');
         $a_publish_time = $this->input->get_post('a_publish_time');
+        $a_recommend = $this->input->get_post('a_recommend');
         $sort = $this->input->get_post('sort');
         $tag = $this->input->get_post('tag');
 
@@ -111,8 +113,10 @@ class Cms extends Controller
 
         $article = array(
             'a_title' => $a_title,
+            'a_img' => $a_img,
             'a_abstract' => $a_abstract,
             'a_content' => $a_content,
+            'a_recommend' => $a_recommend,
             'a_extended' => $a_extended
         );
 
@@ -282,6 +286,7 @@ class Cms extends Controller
             foreach ($tag_list as &$tag_item) {
                 $tag_group = $this->tagMod->get_tag_group_byname($tag_item['ctg_name']);
                 $tag_item['ctg_name_title'] = $tag_group['ctg_title'];
+                $tag_item['img'] = '<img src="' . $tag_item['ct_img'] . '" style="width: 60px;"/>';
 
             }
             $this->json($this->get_result(array('data' => $tag_list, 'total' => $tag_list_ret->get_data(2))));

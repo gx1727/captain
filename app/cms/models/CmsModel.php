@@ -306,6 +306,7 @@ class CmsModel extends Model
                 'a_abstract' => $article_draft['a_abstract'],
                 'a_content' => $article_draft['a_content'],
                 'a_etime' => time(),
+                'a_recommend' => $article_draft['a_recommend'],
                 'a_extended' => $article_draft['a_extended'],
                 'a_publish_time' => ($a_publish_time && $a_publish_time > time()) ? $a_publish_time : 0,
                 'a_status' => ($a_publish_time && $a_publish_time > time()) ? 2 : 1

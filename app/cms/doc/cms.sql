@@ -76,6 +76,7 @@ CREATE TABLE `cms_article` (
   `a_count` int(10) DEFAULT '0' COMMENT '查看次数',
   `a_extended` varchar(256) DEFAULT '' COMMENT '扩展参数',
   `a_publish_time` int(10) DEFAULT '0' COMMENT '发布时间',
+  `a_recommend` tinyint(1) DEFAULT '0' COMMENT '是否推荐',
   `a_template` varchar(32) NOT NULL DEFAULT '' COMMENT '文章模板',
   `a_status` tinyint(1) NOT NULL DEFAULT '3' COMMENT '是否删除,默认为0 0:删除 1:显示 2:未发布，不显示 3:草稿中',
    PRIMARY KEY (`a_id`)
@@ -92,6 +93,7 @@ CREATE TABLE `cms_article_draft` (
   `a_atime` int(10) DEFAULT '0' COMMENT '创建时间',
   `a_etime` int(10) DEFAULT '0' COMMENT '修改时间',
   `a_extended` varchar(256) DEFAULT '' COMMENT '扩展参数',
+  `a_recommend` tinyint(1) DEFAULT '0' COMMENT '是否推荐',
   `a_template` varchar(32) NOT NULL DEFAULT '' COMMENT '文章模板',
    PRIMARY KEY (`a_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章草稿表';

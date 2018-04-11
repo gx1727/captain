@@ -19,6 +19,7 @@ class Auth extends Controller
 
         $this->model('\captain\system\AuthModel', 'authMod');
         $this->return_status[1] = '';
+        $this->return_status[998] = '没有权限';
     }
 
     public function role_list()
@@ -41,5 +42,13 @@ class Auth extends Controller
         $post_data = json_decode($post_data, true);
         $ret = $this->authMod->role_edit($role_id, $post_data);
         $this->json($this->get_result($ret));
+    }
+
+    /**
+     * 没有权限
+     */
+    public function reject()
+    {
+        $this->json($this->get_result(false, 998));
     }
 }

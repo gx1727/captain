@@ -64,6 +64,10 @@ class Attachment extends Controller
             foreach ($att_list as $att_item) {
                 $att_item['thumbnail'] = '<img src="' . static_domain() .  ($att_item['att_thumbnail'] ? $att_item['att_thumbnail'] : $att_item['att_filepath']) . '" style="height: 60px;">';
                 $att_item['att_atime'] = date('Y-m-d H:i:s', $att_item['att_atime']);
+                $att_item['id'] = $att_item['att_id'];
+                $att_item['name'] = $att_item['att_originalname'];
+                $att_item['url'] = $att_item['att_thumbnail'] ? $att_item['att_thumbnail'] : ( $att_item['att_domain'] . $att_item['att_filepath']);
+                $att_item['size'] = $att_item['att_size'] < 1024 ? ( $att_item['att_size'] . ' B') : ( $att_item['att_size'] < 1024 * 1024 ? round($att_item['att_size'] / 1024, 2) . 'KB' : (round($att_item['att_size'] / (1024 * 1024), 2) . ' MB') );
                 $atts[] = $att_item;
             }
             $this->json($this->get_result(array('data' => $atts, 'total' => $att_list_ret->get_data(2))));
