@@ -18,6 +18,8 @@ class Login extends Controller
         parent::__construct(__NAMESPACE__, 'system');
 
         $this->return_status[1] = '';
+        $this->return_status[997] = '权限不足';
+        $this->return_status[998] = '没有登陆';
     }
 
     public function enter()
@@ -38,13 +40,18 @@ class Login extends Controller
         }
     }
 
-    public function entrance()
+    /**
+     * 没有权限
+     */
+    public function reject()
     {
-        if (method_exists($this, $this->input->_uri)) {
-            return call_user_func_array(array($this, $this->input->_uri), array());
-        } else {
-            // 不是默认对应的function
-            show_404();
-        }
+        $session = &$this->get_session(); // 引用 session
+        $user_login_status = array(
+            'user_code' => $session->get_sess('user_code'),
+            'login_time' => $session->get_sess('login_time'), // 登录时间
+            'role_name' => $session->get_sess('role_name'),
+        );
+        $user_login_status['code']  = $user_login_status['user_code'] ? 997 : 998;
+        $this->json($this->get_result($user_login_status, $user_login_status['code'] ));
     }
 }

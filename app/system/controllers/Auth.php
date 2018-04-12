@@ -43,12 +43,4 @@ class Auth extends Controller
         $ret = $this->authMod->role_edit($role_id, $post_data);
         $this->json($this->get_result($ret));
     }
-
-    /**
-     * 没有权限
-     */
-    public function reject()
-    {
-        $this->json($this->get_result(false, 998));
-    }
 }

@@ -35,7 +35,7 @@ $route_config = array(
 //权限继承关系
 $route_role = array(
     'guest' => array('guest'),
-    'admin' => array('guest', 'admin'),
+    'admin' => array('guest', 'manager', 'admin'),
     'manager' => array('guest', 'manager'),
     'user' => array('guest', 'user')
 );
@@ -49,25 +49,20 @@ $route_role = array(
 //游客组
 $guest['/'] = 'system:captain\system\Index@index';
 $guest['/*'] = 'cms:captain\cms\Article@index';
-
-$guest['/hello/a'] = 'system:captain\system\Index@index';
-$guest['/hello/world'] = 'system:captain\system\Index@hello';
-$guest['/hello*'] = 'system:captain\system\Index@hello_tag';
-$guest['/hello/*'] = 'system:captain\system\Index@hello_art';
-$guest['/cms/*'] = 'system:captain\system\Index@cms';
-$guest['/z*'] = 'system:captain\system\Index@hello_tag';
-
 $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
 // 游客组 - 接口类
-$guest['/api/*'] = 'system:captain\system\Login@enter';
+$guest['/api/*'] = 'system:captain\system\Login@reject';
 $guest['/api/login'] = 'system:captain\system\Login@enter';
+
 $guest['/api/role/list'] = 'system:captain\system\Auth@role_list';
 $guest['/api/role/edit'] = 'system:captain\system\Auth@role_edit';
+
 $guest['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
-$guest['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
 $guest['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
 $guest['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
+
+$guest['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
 
 // 文章相关
 $guest['/api/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
@@ -111,7 +106,7 @@ $user['/user/home'] = 'system:captain\system\Admin@home';
  * 该组中的url不调session
  * $needless_context
  */
-$needless_context['/api'] = 'system:captain\system\Index@api';
+
 $needless_context['/tools/imagetools_proxy'] = 'system:captain\system\Tools@imagetools_proxy';
 
 foreach ($configs['app'] as $app) {
