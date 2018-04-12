@@ -24,6 +24,9 @@ class Index extends Controller
 
     public function index()
     {
+        $this->library_core('\captain\core\Pinyin', 'pinyinLib');
+        echo $this->pinyinLib->py('不服来战');
+        exit;
         var_dump($this->get_session());
 //        $this->library('\captain\core\Secret', 'secretLib');
 //        print_r($this->secretLib->decoding('kchaA1FJkPwySVJRPhWCNLxwZsai6O4z479s7vrCLMHJS9kan6+l+AQS0Ut8Be94CnjhYnsYBz7yUTV4C3YqfZVL0qpaTDgbZ7oZ2eSEP40em9Up7R39jEWrXCKYqVonZZr+sY5BilfirJ230mP7FERSWU3U4gXhL5fqdxU4BRq/+OCPJj6AmjauPd/J/OBMVoAuqEHuZ9FjDuisk1BsJ0YePUrdwqEZAzTzsqJFKOEE3uwmyIx7GQLs82mLg37dtOWL+Weauxr1CKT31wz/Sa2/kTBCSgDvlJ7mMg7vXOQYR5UGWiJcfi5nUCG+Jr7SkfPn7dxe2qx2TItS2I2cuQ=='));

@@ -282,8 +282,8 @@ class CmsModel extends Model
             'a_status' => 0
         );
         $ret = $this->edit($a_id, $article_data);
-        $this->sortMod->del_article($a_id);
-        $this->tagMod->del_article($a_id);
+        $this->sortMod->del_article($a_id); // 同时要删除 指定文章与sort的关系
+        $this->tagMod->del_article($a_id); // 同时要删除 指定文章与tag的关系
         return $ret;
     }
 

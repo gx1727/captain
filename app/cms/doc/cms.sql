@@ -26,18 +26,21 @@ CREATE TABLE `cms_sort` (
 DROP TABLE IF EXISTS `cms_tag_group`;
 CREATE TABLE `cms_tag_group` (
   `ctg_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ctg_type` int(10) NOT NULL DEFAULT 0 COMMENT 'TAG分组类型 0:常规 1:文章TAG 2:车型库 3:营地 4:功能性',
   `ctg_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'TAG分组名',
   `ctg_title` varchar(128) NOT NULL DEFAULT '' COMMENT 'TAG分组标题',
   `ctg_img` varchar(256) DEFAULT '' COMMENT 'TAG分组图片',
-  `ctg_atime` int(10) DEFAULT NULL COMMENT '创建时间',
-  `ctg_etime` int(10) DEFAULT NULL COMMENT '修改时间',
+  `ctg_atime` int(10) DEFAULT 0 COMMENT '创建时间',
+  `ctg_etime` int(10) DEFAULT 0 COMMENT '修改时间',
+  `ctg_order` int(10) DEFAULT 0 COMMENT '排序',
   `ctg_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
    PRIMARY KEY (`ctg_id`),
-    KEY `cs_name` (`ctg_name`)
+   KEY `cms_tag_group_ctg_type` (`ctg_type`),
+    KEY `cms_tag_group_ctg_name` (`ctg_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='TAG分组管理'  AUTO_INCREMENT=1;
 
-INSERT INTO `cms_tag_group` (`ctg_id`, `ctg_name`, `ctg_title`, `ctg_img`, `ctg_atime`, `ctg_etime`, `ctg_status`) VALUES
-(null, 'other', '常规', '', 0, 0, 0);
+INSERT INTO `cms_tag_group` (`ctg_id`, `ctg_type`, `ctg_name`, `ctg_title`, `ctg_img`, `ctg_atime`, `ctg_etime`, `ctg_status`) VALUES
+(null, 0, 'common', '常规', '', 0, 0, 0);
 
 
 
@@ -54,7 +57,8 @@ CREATE TABLE `cms_tag` (
   `ct_etime` int(10) DEFAULT NULL COMMENT '修改时间',
   `ct_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,默认为0 0:未删除 1:已删除',
    PRIMARY KEY (`ct_id`),
-    KEY `cs_name` (`ct_name`)
+   KEY `cms_tag_ctg_name` (`ctg_name`),
+    KEY `cms_tag_ct_name` (`ct_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='TAG管理'  AUTO_INCREMENT=1;
 
 
@@ -110,6 +114,7 @@ CREATE TABLE `cms_article_tag` (
    KEY cms_article_tag_ct_name (`ct_name`),
    KEY cms_article_tag_a_id (`a_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章tag关系';
+
 
 DROP TABLE IF EXISTS `cms_article_sort`;
 CREATE TABLE `cms_article_sort` (

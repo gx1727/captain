@@ -65,6 +65,16 @@ class Sort
         $this->prefix = $prefix;
     }
 
+    /**
+     * 获到直属子节点
+     * @param $parent_id
+     * @return mixed
+     */
+    public function get_children($parent_id) {
+        $sql = 'select * from ' . $this->table_name . ' where ' . $this->status . ' = 0 and ' . $this->parent . ' = ?';
+        return $this->mod->query($sql, array($parent_id), false);
+    }
+
     ////////////////////////////////////////////////////
     //节点编辑操作
     /**
@@ -215,9 +225,9 @@ class Sort
         if ($this->status) {
             $sql .= ' where ' . $this->status . ' = 0 ';
         }
-        $sql .= ' order by ? desc ';
+        $sql .= ' order by ' . $this->order . ' desc ';
 
-        $query_list = $this->mod->query($sql, array($this->order), false);
+        $query_list = $this->mod->query($sql, false, false);
 
         if ($query_list) {
             foreach ($query_list as $sort_node) {

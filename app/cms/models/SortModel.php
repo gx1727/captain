@@ -36,6 +36,7 @@ class SortModel extends Model
         $this->return_status[5] = '分类名称已存在，不能重复';
         $this->return_status[6] = '新增分类时，自动获取的分类名称有重复，系统默认增加了随机尾缀';
         $this->return_status[7] = '分类上级出现回环';
+        $this->return_status[8] = '分类有下级，不能直接删除';
 
     }
 
@@ -149,20 +150,31 @@ class SortModel extends Model
     {
         $sort = $this->get($cs_id);
         if ($sort) {
-            $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
-            $this->query($sql, array($sort['cs_name']));
+            //先判断是否有下级分类，若存在下级，不能删除
+            $children = $this->sortLib->get_children($cs_id);
+            if($children) {
+                return new Ret($this->return_status, 8);
+            } else {
+                $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
+                $this->query($sql, array($sort['cs_name']));
+
+                $sort['cs_status'] = 1;
+                $sort['cs_etime'] = time();
+                return $this->edit($cs_id, $sort);
+            }
+        } else {
+            return new Ret($this->return_status, 1);
         }
-        $sort_data['cs_status'] = 1;
-        $sort_data['cs_etime'] = time();
-        return $this->edit($cs_id, $sort_data);
     }
+
+
 
     /**
      * 获到目录树
      * @param $root_id
      * @return array
      */
-    public function get_sort_tree($root_id)
+    public function get_sort_data($root_id, $user_code = '')
     {
         $sortTree = $this->sortLib->get_sort_tree($root_id, 'manage_menu_node', 'children');
         $sortList = $this->sortLib->get_sort_list($root_id);
@@ -255,9 +267,20 @@ class SortModel extends Model
         }
     }
 
-    public function del_article($a_id)
+    /**
+     * 删除文章对应的Sort关系
+     * @param int $a_id 文章ID
+     * @param string $cs_name 分类名
+     */
+    public function del_article($a_id = 0, $cs_name = '')
     {
-        $sql = 'delete from ' . CMS_ARTICLESORT . ' where a_id = ?';
-        $this->query($sql, array($a_id));
+        if($a_id) {
+            $sql = 'delete from ' . CMS_ARTICLESORT . ' where a_id = ?';
+            $this->query($sql, array($a_id));
+        }
+        if($cs_name) {
+            $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
+            $this->query($sql, array($cs_name));
+        }
     }
 }

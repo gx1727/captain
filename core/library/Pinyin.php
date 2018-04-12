@@ -97,22 +97,24 @@ class Pinyin
      */
     public function utf8_to_gb($_C)
     {
-        $_String = '';
-        if ($_C < 0x80) $_String .= $_C;
-        elseif ($_C < 0x800) {
-            $_String .= chr(0xC0 | $_C >> 6);
-            $_String .= chr(0x80 | $_C & 0x3F);
-        } elseif ($_C < 0x10000) {
-            $_String .= chr(0xE0 | $_C >> 12);
-            $_String .= chr(0x80 | $_C >> 6 & 0x3F);
-            $_String .= chr(0x80 | $_C & 0x3F);
-        } elseif ($_C < 0x200000) {
-            $_String .= chr(0xF0 | $_C >> 18);
-            $_String .= chr(0x80 | $_C >> 12 & 0x3F);
-            $_String .= chr(0x80 | $_C >> 6 & 0x3F);
-            $_String .= chr(0x80 | $_C & 0x3F);
-        }
-        return iconv('UTF-8', 'GB2312', $_String);
+        return iconv('UTF-8', 'GB2312//IGNORE', $_C);
+//        $_String = '';
+//        if ($_C < 0x80) {
+//            $_String .= $_C;
+//        } else if ($_C < 0x800) {
+//            $_String .= chr(0xC0 | $_C >> 6);
+//            $_String .= chr(0x80 | $_C & 0x3F);
+//        } else if ($_C < 0x10000) {
+//            $_String .= chr(0xE0 | $_C >> 12);
+//            $_String .= chr(0x80 | $_C >> 6 & 0x3F);
+//            $_String .= chr(0x80 | $_C & 0x3F);
+//        } else if ($_C < 0x200000) {
+//            $_String .= chr(0xF0 | $_C >> 18);
+//            $_String .= chr(0x80 | $_C >> 12 & 0x3F);
+//            $_String .= chr(0x80 | $_C >> 6 & 0x3F);
+//            $_String .= chr(0x80 | $_C & 0x3F);
+//        }
+//        return iconv('UTF-8', 'GB2312//IGNORE', $_String);
     }
 
     /**
