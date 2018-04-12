@@ -55,39 +55,39 @@ $guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 $guest['/api/*'] = 'system:captain\system\Login@reject';
 $guest['/api/login'] = 'system:captain\system\Login@enter';
 
-$guest['/api/role/list'] = 'system:captain\system\Auth@role_list';
-$guest['/api/role/edit'] = 'system:captain\system\Auth@role_edit';
+$admin['/api/role/list'] = 'system:captain\system\Auth@role_list';
+$admin['/api/role/edit'] = 'system:captain\system\Auth@role_edit';
 
-$guest['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
-$guest['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
-$guest['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
+$admin['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
+$admin['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
+$admin['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
 
-$guest['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
+$manager['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
 
 // 文章相关
-$guest['/api/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
-$guest['/api/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
-$guest['/api/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
-$guest['/api/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
-$guest['/api/cms/tag_group/list'] = 'cms:captain\cms\Cms@tag_group_list';
-$guest['/api/cms/tag_group/add'] = 'cms:captain\cms\Cms@tag_group_add';
-$guest['/api/cms/tag_group/edit'] = 'cms:captain\cms\Cms@tag_group_edit';
-$guest['/api/cms/tag_group/del'] = 'cms:captain\cms\Cms@tag_group_del';
-$guest['/api/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
-$guest['/api/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
-$guest['/api/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
-$guest['/api/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
-$guest['/api/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
-$guest['/api/cms/article/get'] = 'cms:captain\cms\Cms@article_get';
-$guest['/api/cms/article/list'] = 'cms:captain\cms\Cms@article_list';
-$guest['/api/cms/article/create'] = 'cms:captain\cms\Cms@article_create';
-$guest['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
-$guest['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
-$guest['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
+$manager['/api/cms/sort/tree'] = 'cms:captain\cms\Cms@get_sort_tree';
+$admin['/api/cms/sort/form'] = 'cms:captain\cms\Cms@form_sort';
+$admin['/api/cms/sort/get'] = 'cms:captain\cms\Cms@get_sort';
+$admin['/api/cms/sort/del'] = 'cms:captain\cms\Cms@del_sort';
+$manager['/api/cms/tag_group/list'] = 'cms:captain\cms\Cms@tag_group_list';
+$admin['/api/cms/tag_group/add'] = 'cms:captain\cms\Cms@tag_group_add';
+$admin['/api/cms/tag_group/edit'] = 'cms:captain\cms\Cms@tag_group_edit';
+$admin['/api/cms/tag_group/del'] = 'cms:captain\cms\Cms@tag_group_del';
+$manager['/api/cms/tag/list'] = 'cms:captain\cms\Cms@tag_list';
+$admin['/api/cms/tag/add'] = 'cms:captain\cms\Cms@tag_add';
+$admin['/api/cms/tag/edit'] = 'cms:captain\cms\Cms@tag_edit';
+$admin['/api/cms/tag/del'] = 'cms:captain\cms\Cms@tag_del';
+$manager['/api/cms/tag/get'] = 'cms:captain\cms\Cms@tag_get';
+$manager['/api/cms/article/get'] = 'cms:captain\cms\Cms@article_get';
+$manager['/api/cms/article/list'] = 'cms:captain\cms\Cms@article_list';
+$manager['/api/cms/article/create'] = 'cms:captain\cms\Cms@article_create';
+$manager['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
+$manager['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
+$manager['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
 
 // 附件操作
-$guest['/api/attachment/upload'] = 'system:captain\system\Attachment@upload';
-$guest['/api/attachment/list'] = 'system:captain\system\Attachment@alist';
+$manager['/api/attachment/upload'] = 'system:captain\system\Attachment@upload';
+$manager['/api/attachment/list'] = 'system:captain\system\Attachment@alist';
 
 // 微信相关
 

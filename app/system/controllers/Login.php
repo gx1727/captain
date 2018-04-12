@@ -52,6 +52,6 @@ class Login extends Controller
             'role_name' => $session->get_sess('role_name'),
         );
         $user_login_status['code']  = $user_login_status['user_code'] ? 997 : 998;
-        $this->json($this->get_result($user_login_status, $user_login_status['code'] ));
+        $this->json($this->get_result($user_login_status, $user_login_status['code']));
     }
 }

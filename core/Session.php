@@ -67,12 +67,14 @@ class Session extends Base
         $this->_session_id = md5($this->_ip_address . $this->_create_time . Rand::getRandChar(40))
             . Rand::createRand((1 + Rand::randNum(7)), '0123456789abcdefghijklmnopqrstuvwxyz');
 
+        // 设置cookie有效期为浏览器session，不限时间
         setcookie(
             $this->_config['sess_cookie_name'],
-            $this->_session_id,
-            $this->_ctime + $this->_config['sess_expiration'],
-            $this->_config['cookie_path'],
-            $this->_config['cookie_domain']
+            $this->_session_id
+            , 0 //
+//            ,$this->_ctime + $this->_config['sess_expiration']
+            , $this->_config['cookie_path']
+            , $this->_config['cookie_domain']
         );
 
         $this->_create_time = $this->_ctime;
@@ -108,9 +110,10 @@ class Session extends Base
         // 判断是否有必要刷新cookie值 即 session_id
         if ($this->_cookie_activity < $this->_ctime) {
             $this->refresh_cookie();
-        } else {
-            $this->edit($c_session_id, $session_data);
+            $session_data['last_activity'] = $this->_ctime + 10; // 10秒的缓冲期，在 这10内，老session是有效
         }
+
+        $this->edit($c_session_id, $session_data); // $c_session_id 这时有可能是老的session_id
     }
 
     /**

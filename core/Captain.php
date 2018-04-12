@@ -81,6 +81,10 @@ $captain_session = false;
 $captain_router = new Route();
 if (!$captain_router->success()) { // 在needless_context中没有匹配命中
     $captain_session = new Session(sys_config('session'));
+    $role = $captain_session->get_sess('role_name');
+    if (!$role) {
+        $role = 'guest';
+    }
     $captain_router->resolver($role); //解析匹配
 }
 

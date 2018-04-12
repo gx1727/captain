@@ -51,8 +51,8 @@ $configs['session'] = array(
     'sess_driver' => 'mysql',
     'sess_save_path' => 'xx_sessions',
     'sess_cookie_name' => 'PHPSESSID',
-    'sess_expiration' => 2000,
-    'cookie_expiration' => 1990, // cookie的生活有效期， 过期后重建cookie，但session不变， 比 sess_expiration 小
+    'sess_expiration' => 1200,
+    'cookie_expiration' => 1000, // cookie的生活有效期， 过期后重建cookie，但session不变， 比 sess_expiration 小
     'cookie_domain' => '',
     'cookie_path' => '/'
 );
