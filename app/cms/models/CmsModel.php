@@ -106,7 +106,7 @@ class CmsModel extends Model
                 foreach ($sorts as $sort) {
                     $in_sorts[] = '\'' . $sort . '\'';
                 }
-                $sql .= ' and exists (select * from ' . CMS_ARTICLESORT . ' as where a.a_id = as.a_id and as.cs_name  in (' . implode(',', $in_sorts) . '))';
+                $sql .= ' and exists (select * from ' . CMS_ARTICLESORT . ' `as` where a.a_id = `as`.a_id and `as`.cs_name  in (' . implode(',', $in_sorts) . '))';
             }
 
             if ($tags) {
@@ -114,7 +114,7 @@ class CmsModel extends Model
                 foreach ($tags as $tag) {
                     $in_tags[] = '\'' . $tag . '\'';
                 }
-                $sql .= ' and exists (select * from ' . CMS_ARTICLETAG . ' at where a.a_id = at.a_id and at.ct_name  in (' . implode(',', $in_tags) . '))';
+                $sql .= ' and exists (select * from ' . CMS_ARTICLETAG . ' `at` where a.a_id = `at`.a_id and `at`.ct_name  in (' . implode(',', $in_tags) . '))';
             }
 
             $start = ($search_param['page'] - 1) * $search_param['pagesize'];
