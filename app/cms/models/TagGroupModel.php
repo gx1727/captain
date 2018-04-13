@@ -32,7 +32,7 @@ class TagGroupModel extends Model
      */
     public function get_tag_groups($user_code)
     {
-        $sql = 'select * from ' . CMS_TAGGROUP . ' where ctg_status = 0';
+        $sql = 'select * from ' . CMS_TAGGROUP . ' where ctg_status = 0 order by ctg_order desc';
         $tag_group = $this->query($sql, null, false);
         return $tag_group;
     }

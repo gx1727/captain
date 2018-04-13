@@ -270,7 +270,7 @@ class TagModel extends Model
      */
     public function get_tags($user_code)
     {
-        $sql = 'select * from ' . CMS_TAG . ' where ct_status = 0';
+        $sql = 'select * from ' . CMS_TAG . ' where ct_status = 0 order by ct_order desc';
         $tags = $this->query($sql, null, false);
         return $tags;
     }
