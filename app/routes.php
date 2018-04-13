@@ -59,7 +59,7 @@ $guest['/api/login'] = 'system:captain\system\Login@enter';
 $admin['/api/role/list'] = 'system:captain\system\Auth@role_list';
 $admin['/api/role/edit'] = 'system:captain\system\Auth@role_edit';
 
-$admin['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
+$manager['/api/menu/tree'] = 'system:captain\system\Menu@get_tree';
 $admin['/api/menu/form'] = 'system:captain\system\Menu@form_menu';
 $admin['/api/menu/del'] = 'system:captain\system\Menu@del_menu';
 $manager['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
