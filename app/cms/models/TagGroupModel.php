@@ -26,6 +26,17 @@ class TagGroupModel extends Model
         $this->return_status[1] = "TAG分组不存在";
     }
 
+    /**
+     * 获到用户可操作的TAG组
+     * @param $user_code
+     */
+    public function get_tag_groups($user_code)
+    {
+        $sql = 'select * from ' . CMS_TAGGROUP . ' where ctg_status = 0';
+        $tag_group = $this->query($sql, null, false);
+        return $tag_group;
+    }
+
     public function get_tag_group_byid($ctg_id)
     {
         $tag_group = $this->get($ctg_id);

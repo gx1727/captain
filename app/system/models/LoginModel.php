@@ -56,7 +56,7 @@ class LoginModel extends Model
 
     public function username_pwd($username, $pwd)
     {
-        $this->library('\captain\core\Secret', 'secretLib');
+        $this->library_core('\captain\core\Secret', 'secretLib');
         $pwd = $this->secretLib->decoding($pwd);
 
         $ret = new Ret($this->return_status);

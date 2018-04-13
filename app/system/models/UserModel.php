@@ -165,5 +165,20 @@ class UserModel extends Model
         return $this->get_page_list($this->return_status, $sql, $param_array, $start, (int)$page_pagesize, $page_order, $page_type);
     }
 
+    /**
+     * 修改用户基础信息
+     * @param $user_code
+     * @param $user_data
+     * @return mixed
+     */
+    public function edit_user($user_code, $user_data)
+    {
+        if (isset($user_data['user_pwd'])) {
+            $this->model('\captain\system\LoginModel', 'loginMod');
+            $user_data['user_pwd'] = $this->loginMod->get_userpwd($user_code, $user_data['user_pwd']);
+        }
+        return $this->edit($user_code, $user_data, $this->table_name, 'user_code');
+    }
+
 
 }

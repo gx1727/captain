@@ -87,7 +87,7 @@ class Tag extends Controller
 
     public function tag_get()
     {
-        $ret = $this->tagMod->get_tag_data();
+        $ret = $this->tagMod->get_tag_data($this->user_code);
         $this->json($this->get_result(array('tagData' => $ret)));
     }
 }

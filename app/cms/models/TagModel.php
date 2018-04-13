@@ -17,6 +17,8 @@ class TagModel extends Model
     function __construct()
     {
         parent::__construct(__NAMESPACE__, 'cms');
+        $this->model('\captain\cms\TagGroupModel', 'tagGroupMod');
+
         $this->table_name = CMS_TAG;
         $this->key_id = 'ct_id';
 
@@ -247,8 +249,8 @@ class TagModel extends Model
      */
     public function get_tag_data($user_code = '')
     {
-        $tag_groups = $this->get_all(false, CMS_TAGGROUP); // 获到所有TAG分组
-        $tags = $this->get_all(false);
+        $tag_groups = $this->tagGroupMod->get_tag_groups($user_code); // 获到所有TAG分组
+        $tags = $this->get_tags($user_code);
         $tag_data = array();
         foreach ($tag_groups as $tag_group_node) {
             $tag_group_node['tagList'] = array();
@@ -260,6 +262,17 @@ class TagModel extends Model
         }
 
         return $tag_data;
+    }
+
+    /**
+     * 获到用户可操作的TAG组
+     * @param $user_code
+     */
+    public function get_tags($user_code)
+    {
+        $sql = 'select * from ' . CMS_TAG . ' where ct_status = 0';
+        $tags = $this->query($sql, null, false);
+        return $tags;
     }
 
     /**

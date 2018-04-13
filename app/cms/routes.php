@@ -29,3 +29,10 @@ $manager['/api/cms/article/create'] = 'cms:captain\cms\Cms@article_create';
 $manager['/api/cms/article/edit'] = 'cms:captain\cms\Cms@article_edit';
 $manager['/api/cms/article/publish'] = 'cms:captain\cms\Cms@article_publish';
 $manager['/api/cms/article/del'] = 'cms:captain\cms\Cms@article_del';
+
+//编辑人员管理
+$guest['/api/cms/editor/get'] = 'cms:captain\cms\Editor@get_editor';
+$guest['/api/cms/editor/list'] = 'cms:captain\cms\Editor@alist';
+$guest['/api/cms/editor/form'] = 'cms:captain\cms\Editor@form';
+$guest['/api/cms/editor/del'] = 'cms:captain\cms\Editor@del';
+$guest['/api/cms/editor/auth'] = 'cms:captain\cms\Editor@auth'; // 权限
