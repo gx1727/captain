@@ -27,7 +27,7 @@ class SortModel extends Model
         $this->sortLib->init($this, CMS_SORT, 'cs_id', 'cs_parent', 'cs_subindex', 'cs_index', 'cs_title', 'cs_order', 'cs_status');
 
         $this->library_core('\captain\core\Pinyin', 'pinyinLib');
-        $this->library_core('\captain\core\Rand', 'randLib');
+        $this->model('\captain\cms\CheckName', 'cnMod');
 
         $this->return_status[1] = '分类不存在';
         $this->return_status[2] = '分类有下级目录，有能删除';
@@ -37,7 +37,6 @@ class SortModel extends Model
         $this->return_status[6] = '新增分类时，自动获取的分类名称有重复，系统默认增加了随机尾缀';
         $this->return_status[7] = '分类上级出现回环';
         $this->return_status[8] = '分类有下级，不能直接删除';
-
     }
 
     public function get_sort($cs_id, $key = 'cs_id')
@@ -55,13 +54,14 @@ class SortModel extends Model
      * 增加分类
      * @param $cs_name
      * @param $cs_title
+     * @param $cs_article_template
      * @param $cs_template
      * @param $cs_parent
      * @param $cs_order
      * @param $cs_img
      * @return mixed
      */
-    public function add_sort($cs_name, $cs_title, $cs_template, $cs_parent, $cs_order, $cs_img)
+    public function add_sort($cs_name, $cs_title, $cs_article_template, $cs_template, $cs_parent, $cs_order, $cs_img)
     {
         $ret = new Ret($this->return_status);
         if (!$cs_title) {
@@ -70,13 +70,9 @@ class SortModel extends Model
         }
         if (!$cs_name) { // 用户没有输入分类名
             $cs_name = $this->pinyinLib->py($cs_title);
-            while ($this->check_sort_name($cs_name)) {
-                $ret->set_code(6);
-                $cs_name .= $this->randLib->getRandChar(4);
-            }
-
+            $cs_name = $this->cnMod->get_name($cs_name);
         } else { // 用户手输了分类名
-            if ($this->check_sort_name($cs_name, 0)) {
+            if (!$this->cnMod->check($cs_name)) {
                 $ret->set_code(5);
                 return $ret;
             }
@@ -118,7 +114,7 @@ class SortModel extends Model
         }
 
         //判断 分类名是否冲突
-        if ($this->check_sort_name($sort_data['cs_name'], $cs_id)) {
+        if (!$this->cnMod->check($sort_data['cs_name'], $this->table_name, $cs_id)) {
             $ret->set_code(5);
             return $ret;
         }
@@ -152,7 +148,7 @@ class SortModel extends Model
         if ($sort) {
             //先判断是否有下级分类，若存在下级，不能删除
             $children = $this->sortLib->get_children($cs_id);
-            if($children) {
+            if ($children) {
                 return new Ret($this->return_status, 8);
             } else {
                 $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
@@ -167,6 +163,21 @@ class SortModel extends Model
         }
     }
 
+
+    /**
+     * 获到子级
+     * @param $cs_name
+     * @return Ret
+     */
+    public function get_children($cs_name)
+    {
+        $sort = $this->get($cs_name, $this->table_name, 'cs_name');
+        if ($sort) {
+            return $this->sortLib->get_children($sort['cs_id']);
+        } else {
+            return new Ret($this->return_status, 1);
+        }
+    }
 
 
     /**
@@ -191,7 +202,7 @@ class SortModel extends Model
      */
     public function get_allsorts()
     {
-        $all_sorts_list = $this->get_all();
+        $all_sorts_list = $this->get_all(false);
         $allsorts = array();
         foreach ($all_sorts_list as $sort) {
             $allsorts[$sort['cs_name']] = $sort['cs_title'];
@@ -210,35 +221,6 @@ class SortModel extends Model
         $sort_node['name'] = $sort_node['cs_name'];
         $sort_node['expand'] = true;
         return $sort_node;
-    }
-
-    /**
-     * 判断 分类名是否冲突
-     * @param $cs_name
-     * @param $cs_id
-     * @return int
-     */
-    public function check_sort_name($cs_name, $cs_id = 0)
-    {
-        $query_param = array($cs_name);
-        $sql = 'select cs_id from ' . $this->table_name . ' where cs_status = 0 and cs_name = ?';
-        if ($cs_id > 0) {
-            $sql .= ' and cs_id != ? ';
-            $query_param[] = $cs_id;
-        }
-        $sql .= ' limit 1';
-        $sort = $this->query($sql, $query_param);
-        if ($sort) {
-            return $sort['cs_id'];
-        } else {
-            $sql = 'select ct_id from ' . CMS_TAG . ' where ct_status = 0 and ct_name = ? limit 1';
-            $tag = $this->query($sql, array($cs_name));
-            if ($tag) {
-                return $tag['ct_id'];
-            } else {
-                return 0;
-            }
-        }
     }
 
     /**
@@ -274,11 +256,11 @@ class SortModel extends Model
      */
     public function del_article($a_id = 0, $cs_name = '')
     {
-        if($a_id) {
+        if ($a_id) {
             $sql = 'delete from ' . CMS_ARTICLESORT . ' where a_id = ?';
             $this->query($sql, array($a_id));
         }
-        if($cs_name) {
+        if ($cs_name) {
             $sql = 'delete from ' . CMS_ARTICLESORT . ' where cs_name = ?';
             $this->query($sql, array($cs_name));
         }

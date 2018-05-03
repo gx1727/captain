@@ -19,6 +19,7 @@ class Cms extends Controller
     function __construct()
     {
         parent::__construct(__NAMESPACE__, 'cms');
+        $this->model('\captain\system\UserModel', 'userMod', 'system');
         $this->model('\captain\cms\SortModel', 'sortMod');
         $this->model('\captain\cms\TagModel', 'tagMod');
         $this->model('\captain\cms\TagGroupModel', 'tagGroupMod');
@@ -53,18 +54,59 @@ class Cms extends Controller
     public function article_list()
     {
         $search_param = $this->get_list_param();
-        $search_param['search'] = $this->input->get_post('keyword');
-        $article_list_ret = $this->cmsMod->search_article($search_param);
+        $keyword = $this->input->get_post('keyword');
+        $a_status = $this->input->get_post('a_status');
+        $lanmu = $this->input->get_post('lanmu');
+
+        $article_list_ret = $this->cmsMod->get_article_list($search_param, $keyword, $a_status, $lanmu);
         $this->help('cms_helper'); // 引入 cms_helper
 
         if ($article_list_ret->get_code() === 0) {
             $article_list = $article_list_ret->get_data();
 
+            $lanmu = $this->cmsMod->get_lanmu(); // 获到栏目名
+
             $article = array();
             foreach ($article_list as $article_item) {
-                $article_item['a_atime'] = date('Y-m-d H:i:s', $article_item['a_atime']);
+                $user = $this->userMod->get_user($article_item['user_code']);
+                $sorts = $this->sortMod->get_all($article_item['a_id'], CMS_ARTICLESORT, 'a_id');
+                $article_item['lanmu'] = array();
+                $article_item['sorts'] = array();
+                foreach ($sorts as $sort) {
+                    if (isset($lanmu[$sort['cs_name']])) {
+                        $article_item['lanmu'][] = $sort['cs_title'];
+                    } else {
+                        $article_item['sorts'][] = $sort['cs_title'];
+                    }
+                }
+                $article_item['lanmu'] = implode(',', $article_item['lanmu']);
+                $article_item['sorts'] = implode(',', $article_item['sorts']);
+                $article_item['tags'] = array();
+                $tags = $this->tagMod->get_all($article_item['a_id'], CMS_ARTICLETAG, 'a_id');
+                foreach ($tags as $tag) {
+                    $article_item['tags'][] = $tag['ct_title'];
+                }
+                $article_item['tags'] = implode(',', $article_item['tags']);
+
+                $article_item['a_ptime'] = date('Y-m-d H:i:s', $article_item['a_ptime']);
                 $article_item['a_etime'] = date('Y-m-d H:i:s', $article_item['a_etime']);
                 $article_item['a_status_title'] = a_status($article_item['a_status']);
+                $article_item['user_name'] = $user['user_name'];
+
+                if($article_item['a_status'] == 3) { // 草稿中
+                    $draft = $this->cmsMod->get_article_draft($article_item['a_id']);
+                    $article_item['a_title'] = $draft['a_title'];
+                }
+                $flag = $this->cmsMod->article_flag_encode($article_item['a_flag']);
+
+                $flag_title = array();
+                foreach($flag as $flag_name => $flag_node) {
+                    if($flag_node) {
+                        $flag_title[] = article_flag($flag_name);
+                    }
+                }
+
+                $article_item['flag'] = implode(',', $flag_title);
                 $article[] = $article_item;
 
             }
@@ -79,8 +121,8 @@ class Cms extends Controller
      */
     public function article_create()
     {
-        $a_title = $this->input->get_post('a_title');
-        $article = $this->cmsMod->create_article($this->user_code, $a_title);
+        $type = $this->input->get_post('type');
+        $article = $this->cmsMod->create_article($this->user_code, $type);
         $this->json($this->get_result($article));
     }
 
@@ -95,8 +137,13 @@ class Cms extends Controller
         $a_abstract = $this->input->get_post('a_abstract');
         $a_content = $this->input->get_post('a_content', '', false);
         $a_extended = $this->input->get_post('a_extended');
-        $a_publish_time = $this->input->get_post('a_publish_time');
-        $a_recommend = $this->input->get_post('a_recommend');
+        $a_template = $this->input->get_post('a_template');
+
+        $recommend = $this->input->get_post('recommend');
+        $top = $this->input->get_post('top');
+        $cover = $this->input->get_post('cover');
+        $special = $this->input->get_post('special');
+
         $sort = $this->input->get_post('sort');
         $tag = $this->input->get_post('tag');
 
@@ -120,8 +167,9 @@ class Cms extends Controller
             'a_img' => $a_img,
             'a_abstract' => $a_abstract,
             'a_content' => $a_content,
-            'a_recommend' => $a_recommend,
-            'a_extended' => $a_extended
+            'a_flag' => $this->cmsMod->article_flag_decode($recommend, $top, $cover, $special),
+            'a_extended' => $a_extended,
+            'a_template' => $a_template,
         );
 
         $ret = $this->cmsMod->edit_article($this->user_code, $a_id, $article, $tag_list, $sort_list);
@@ -140,16 +188,32 @@ class Cms extends Controller
         $this->json($this->get_result($ret));
     }
 
+    /**
+     * 删除文章
+     */
     public function article_del()
     {
-
+        $a_id = $this->input->get_post('a_id');
+        $this->cmsMod->del_article($this->user_code, $a_id);
+        $this->json($this->get_result($a_id));
     }
 
     /**
-     * 增加次数
+     * 删除草稿
+     * 如果文章已发布，只删除草稿
+     * 如果文章未发布，删除所有
      */
-    public function plus_article_count()
+    public function article_draft_del()
     {
-
+        $a_id = $this->input->get_post('a_id');
+        $argicle = $this->cmsMod->get($a_id);
+        if ($argicle) {
+            if ($argicle['a_status'] == 1) { //如果文章已发布，只删除草稿
+                $this->cmsMod->del_article_draft($a_id);
+            } else {  //如果文章未发布，删除所有
+                $this->cmsMod->del_article($this->user_code, $a_id);
+            }
+        }
+        $this->json($this->get_result($a_id));
     }
 }

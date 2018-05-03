@@ -18,12 +18,12 @@ class TagModel extends Model
     {
         parent::__construct(__NAMESPACE__, 'cms');
         $this->model('\captain\cms\TagGroupModel', 'tagGroupMod');
+        $this->model('\captain\cms\CheckName', 'cnMod');
 
         $this->table_name = CMS_TAG;
         $this->key_id = 'ct_id';
 
         $this->library_core('\captain\core\Pinyin', 'pinyinLib');
-        $this->library_core('\captain\core\Rand', 'randLib');
 
         $this->return_status[1] = "TAG不存在";
         $this->return_status[3] = "TAG标题不能为空";
@@ -61,15 +61,17 @@ class TagModel extends Model
         }
         if ($keyword !== false) {
             $sql .= ' and (ct_name like ?';
-            $sql .= ' or ct_name like ?)';
+            $sql .= ' or ctg_name like ?';
+            $sql .= ' or ct_title like ?)';
+            $param_array[] = '%' . $keyword . '%';
             $param_array[] = '%' . $keyword . '%';
             $param_array[] = '%' . $keyword . '%';
         }
 
         $start = ($list_param['page'] - 1) * $list_param['pagesize'];
 
-        if(!$list_param['orderby']) {
-            $list_param['orderby'] = 'ct_order';
+        if (!$list_param['orderby']) {
+            $list_param['orderby'] = 'ct_id';
             $list_param['ordertype'] = 'desc';
         }
         return $this->get_page_list($this->return_status, $sql, $param_array, $start, (int)$list_param['pagesize'], $list_param['orderby'], $list_param['ordertype']);
@@ -79,36 +81,47 @@ class TagModel extends Model
      * 获到所有TAG的key-value
      * @return array
      */
-    public function get_alltags()
+    public function get_alltags($ctg_name = false)
     {
-        $sql = 'select * from ' . $this->table_name . ' where ct_status = 0 order ct_order desc';
+        $sql = 'select * from ' . $this->table_name . ' where ct_status = 0 ';
+        $query_param = array();
+        if ($ctg_name) {
+            $sql .= ' and ctg_name = ?';
+            $query_param[] = $ctg_name;
+        }
+        $sql .= ' order by ct_order desc';
 
-        $all_tags_list = $this->query($sql, false, false);
+        $all_tags_list = $this->query($sql, $query_param, false);
         $alltags = array();
         foreach ($all_tags_list as $tag) {
-            $alltags[$tag['ct_name']] = $tag['ct_title'];
+            $alltags[$tag['ct_name']] = $tag;
         }
         return $alltags;
     }
 
+    /**
+     * @param $ctg_name
+     * @param $ct_title
+     * @param $ct_template
+     * @param $ct_order
+     * @param $ct_img
+     * @return Ret
+     */
     public function add_tag($ctg_name, $ct_title, $ct_template, $ct_order, $ct_img)
     {
         $ret = new Ret($this->return_status);
+
         if (!$ct_title) {
             $ret->set_code(3);
             return $ret;
         }
-        if ($this->check_tag_title($ct_title, 0)) {
+        if ($this->check_tag_title($ct_title, 0, $ctg_name)) { // 同一个ctg_name下，不能有同标题  tag
             $ret->set_code(4); // TAG标题已存在，不能重复
             return $ret;
         }
 
         $ct_name = $this->pinyinLib->py($ct_title);
-        while ($this->check_tag_name($ct_name)) {
-            $ret->set_code(6);
-            $ct_name .= $this->randLib->getRandChar(4);
-        }
-
+        $ct_name = $this->cnMod->get_name($ct_name);
 
         $tag_data = array(
             'ctg_name' => $ctg_name,
@@ -128,6 +141,37 @@ class TagModel extends Model
     }
 
     /**
+     * 直接插入数据，当有冲突时，直接返回失败
+     * @param $ctg_name
+     * @param $ct_name
+     * @param $ct_title
+     * @return mixed
+     */
+    public function create_tag($ctg_name, $ct_name, $ct_title)
+    {
+        $ret = new Ret($this->return_status);
+        if (!$this->cnMod->check($ct_name)) {
+            // rv_name 冲突
+            $ret->set_code(5);
+            return $ret;
+        }
+
+        $tag_data = array(
+            'ctg_name' => $ctg_name,
+            'ct_name' => $ct_name,
+            'ct_title' => $ct_title,
+            'ct_template' => '',
+            'ct_order' => 0,
+            'ct_img' => '',
+            'ct_atime' => time(),
+            'ct_etime' => time(),
+        );
+        $ct_id = $this->add($tag_data);
+        $ret->set_data($ct_id);
+        return $ret;
+    }
+
+    /**
      * 编辑TAG数据
      * @param $ct_id
      * @param $param
@@ -136,45 +180,71 @@ class TagModel extends Model
     public function tag_edit($ct_id, $param)
     {
         $ret = new Ret($this->return_status);
+
+        $tag = $this->get($ct_id);
+
         if (isset($param['ct_title'])) {
             if (!$param['ct_title']) {
                 $ret->set_code(3);
                 return $ret;
             }
 
-            if ($this->check_tag_title($param['ct_title'], $ct_id)) {
+            if ($this->check_tag_title($param['ct_title'], $ct_id, $tag['ctg_name'])) {
                 $ret->set_code(4); // TAG标题已存在，不能重复
                 return $ret;
             }
         }
 
-        if (isset($param['ct_name']) && $this->check_tag_name($param['ct_name'], $ct_id)) {
+        if (isset($param['ct_name']) && !$this->cnMod->check($param['ct_name'], $this->table_name, $ct_id)) {
             $ret->set_code(5);
             return $ret;
         }
-        $tag = $this->get($ct_id);
 
 
         if ($tag) {
             $old_ct_name = $tag['ct_name']; // 记录原ct_name, 如有变更，要同步修改文章关系
+            $old_ct_parent = $tag['ct_parent']; // 记录原ct_parent, 如有变更，要同步修改ct_child值
             foreach ($tag as $key => $val) {
                 if (isset($param[$key])) {
                     $tag[$key] = $param[$key];
                 }
             }
             $tag['ct_etime'] = time();
-            $ret = $this->edit($ct_id, $tag);
+            $this->edit($ct_id, $tag);
+
+            // 修改原记录原ct_parent的ct_child值
+            if ($old_ct_parent) {
+                $this->update_child($old_ct_parent);
+            }
+
+            // 修改现记录原ct_parent的ct_child值
+            if ($tag['ct_parent'] != $old_ct_parent) {
+                $this->update_child($tag['ct_parent']);
+            }
 
             if ($old_ct_name != $tag['ct_name']) { // 有变更
                 $sql = 'update cms_article_tag set ct_name = ? where ct_name = ?';
                 $this->query($sql, array($tag['ct_name'], $old_ct_name));
             }
+            $ret->set_code(0);
             return $ret;
         } else {
             $ret = new Ret($this->return_status);
             $ret->set_code(1);
             return $ret;
         }
+    }
+
+    /**
+     * 更新指定TAG的下级个数
+     * @param $ct_name
+     */
+    public function update_child($ct_name)
+    {
+        $sql = 'select count(1) as child_count from ' . $this->table_name . ' where ct_parent = ? and ct_status = 0';
+        $child_count_ret = $this->query($sql, array($ct_name));
+        $child_count = $child_count_ret['child_count'];
+        $this->edit($ct_name, array('ct_child' => $child_count), $this->table_name, 'ct_name');
     }
 
     /**
@@ -193,35 +263,6 @@ class TagModel extends Model
         return $this->edit($ct_id, array('ct_status' => 1, 'ct_etime' => time()));
     }
 
-    /**
-     * 判断 分类名是否冲突
-     * @param $ct_name
-     * @param $ct_id
-     * @return int
-     */
-    public function check_tag_name($ct_name, $ct_id = 0)
-    {
-        $query_param = array($ct_name);
-        $sql = 'select ct_id from ' . $this->table_name . ' where ct_status = 0 and ct_name = ?';
-        if ($ct_id > 0) {
-            $sql .= ' and ct_id != ? ';
-            $query_param[] = $ct_id;
-        }
-        $sql .= ' limit 1';
-        $tag = $this->query($sql, $query_param);
-        if ($tag) {
-            return $tag['ct_id'];
-        } else {
-            // 判断 sort 名
-            $sql = 'select cs_id from ' . CMS_SORT . ' where cs_status = 0 and cs_name = ? limit 1';
-            $sort = $this->query($sql, array($ct_name));
-            if ($sort) {
-                return $sort['cs_id'];
-            } else {
-                return 0;
-            }
-        }
-    }
 
     /**
      * 检查是否存在同名的tag
@@ -229,13 +270,17 @@ class TagModel extends Model
      * @param int $ct_id
      * @return mixed
      */
-    public function check_tag_title($ct_title, $ct_id = 0)
+    public function check_tag_title($ct_title, $ct_id = 0, $ctg_name = '')
     {
         $query_param = array($ct_title);
         $sql = 'select ct_id from ' . $this->table_name . ' where ct_status = 0 and ct_title = ?';
         if ($ct_id > 0) {
             $sql .= ' and ct_id != ? ';
             $query_param[] = $ct_id;
+        }
+        if ($ctg_name) {
+            $sql .= ' and ctg_name = ? ';
+            $query_param[] = $ctg_name;
         }
         $sql .= ' limit 1';
         $tag = $this->query($sql, $query_param);
@@ -250,6 +295,7 @@ class TagModel extends Model
     public function get_tag_data($user_code = '')
     {
         $tag_groups = $this->tagGroupMod->get_tag_groups($user_code); // 获到所有TAG分组
+
         $tags = $this->get_tags($user_code);
         $tag_data = array();
         foreach ($tag_groups as $tag_group_node) {
@@ -283,12 +329,12 @@ class TagModel extends Model
      */
     public function del_article($a_id = 0, $ct_name = '')
     {
-        if($a_id) {
+        if ($a_id) {
             $sql = 'delete from ' . CMS_ARTICLETAG . ' where a_id = ?';
             $this->query($sql, array($a_id));
         }
 
-        if($ct_name) {
+        if ($ct_name) {
             $sql = 'delete from ' . CMS_ARTICLETAG . ' where ct_name = ?';
             $this->query($sql, array($ct_name));
         }

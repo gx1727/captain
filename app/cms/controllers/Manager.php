@@ -19,8 +19,8 @@ class Manager extends Controller
         $this->return_status[1] = '失败';
     }
 
-    public function login()
+    public function index()
     {
-        $this->view('manager_login');
+        $this->view('manager_index');
     }
 }

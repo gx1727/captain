@@ -123,7 +123,7 @@ class Base
                 $ret = $this->db->rawQuery($sql, array($key));
             }
         } else {
-            $sql = "select * from  $table";
+            $sql = "select * from $table";
             $ret = $this->db->rawQuery($sql);
         }
         return $ret;

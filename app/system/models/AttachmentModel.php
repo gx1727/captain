@@ -64,6 +64,10 @@ class AttachmentModel extends Model
             $param_array[] = $end_time;
         }
 
+        if(!$list_param['orderby']) {
+            $list_param['orderby'] = 'att_id';
+            $list_param['ordertype'] = 'desc';
+        }
         $start = ($list_param['page'] - 1) * $list_param['pagesize'];
         return $this->get_page_list($this->return_status, $sql, $param_array, $start, (int)$list_param['pagesize'], $list_param['orderby'], $list_param['ordertype']);
     }

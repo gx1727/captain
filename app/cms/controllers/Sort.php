@@ -29,6 +29,7 @@ class Sort extends Controller
         $this->return_status[1] = '失败';
         $this->return_status[2] = 'TAG不存在';
     }
+
     /**
      * 获到分类树
      */
@@ -65,6 +66,7 @@ class Sort extends Controller
         $cs_id = $this->input->get_post('cs_id');
         $cs_name = $this->input->get_post('cs_name');
         $cs_title = $this->input->get_post('cs_title');
+        $cs_article_template = $this->input->get_post('cs_article_template');
         $cs_template = $this->input->get_post('cs_template');
         $cs_parent = $this->input->get_post('cs_parent');
         $cs_order = $this->input->get_post('cs_order');
@@ -73,6 +75,7 @@ class Sort extends Controller
             $data = array(
                 'cs_name' => $cs_name,
                 'cs_title' => $cs_title,
+                'cs_article_template' => $cs_article_template,
                 'cs_template' => $cs_template,
                 'cs_parent' => $cs_parent,
                 'cs_order' => $cs_order,
@@ -82,7 +85,7 @@ class Sort extends Controller
             $this->cmsMod->refresh_cache(); //刷新cache
             $this->json($this->get_result($ret));
         } else {
-            $ret = $this->sortMod->add_sort($cs_name, $cs_title, $cs_template, $cs_parent, $cs_order, $cs_img);
+            $ret = $this->sortMod->add_sort($cs_name, $cs_title, $cs_article_template, $cs_template, $cs_parent, $cs_order, $cs_img);
             $this->cmsMod->refresh_cache(); //刷新cache
             $this->json($this->get_result($ret));
         }
@@ -97,6 +100,15 @@ class Sort extends Controller
         $ret = $this->sortMod->del_sort($cs_id);
         $this->cmsMod->refresh_cache(); //刷新cache
         $this->json($this->get_result($ret));
+    }
+
+    /**
+     * 获取栏目
+     */
+    public function lanmu()
+    {
+        $lanmu = $this->cmsMod->get_lanmu();
+        $this->json($this->get_result(array('lanmu' => $lanmu)));
     }
 
 }

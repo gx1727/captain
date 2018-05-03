@@ -70,7 +70,7 @@ class Tag extends Controller
     public function tag_edit()
     {
         $ct_id = $this->input->get_post('ct_id');
-        $post_data = $this->input->get_post('postData');
+        $post_data = $this->input->get_post('postData', '', false);
         $post_data = json_decode($post_data, true);
         $ret = $this->tagMod->tag_edit($ct_id, $post_data);
         $this->cmsMod->refresh_cache(); //刷新cache
@@ -88,6 +88,17 @@ class Tag extends Controller
     public function tag_get()
     {
         $ret = $this->tagMod->get_tag_data($this->user_code);
+        $this->json($this->get_result(array('tagData' => $ret)));
+    }
+
+    /**
+     * 获到所有tag
+     * 可按分组获取
+     */
+    public function tag_get_bygroup()
+    {
+        $group = $this->input->get_post('group');
+        $ret = $this->tagMod->get_alltags($group);
         $this->json($this->get_result(array('tagData' => $ret)));
     }
 }

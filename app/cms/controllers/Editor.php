@@ -105,6 +105,29 @@ class Editor extends Controller
         } else {
             $this->json($this->get_result(false, 3));
         }
+    }
 
+    /**
+     * 获到编辑人员的文章数据
+     * 发布文章数有草稿列表
+     */
+    public function info()
+    {
+        $ret = $this->cmsMod->get_statistics($this->user_code);
+        if($ret['draft']) {
+            foreach($ret['draft'] as $index => $draft) {
+                $article = $this->cmsMod->get($draft['a_id']);
+                if($article['a_status'] == 1) { // 已有发布过的文章
+                    $ret['draft'][$index]['a_ptime'] = date('Y-m-d H:i:s', $article['a_ptime']);
+                    $ret['draft'][$index]['publish'] = '已发布';
+                    $ret['draft'][$index]['a_title'] = '<a href="/' .  $article['a_code'] . '" target="_blank">' . $draft['a_title'] . '</a>';
+                } else {
+                    $ret['draft'][$index]['a_ptime'] = '';
+                    $ret['draft'][$index]['publish'] = '未发布';
+                }
+                $ret['draft'][$index]['a_etime'] = date('Y-m-d H:i:s', $draft['a_etime']);
+            }
+        }
+        $this->json($this->get_result($ret));
     }
 }

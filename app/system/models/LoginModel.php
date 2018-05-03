@@ -54,6 +54,12 @@ class LoginModel extends Model
         }
     }
 
+    /**
+     * 用户名 密码 登录
+     * @param $username
+     * @param $pwd
+     * @return Ret
+     */
     public function username_pwd($username, $pwd)
     {
         $this->library_core('\captain\core\Secret', 'secretLib');
@@ -133,5 +139,54 @@ class LoginModel extends Model
         }
 
         return $this->get($user_role, CAPTAIN_ROLE, 'role_code');
+    }
+
+    /**
+     * 修改密码
+     * @param $user_code
+     * @param $old_pwd
+     * @param $pwd
+     * @return Ret
+     */
+    public function change_pwd($user_code, $old_pwd, $pwd)
+    {
+        $ret = new Ret($this->return_status);
+        $this->library_core('\captain\core\Secret', 'secretLib');
+        $old_pwd = $this->secretLib->decoding($old_pwd);
+        $pwd = $this->secretLib->decoding($pwd);
+
+        $user = $this->get($user_code, CAPTAIN_USER, 'user_code');
+        if ($user) {
+            if ($user['user_pwd'] == $this->get_userpwd($user['user_code'], $old_pwd)) {
+                // 原密码正确
+                $this->edit($user_code, array('user_pwd' => $this->get_userpwd($user['user_code'], $pwd)),
+                    CAPTAIN_USER, 'user_code');
+                $ret->set_code(0);
+            } else {
+                // 原密码不正确
+                $ret->set_code(1);
+            }
+        }
+
+        return $ret;
+    }
+
+
+    /**
+     * 重置密码
+     * @param $user_code
+     * @param $new_pwd
+     */
+    public function reset_pwd($user_code, $new_pwd)
+    {
+        $this->library_core('\captain\core\Secret', 'secretLib');
+        $new_pwd = $this->secretLib->decoding($new_pwd);
+
+        $user = $this->get($user_code, CAPTAIN_USER, 'user_code');
+        if ($user) {
+            // 原密码正确
+            $this->edit($user_code, array('user_pwd' => $this->get_userpwd($user['user_code'], $new_pwd)),
+                CAPTAIN_USER, 'user_code');
+        }
     }
 }

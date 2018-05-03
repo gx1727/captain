@@ -104,10 +104,11 @@ define("CMS_SORT", 'cms_sort'); // 文章分类
 define("CMS_TAG", 'cms_tag'); // 文章TAG
 define("CMS_TAGGROUP", 'cms_tag_group'); // 文章TAG分组
 define("CMS_ARTICLE", 'cms_article'); // 文章
+define("CMS_SPECIAL", 'cms_special'); // 专题
 define("CMS_ARTICLEDRAFT", 'cms_article_draft'); // 文章草稿
 define("CMS_ARTICLESORT", 'cms_article_sort'); // 文章分类
 define("CMS_ARTICLETAG", 'cms_article_tag'); // 文章TAG
-
+define("CMS_TEMPLATE", 'cms_template'); // 文章模板
 
 // weixin 管理
 define("WEIXIN_CONF", 'weixin_conf'); // weixin配制
@@ -116,11 +117,6 @@ define("WEIXIN_MENU", 'weixin_menu'); // 微信自定义菜单
 define("WEIXIN_RESPONDER", 'weixin_responder'); // 应答表
 define("WEIXIN_SCENE", 'weixin_scene'); // 场景表
 define("WEIXIN_SCENELOG", 'weixin_scene_log'); // 场景扫码日志表
-
-// case 管理
-define("CASE_VOTE", 'case_vote'); // 投票活动表
-define("CASE_VOTE_CANDIDATE", 'case_vote_candidate'); // 候选人表
-define("CASE_VOTE_BALLOT", 'case_vote_ballot'); // 选票表
 /**
  * --------------------------------------------------------------------------
  *  编码相关

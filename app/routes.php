@@ -47,9 +47,6 @@ $route_role = array(
  */
 
 //游客组
-$guest['/'] = 'system:captain\system\Index@index';
-$guest['/*'] = 'cms:captain\cms\Article@index';
-$guest['/manager/login'] = 'cms:captain\cms\Manager@login';
 
 
 // 游客组 - 接口类
@@ -67,6 +64,12 @@ $manager['/api/menu/get'] = 'system:captain\system\Menu@get_menu';
 // 附件操作
 $manager['/api/attachment/upload'] = 'system:captain\system\Attachment@upload';
 $manager['/api/attachment/list'] = 'system:captain\system\Attachment@alist';
+$manager['/api/attachment/network'] = 'system:captain\system\Attachment@network';
+
+//一般用户操作
+$manager['/api/user/get'] = 'system:captain\system\User@get_user';
+$manager['/api/user/edit'] = 'system:captain\system\User@edit_user';
+$manager['/api/user/change/pwd'] = 'system:captain\system\User@change_pwd';
 
 // 微信相关
 
@@ -85,6 +88,12 @@ $user['/user/home'] = 'system:captain\system\Admin@home';
  * 该组中的url不调session
  * $needless_context
  */
+$needless_context['/'] = 'cms:captain\cms\Article@welcome';
+$needless_context['/*'] = 'cms:captain\cms\Article@index';
+$needless_context['/admin'] = 'ignore';
+$needless_context['/api/*'] = 'ignore';
+$needless_context['/preview/*'] = 'ignore';
+$needless_context['/preview/template/*'] = 'ignore';
 
 $needless_context['/tools/imagetools_proxy'] = 'system:captain\system\Tools@imagetools_proxy';
 

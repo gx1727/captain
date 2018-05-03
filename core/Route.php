@@ -124,26 +124,36 @@ class Route
             $route_cmd = false;
             //匹配 严格模式
             foreach ($this->_routes['strict'] as $key => $route) {
+
                 if ($key == $this->_uri) {
-                    //命中
-                    $route_cmd = $route;
-                    $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
-                    break;
-                }
-            }
-            if (!$route_cmd) {
-                // 匹配模式
-                foreach ($this->_routes['matching'] as $key => $route) {
-                    if (strpos($this->_uri, $key) === 0) {
+                    if ($route === 'ignore') { // 跳过
+                        return;
+                    } else { //命中
                         $route_cmd = $route;
                         $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
                         break;
                     }
                 }
             }
+            if (!$route_cmd) {
+                // 匹配模式
+                foreach ($this->_routes['matching'] as $key => $route) {
+                    if (strpos($this->_uri, $key) === 0) {
+                        if ($route === 'ignore') { // 跳过
+                            return;
+                        } else { //命中
+                            $route_cmd = $route;
+                            $this->_uri = substr($this->_uri, strlen($key)); //从_uri中截掉$key
+                            break;
+                        }
+                    }
+                }
+            }
+
             if ($role_name && !$route_cmd) { // 当有角色名 但 没有匹配到路由里， 使用默认路由处理
                 $route_cmd = $this->default_controller;// 获取默认值
-                if ($this->_uri[0] == '/') {
+
+                if ($this->_uri && $this->_uri[0] == '/') {
                     $this->_uri = substr($this->_uri, 1); //从_uri中截掉第一个 /
                 }
             }

@@ -71,7 +71,7 @@ class Sort
      * @return mixed
      */
     public function get_children($parent_id) {
-        $sql = 'select * from ' . $this->table_name . ' where ' . $this->status . ' = 0 and ' . $this->parent . ' = ?';
+        $sql = 'select * from ' . $this->table_name . ' where ' . $this->status . ' = 0 and ' . $this->parent . ' = ? order by ' . $this->order . ' desc';
         return $this->mod->query($sql, array($parent_id), false);
     }
 

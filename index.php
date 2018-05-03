@@ -6,14 +6,19 @@
  * Time: 下午 10:11
  */
 //declare(strict_types=1);
-
-function cors() {
-
-    header("Access-Control-Allow-Credentials:true");
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-    header('Access-Control-Allow-Headers: x-requested-with,content-type');
+$cors_flag = true;
+function cors()
+{
+    global $cors_flag;
+    if ($cors_flag) {
+        header("Access-Control-Allow-Credentials:true");
+        header("Access-Control-Allow-Origin: http://localhost:8080");
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+        header('Access-Control-Allow-Headers: x-requested-with,content-type');
+        $cors_flag = false;
+    }
 }
+
 /**
  * 如果为 OPTIONS 协议，什么也不做
  */

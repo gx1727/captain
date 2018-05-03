@@ -25,7 +25,7 @@ class Welcome extends Controller
         echo "here";
 //        $test = $this->input->get_post('test', '');
 //        echo $test;
-        $this->view('welcome_index');
+//        $this->view('welcome_index');
     }
 
     /**
