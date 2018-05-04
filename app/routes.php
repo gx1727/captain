@@ -92,6 +92,9 @@ $needless_context['/'] = 'cms:captain\cms\Article@welcome';
 $needless_context['/*'] = 'cms:captain\cms\Article@index';
 $needless_context['/admin'] = 'ignore';
 $needless_context['/api/*'] = 'ignore';
+$needless_context['/tools'] = 'ignore';
+$needless_context['/tools/'] = 'ignore';
+$needless_context['/tools/*'] = 'ignore';
 $needless_context['/preview/*'] = 'ignore';
 $needless_context['/preview/template/*'] = 'ignore';
 

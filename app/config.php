@@ -66,7 +66,7 @@ $configs['app'] = array(
     'system',
     'cms',
     'weixin',
-    'acase'
+    'tools'
 );
 
 
