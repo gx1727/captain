@@ -102,9 +102,11 @@ class Base
      * @param $key
      * @param string $table
      * @param string $key_field
+     * @param string $orderby
+     * @param string $ordertype
      * @return bool
      */
-    public function get_all($key, $table = '', $key_field = '')
+    public function get_all($key, $table = '', $key_field = '', $orderby = '', $ordertype = 'desc')
     {
         $ret = false;
         if (!$table) {
@@ -117,13 +119,22 @@ class Base
         if ($key && $table && $key) {
             if ($key_field == "where") {
                 $sql = "select * from  $table where $key";
+                if($orderby && $ordertype) {
+                    $sql .=  ' order by ' . $orderby . ' ' . $ordertype;
+                }
                 $ret = $this->db->rawQuery($sql);
             } else {
                 $sql = "select * from  $table where $key_field = ?";
+                if($orderby && $ordertype) {
+                    $sql .=  ' order by ' . $orderby . ' ' . $ordertype;
+                }
                 $ret = $this->db->rawQuery($sql, array($key));
             }
         } else {
             $sql = "select * from $table";
+            if($orderby && $ordertype) {
+                $sql .=  ' order by ' . $orderby . ' ' . $ordertype;
+            }
             $ret = $this->db->rawQuery($sql);
         }
         return $ret;

@@ -114,6 +114,7 @@ CREATE TABLE `cms_sort` (
   `cs_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `cs_name` varchar(32) NOT NULL DEFAULT '' COMMENT '分类名',
   `cs_title` varchar(128) NOT NULL DEFAULT '' COMMENT '分类标题',
+  `cs_article_template` varchar(32) NOT NULL DEFAULT '' COMMENT '分类文章模板',
   `cs_template` varchar(32) NOT NULL DEFAULT '' COMMENT '分类模板',
   `cs_subindex` int(10) NOT NULL DEFAULT '0' COMMENT '分类下级最小索引',
   `cs_index` int(10) NOT NULL DEFAULT '0' COMMENT '分类自身索引',

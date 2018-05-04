@@ -165,7 +165,7 @@ class Article extends Controller
                                 $tags[$tags_item['ct_name']] = $tags_item['ct_title'];
                             }
                         }
-                        $articles[$i]['date'] = date('Y-m-d', $article_item['a_ptime']);
+                        $articles[$i]['date'] = date('Y-m-d', $article_item['ptime']);
                         $articles[$i]['tags'] = $tags;
                     }
                 }

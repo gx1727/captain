@@ -179,7 +179,7 @@ if (!function_exists('get_article')) {
  * $orderby： new:  hot:
  */
 if (!function_exists('get_articles')) {
-    function get_articles($count, $sort = '', $tag = '', $flag = '', $mode = 0, $orderby = 'new', $ordertype = 'desc')
+    function get_articles($count, $sort = '', $tag = '', $flag = '', $mode = 1, $orderby = 'new', $ordertype = 'desc')
     {
         return component('cms:captain\cms\Article@articles', array($count, $sort, $tag, $flag, $mode, $orderby, $ordertype));
     }

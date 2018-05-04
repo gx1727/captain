@@ -74,7 +74,7 @@ class ArticleModel extends Model
     {
         $article = false;
         if ($mode == 0 || $mode == 1) { // 简单 简单+tags
-            $sql = 'select a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract from ' . $this->table_name . ' where a_status = 1 and a_code = ?';
+            $sql = 'select a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime from ' . $this->table_name . ' where a_status = 1 and a_code = ?';
 
             $article = $this->query($sql, array($a_code));
         } else if ($mode == 2) {
@@ -93,7 +93,7 @@ class ArticleModel extends Model
                     'abstract' => $article_ret['a_abstract'],
                     'content' => $content,
                     'template' => $article_ret['a_template'],
-                    'a_ptime' => $article_ret['a_ptime'],
+                    'ptime' => $article_ret['a_ptime'],
                     'date' => date('Y年m月d日', $article_ret['a_ptime']),
                     'count' => $article_ret['a_count'],
                     'extended' => json_decode($article_ret['a_extended'], true),
@@ -136,7 +136,7 @@ class ArticleModel extends Model
         }
         if ($article) {
             if ($mode == 1 || $mode == 2) { // sort 和 tag
-                $sorts_ret = $this->sortMod->get_all($article['a_id'], CMS_ARTICLESORT, 'a_id');
+                $sorts_ret = $this->sortMod->get_all($article['a_id'], CMS_ARTICLESORT, 'a_id', 'as_order');
                 $sorts = array();
                 if ($sorts_ret) {
                     foreach ($sorts_ret as $sorts_item) {
@@ -145,22 +145,11 @@ class ArticleModel extends Model
                 }
                 $article['sorts'] = $sorts;
 
-                $tags_ret = $this->tagMod->get_all($article['a_id'], CMS_ARTICLETAG, 'a_id');
+                $tags_ret = $this->tagMod->get_all($article['a_id'], CMS_ARTICLETAG, 'a_id', 'at_order');
                 $tags = array();
                 if ($tags_ret) {
                     foreach ($tags_ret as $tags_item) {
                         $tags[$tags_item['ct_name']] = $tags_item['ct_title'];
-
-                        // 针对封面要特殊处理
-                        if ($tags_item['ct_name'] == 'fengmian') {
-                            if ($article['sorts']) {
-                                foreach ($article['sorts'] as $sort_name => $sort_title) {
-                                    $article['url'] = $sort_name;
-                                }
-                            } else {
-                                $article['url'] = '#';
-                            }
-                        }
                     }
                 }
                 $article['tags'] = $tags;
@@ -282,7 +271,7 @@ class ArticleModel extends Model
             }
             $start = ($search_param['page'] - 1) * $search_param['pagesize'];
             return $this->get_page_list($this, $sql, $param_array, $start, (int)$search_param['pagesize'], $search_param['orderby'], $search_param['ordertype'],
-                'a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime');
+                'a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime');
         }
         return $ret;
     }

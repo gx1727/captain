@@ -50,8 +50,8 @@ class CmsModel extends Model
     {
         $article = $this->get($a_id);
         if ($article) {
-            $article['sorts'] = $this->sortMod->get_all($article['a_id'], CMS_ARTICLESORT, 'a_id');
-            $article['tags'] = $this->tagMod->get_all($article['a_id'], CMS_ARTICLETAG, 'a_id');
+            $article['sorts'] = $this->sortMod->get_all($article['a_id'], CMS_ARTICLESORT, 'a_id', 'as_order');
+            $article['tags'] = $this->tagMod->get_all($article['a_id'], CMS_ARTICLETAG, 'a_id', 'at_order');
         }
 
         return $article;
@@ -286,8 +286,8 @@ class CmsModel extends Model
             } else {
                 $article['draft_etime'] = '';
             }
-            $article['sort'] = $this->get_all($a_id, CMS_ARTICLESORT, 'a_id');
-            $article['tag'] = $this->get_all($a_id, CMS_ARTICLETAG, 'a_id');
+            $article['sort'] = $this->get_all($a_id, CMS_ARTICLESORT, 'a_id', 'as_order');
+            $article['tag'] = $this->get_all($a_id, CMS_ARTICLETAG, 'a_id', 'at_order');
             $article['publish_time'] = date('Y-m-d H:i:s', $article['a_etime']); // 文章最后修改时间，即发布时间
             $article['a_publish_time'] = $article['a_publish_time'] > 0 ? date('Y-m-d H:i:s', $article['a_publish_time']) : ''; // 文章最后修改时间，即发布时间
             $article['flag'] = $this->article_flag_encode($article['a_flag']);
@@ -416,10 +416,6 @@ class CmsModel extends Model
     {
         $ret = new Ret($this->return_status);
 
-        if(!$this->check_article_title($article['a_title'], $a_id)) {
-            $ret->set_code(2);
-            return $ret;
-        }
         $this->log('修改文章:[' . $user_code . ']  [' . $a_id . ']');
         $article_draft = $this->create_article_draft($a_id); // 确保文章草稿存在
         if ($article_draft) {
@@ -504,6 +500,11 @@ class CmsModel extends Model
         $this->log('发布文章:[' . $user_code . ']  [' . $a_id . ']');
         $article_draft = $this->get($a_id, CMS_ARTICLEDRAFT, 'a_id');
         if ($article_draft) {
+            if(!$this->check_article_title($article_draft['a_title'], $a_id)) {
+                $ret->set_code(2);
+                return $ret;
+            }
+
             $article = array(
                 'a_title' => $article_draft['a_title'],
                 'a_img' => $article_draft['a_img'],

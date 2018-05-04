@@ -97,9 +97,9 @@ class Attachment extends Controller
     {
         $att = $this->attMod->get_attachment($att_id);
         // 需要填写你的 Access Key 和 Secret Key
-        $accessKey = 'OBJZA8YbD8iCt2psqnGkc7fFpFgmJwYct6r7lizT';
-        $secretKey = 'b8V1tYaGVFKOxVWpGXpukQb7JgCYx8LfRLkF3XFC';
-        $bucket = '01rv';
+        $accessKey = 'ZLLqAqNtM8f2rgwXHCqtBtgFCEmyudRvMaiQbkOK';
+        $secretKey = 'VmS165tMDfP6AiCRnIEYNkPgjAgLlCZCmgPKgo8j';
+        $bucket = 'gx1727';
         $auth = new Auth($accessKey, $secretKey); // 构建鉴权对象
         $token = $auth->uploadToken($bucket); // 生成上传 Token
 
@@ -115,7 +115,7 @@ class Attachment extends Controller
             $this->log('上传图片到七牛在失败。' . json_decode($err));
         } else {
             $data = array(
-                'att_cdn' => 'http://p7bo76bgm.bkt.clouddn.com/' . $fileName
+                'att_cdn' => 'http://o9kvfuz6a.bkt.clouddn.com/' . $fileName
             );
             $this->attMod->edit($att_id, $data);
             @unlink($filePath);
