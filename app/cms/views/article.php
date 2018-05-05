@@ -1,96 +1,121 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>gx1727</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--[if lte IE 8]><script src="/static/cms/js/ie/html5shiv.js"></script><![endif]-->
-    <link rel="stylesheet" href="/static/cms/css/main.css" />
-    <!--[if lte IE 8]><link rel="stylesheet" href="/static/cms/css/ie8.css" /><![endif]-->
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/static/cms/css/normalize.css">
+    <link rel="stylesheet" href="/static/cms/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/cms/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/cms/css/templatemo-style.css">
+    <script src="/static/cms/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
-<div id="content">
-    <div class="inner">
-        <article class="box post post-excerpt">
-            <header>
-                <h2><a href="#"><?php echo $article['title'] ?></a></h2>
-                <?php if($article['tags']) {
-                    foreach($article['tags']as $name => $title){ ?>
-                        <span class="tag"><a href="/<?php echo $name;?>"><?php echo $title;?></a></span>
-                    <?php }
-                }  ?>
-            </header>
-            <div class="info" style="color: #999;text-align: center;">
-                    <span class="date" style="margin-bottom: 0;">
-                        <span class="month"><?php echo date('m', $article['ptime']); ?>月</span>
-                        <span class="day"><?php echo date('d', $article['ptime']); ?></span>
-                        <span class="year">, <?php echo date('Y', $article['ptime']); ?></span>
-                    </span>
-                <?php echo date('Y', $article['ptime']); ?>
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<div class="responsive-header visible-xs visible-sm">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="top-section">
+                    <div class="profile-image">
+                        <img src="/static/cms/img/gx1727.jpg" alt="Volton">
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-title">GX1727</h3>
+                        <p class="profile-description">一个怀揣着梦想的老码农</p>
+                    </div>
+                </div>
             </div>
-            <img src="<?php echo $article['img'] ?>" alt="<?php echo $article['title'] ?>" />
-            <p style="background-color: #e8e8e8;padding: 10px;"><?php echo $article['abstract'] ?></p>
-            <p><?php echo $article['content'] ?></p>
-        </article>
+            <div class="cmd">
+                <input type="text" placeholder="输入指令">
+            </div>
+        </div>
+        <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
+        <div class="main-navigation responsive-menu">
+            <ul class="navigation">
+                <li><a href="#top"><i class="fa fa-home"></i>首页</a></li>
+                <li><a href="#projects"><i class="fa fa-newspaper-o"></i>工具</a></li>
+                <li><a href="#about"><i class="fa fa-user"></i>关于我</a></li>
+            </ul>
+            <ul>
+                <li><a href="/blog"><i class="fa fa-link"></i>BLOG</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
-<!-- Sidebar -->
-<div id="sidebar">
-
-    <!-- Logo -->
-    <h1 id="logo"><a href="/">GX1727</a></h1>
-
-    <!-- Nav -->
-    <nav id="nav">
-        <ul>
-            <li class="current"><a href="/">主页</a></li>
-            <li><a href="/tools">工具</a></li>
-            <li><a href="/">杂项</a></li>
-            <li><a href="/aboutme">关于我</a></li>
-        </ul>
-    </nav>
-
-    <!-- Search -->
-    <section class="box search">
-        <form method="post" action="#">
-            <input type="text" class="text" name="search" placeholder="输入 ..." />
-        </form>
-    </section>
-
-    <!-- Text -->
-    <section class="box text-style1">
-        <div class="inner">
-            <p>
-                <strong>每日一语:</strong><br/>
-                恢弘志士之气，不宜妄自菲薄。
-            </p>
+<!-- SIDEBAR -->
+<div class="sidebar-menu hidden-xs hidden-sm">
+    <div class="top-section">
+        <div class="profile-image">
+            <img src="/static/cms/img/gx1727.jpg" alt="Volton">
         </div>
-    </section>
-
-    <!-- Recent Posts -->
-    <section class="box recent-posts">
-        <header>
-            <h2>分类</h2>
-        </header>
-        <ul>
-            <li><a href="/suiji">随记</a></li>
+        <h3 class="profile-title">Gx1727</h3>
+        <p class="profile-description">一个怀揣着梦想的老码农</p>
+    </div> <!-- top-section -->
+    <div class="cmd">
+        <input type="text" placeholder="输入指令">
+    </div>
+    <div class="main-navigation">
+        <ul class="navigation">
+            <li><a href="/#top"><i class="fa fa-globe"></i>首页</a></li>
+            <li><a href="/#projects"><i class="fa fa-paperclip"></i>工具</a></li>
+            <li><a href="/#about"><i class="fa fa-pencil"></i>关于我</a></li>
         </ul>
-    </section>
+        <ul>
+            <li><a href="/blog"><i class="fa fa-link"></i>BLOG</a></li>
+        </ul>
+    </div> <!-- .main-navigation -->
+    <div class="social-icons">
+    </div> <!-- .social-icons -->
+</div> <!-- .sidebar-menu -->
 
-    <!-- Copyright -->
-    <ul id="copyright">
-        <li>&copy; gx1727 <p>皖ICP备14017708号-3</p></li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-    </ul>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="fluid-container">
+        <div class="content-wrapper">
+            <ol class="breadcrumb">
+                <li><a href="/">首页</a></li>
+                <li><a href="/blog">BLOG</a></li>
+                <li class="active"><?php echo $article['title']; ?></li>
+            </ol>
+            <div class="page-section">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="widget-title"><?php echo $article['title']; ?></h4>
+                        <div class="about-image">
+                            <img src="<?php echo $article['img']; ?>" alt="<?php echo $article['title']; ?>">
+                        </div>
+                        <?php echo $article['content']; ?>
+                    </div>
+                </div> <!-- #about -->
+            </div>
 
+            <div class="row" id="footer">
+                <div class="col-md-12 text-center">
+                    <p class="copyright-text">Copyright &copy; 2018 gx1727 |  皖ICP备14017708号-3</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
-<!-- Scripts -->
-<script src="/static/cms/js/jquery.min.js"></script>
-<script src="/static/cms/js/skel.min.js"></script>
-<script src="/static/cms/js/util.js"></script>
-<!--[if lte IE 8]><script src="/static/cms/js/ie/respond.min.js"></script><![endif]-->
-<script src="/static/cms/js/main.js"></script>
-
+<script src="/static/cms/js/vendor/jquery-1.10.2.min.js"></script>
+<script src="/static/cms/js/lazyload.js"></script>
+<script>
+    $(function() {
+        $("img.lazyload").lazyload();
+    });
+</script>
 </body>
 </html>

@@ -31,6 +31,15 @@ class Tools extends Controller
      */
     public function time()
     {
-        echo 'time';
+        $op = $this->input->get_post('op');
+        if($op == 'get_time') {
+            $this->json($this->get_result(array('data' => time())));
+        } else if($op == 'format_time') {
+            $time = $this->input->get_post('time');
+            $this->json($this->get_result(array('data' => date('Y-m-d H:i:s', $time))));
+        } else if($op == 'create_time') {
+            $this->json($this->get_result(array('data' =>  mktime($_POST['hour'], $_POST['minute'], $_POST['second'], $_POST['mouth'], $_POST['day'], $_POST['year']))));
+        }
+
     }
 }

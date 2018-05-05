@@ -74,7 +74,7 @@ class ArticleModel extends Model
     {
         $article = false;
         if ($mode == 0 || $mode == 1) { // 简单 简单+tags
-            $sql = 'select a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime from ' . $this->table_name . ' where a_status = 1 and a_code = ?';
+            $sql = 'select a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime, a_count as `count` from ' . $this->table_name . ' where a_status = 1 and a_code = ?';
 
             $article = $this->query($sql, array($a_code));
         } else if ($mode == 2) {
@@ -271,7 +271,7 @@ class ArticleModel extends Model
             }
             $start = ($search_param['page'] - 1) * $search_param['pagesize'];
             return $this->get_page_list($this, $sql, $param_array, $start, (int)$search_param['pagesize'], $search_param['orderby'], $search_param['ordertype'],
-                'a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime');
+                'a_id, a_code as code, a_title as title, a_img as img, a_abstract as abstract, a_ptime as ptime, a_count as `count`');
         }
         return $ret;
     }

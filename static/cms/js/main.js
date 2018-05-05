@@ -1,87 +1,81 @@
-/*
-	Striped by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
-
 (function($) {
 
-	skel.breakpoints({
-		desktop: '(min-width: 737px)',
-		wide: '(min-width: 1201px)',
-		narrow: '(min-width: 737px) and (max-width: 1200px)',
-		narrower: '(min-width: 737px) and (max-width: 1000px)',
-		mobile: '(max-width: 736px)'
-	});
+	"use strict";
+    $('.navigation').singlePageNav({
+        currentClass : 'active'
+    });
+    $('.toggle-menu').click(function(){
+        $('.responsive-menu').stop(true,true).slideToggle();
+        return false;
+    });
 
-	$(function() {
+    $("img.lazyload").lazyload();
 
-		var	$window = $(window),
-			$body = $('body'),
-			$document = $(document);
+    $('.tools').hide();
+    $('.tools').first().show();
 
-		// Disable animations/transitions until the page has loaded.
-			$body.addClass('is-loading');
+    $(".projects-holder").find('.project-item').click(function() {
+        var tool = $(this).attr('tool');
+        if(tool) {
+            $('.tools').hide();
+            $('.' + tool).show();
+        }
+    });
 
-			$window.on('load', function() {
-				$body.removeClass('is-loading');
-			});
+    // 时间
+    $("#btn_get_time").click(function() {
+        $.post('/tools/time', {
+                op: 'get_time'
+            }, function(ret) {
+                if(ret.code == 0) {
+                    $('#display_time').val(ret.data);
+                }
+            });
+    });
+    $("#btn_format_time").click(function() {
+        var time = $('#display_time').val();
+        $.post('/tools/time', {
+                op: 'format_time',
+                time: time
+            }, function(ret) {
+                if(ret.code == 0) {
+                    $('#display_format_time').html(ret.data);
+                }
+            });
+    });
+    $("#btn_format_date").click(function(){
+        var year = $('.date').find('input.year').val();
+        var mouth = $('.date').find('input.mouth').val();
+        var day = $('.date').find('input.day').val();
+        var hour = $('.date').find('input.hour').val();
+        var minute = $('.date').find('input.minute').val();
+        var second = $('.date').find('input.second').val();
+        $.post('/tools/time', {
+            op: 'create_time',
+            year: year,
+            mouth: mouth,
+            day: day,
+            hour: hour,
+            minute: minute,
+            second: second
+        }, function(ret) {
+            if(ret.code == 0) {
+                $('#display_format_date').html(ret.data);
+            }
+        });
+    })
 
-		// Fix: Placeholder polyfill.
-			$('form').placeholder();
-
-		// Prioritize "important" elements on mobile.
-			skel.on('+mobile -mobile', function() {
-				$.prioritize(
-					'.important\\28 mobile\\29',
-					skel.breakpoint('mobile').active
-				);
-			});
-
-		// Off-Canvas Sidebar.
-
-			// Height hack.
-				var $sc = $('#sidebar, #content'), tid;
-
-				$window
-					.on('resize', function() {
-						window.clearTimeout(tid);
-						tid = window.setTimeout(function() {
-							$sc.css('min-height', $document.height());
-						}, 100);
-					})
-					.on('load', function() {
-						$window.trigger('resize');
-					})
-					.trigger('resize');
-
-			// Title Bar.
-				$(
-					'<div id="titleBar">' +
-						'<a href="#sidebar" class="toggle"></a>' +
-						'<span class="title">' + $('#logo').html() + '</span>' +
-					'</div>'
-				)
-					.appendTo($body);
-
-			// Sidebar
-				$('#sidebar')
-					.panel({
-						delay: 500,
-						hideOnClick: true,
-						hideOnSwipe: true,
-						resetScroll: true,
-						resetForms: true,
-						side: 'left',
-						target: $body,
-						visibleClass: 'sidebar-visible'
-					});
-
-			// Fix: Remove navPanel transitions on WP<10 (poor/buggy performance).
-				if (skel.vars.os == 'wp' && skel.vars.osVersion < 10)
-					$('#titleBar, #sidebar, #main')
-						.css('transition', 'none');
-
-	});
+    // 拼音
+    $("#btn_pinyin").click(function(){
+        $("#displayAllPinyin").html(__pinyin.getPinyin( $("#pinyinRes").val() ));
+        $("#displayHeadPinyin").html(__pinyin.getFirstLetter(  $("#pinyinRes").val() ));
+        $("#displayHeadPinyinU").html(__pinyin.getFirstLetterU(  $("#pinyinRes").val() ));
+    });
 
 })(jQuery);
+
+
+
+
+
+

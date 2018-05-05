@@ -179,6 +179,7 @@ class Article extends Controller
 
                 //处理模板
                 $template = $article_param['template'] ? $article_param['template'] : 'page';
+
                 if (isset($templates[$template])) {
                     $template = $templates[$template];
                 }
@@ -316,7 +317,7 @@ class Article extends Controller
         $this->assign('base', $base);
         $this->assign('index', $index);
         $this->assign('sum', $sum);
-        if ($sum > 1) {
+        if ($sum >= 1) {
             return $this->view('component/paging', true);
         }
     }
